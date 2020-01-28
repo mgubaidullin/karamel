@@ -1,44 +1,47 @@
 <!doctype html>
 <html lang="en">
-  <head>
+<head>
     <!-- Required meta tags -->
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
 
-    <!-- Bootstrap CSS -->
-    <link rel="stylesheet" href="/bootstrap.min.css">
-
-    <script src="/unpoly.min.js"></script>
-    <link rel="stylesheet" href="/unpoly.min.css">
+    <!-- PatternFly CSS -->
+    <link href="https://unpkg.com/@patternfly/patternfly/patternfly.min.css" rel="stylesheet" type="text/css" media="all">
+    <link href="/karamel.css" rel="stylesheet" type="text/css" media="all">
 
     <script src="/jquery.min.js"></script>
+    <title>Karamel</title>
 
-    <title>{#insert title}Default Title{/}</title>
-
-    <style>
-      .table td.fit, .table th.fit {
-        white-space: nowrap;
-        width: 1%;
-      }
-
-      .completed {
-        text-decoration: line-through;
-      }
-
-      .form-text-width {
-        width: 600px;
-      }
-
-      .form-textarea-height {
-        height: 400px !important;
-      }
-    </style>
-  </head>
-  <body>
-    <div class="container">
-      <h3>{#insert title}Default Title{/}</h3>
-
-      {#insert contents}No contents!{/}
+</head>
+<body>
+<div class="pf-c-page" id="page-default-nav-example">
+    <a class="pf-c-skip-to-content pf-c-button pf-m-primary" href="#main-content-page-default-nav-example">Skip to
+        content</a>
+    <header role="banner" class="pf-c-page__header">
+        <div class="pf-c-page__header-brand">
+            <a class="pf-c-page__header-brand-link">
+                <h1 class="header">KARAMEL</h1>
+            </a>
+        </div>
+        <div class="pf-c-page__header-tools">
+            <img class="pf-c-avatar" src="/img_avatar.svg" alt="Avatar image"/>
+        </div>
+    </header>
+    <div class="pf-c-page__sidebar pf-m-dark">
+        <div class="pf-c-page__sidebar-body">
+            <nav class="pf-c-nav pf-m-dark" id="page-default-nav-example-primary-nav" aria-label="Global">
+                <ul class="pf-c-nav__list">
+                    <li class="pf-c-nav__item">
+                        <a href="/consumer" class="pf-c-nav__link {#if consumer} pf-m-current {/if} " aria-current="page">Consumer</a>
+                    </li>
+                    <li class="pf-c-nav__item">
+                        <a href="/producer" class="pf-c-nav__link {#if producer} pf-m-current {/if}">Producer</a>
+                    </li>
+                </ul>
+            </nav>
+        </div>
     </div>
-  </body>
+    {#insert contents}No contents!{/}
+</div>
+</body>
 </html>

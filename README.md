@@ -1,6 +1,6 @@
 # Karamel
 
-Simple Kafka Web-based Consumer and Producer.
+Simple Web-based Kafka Consumer and Producer.
 
 - Consumer listens all topics
 - Messages could be filtered by topic

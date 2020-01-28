@@ -16,7 +16,6 @@ public class KaramelSocket {
 
     @OnOpen
     public void onOpen(Session session) {
-        LOGGER.info("Open");
         this.session = session;
     }
 

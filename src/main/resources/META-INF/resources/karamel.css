@@ -1,0 +1,20 @@
+
+.header {
+    letter-spacing: 0.2em;
+}
+.table td.fit, .table th.fit {
+    white-space: nowrap;
+    width: 1%;
+}
+
+.completed {
+    text-decoration: line-through;
+}
+
+.form-text-width {
+    width: 800px;
+}
+
+.form-textarea-height {
+    height: 300px !important;
+}

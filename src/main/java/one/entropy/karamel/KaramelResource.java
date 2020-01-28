@@ -20,7 +20,7 @@ import java.util.List;
 import java.util.Objects;
 import java.util.stream.Collectors;
 
-@Path("/messages")
+@Path("/")
 public class KaramelResource {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(KaramelResource.class.getCanonicalName());
@@ -35,7 +35,10 @@ public class KaramelResource {
     Template message;
 
     @Inject
-    Template messages;
+    Template producer;
+
+    @Inject
+    Template consumer;
 
     @Inject
     CamelContext context;
@@ -45,15 +48,17 @@ public class KaramelResource {
     @GET
     @Consumes(MediaType.TEXT_HTML)
     @Produces(MediaType.TEXT_HTML)
+    @Path("consumer")
     public TemplateInstance listMessages(@QueryParam("filter") String filter) {
-        return messages.data("kmessages", find(filter))
+        return consumer.data("kmessages", find(filter))
                 .data("filter", filter)
+                .data("consumer", true)
+                .data("producer", false)
                 .data("filtered", filter != null && !filter.isEmpty());
     }
 
     @ConsumeEvent(value = "kmessage")
     public void consume(Message<KaramelMessage> message) {
-        LOGGER.info(message.body().toString());
         kmessages.add(message.body());
         karamelSocket.broadcast("refresh");
     }
@@ -61,6 +66,7 @@ public class KaramelResource {
     @GET
     @Produces(MediaType.APPLICATION_JSON)
     @Consumes(MediaType.APPLICATION_JSON)
+    @Path("consumer")
     public List<KaramelMessage> listMessagesJson(@QueryParam("filter") String filter) {
         return find(filter);
     }
@@ -73,17 +79,20 @@ public class KaramelResource {
 
     @GET
     @Produces(MediaType.TEXT_HTML)
-    @Path("/open/{id}")
-    public TemplateInstance openForm(@PathParam("id") String id) {
+    @Path("/message/{id}")
+    public TemplateInstance openMessageForm(@PathParam("id") String id) {
         KaramelMessage kmessage = kmessages.stream().filter(km -> Objects.equals(km.getId(), id)).findFirst().get();
         return message.data("kmessage", kmessage).data("view", true);
     }
 
     @GET
     @Produces(MediaType.TEXT_HTML)
-    @Path("/new")
-    public TemplateInstance newForm() {
-        return message.data("kmessage", new KaramelMessage()).data("view", false);
+    @Path("/producer")
+    public TemplateInstance openProducerForm() {
+        return message.data("kmessage", new KaramelMessage())
+                .data("consumer", false)
+                .data("producer", true)
+                .data("view", false);
     }
 
     @POST
@@ -91,8 +100,7 @@ public class KaramelResource {
     @Path("/publish")
     public Response publish(@MultipartForm KaramelMessageForm form) {
         KaramelMessage km = form.getKaramelMessage();
-        LOGGER.info(km.toString());
         context.createProducerTemplate().sendBody("direct:message", km);
-        return Response.status(301).location(URI.create("/messages/")).build();
+        return Response.status(301).location(URI.create("/consumer")).build();
     }
 }
