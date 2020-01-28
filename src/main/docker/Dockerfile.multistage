@@ -1,0 +1,21 @@
+## Stage 1 : build with maven builder image with native capabilities
+FROM quay.io/quarkus/centos-quarkus-maven:19.3.1-java11 AS build
+COPY src /usr/src/app/src
+COPY pom.xml /usr/src/app
+USER root
+RUN chown -R quarkus /usr/src/app
+USER quarkus
+RUN mvn -f /usr/src/app/pom.xml -Pnative clean package
+RUN ls -la /usr/src/app/target/
+
+## Stage 2 : create the docker final image
+FROM debian:stable-slim AS lib-env
+
+FROM gcr.io/distroless/base-debian10
+WORKDIR /work/
+COPY --from=build /usr/src/app/target/*-runner /work/application
+COPY --from=lib-env /lib/x86_64-linux-gnu/libz.so.1 /lib/x86_64-linux-gnu/libz.so.1
+COPY --from=lib-env /lib/x86_64-linux-gnu/libgcc_s.so.1 /lib/x86_64-linux-gnu/libgcc_s.so.1
+COPY --from=lib-env /usr/lib/x86_64-linux-gnu/libstdc++.so.6 /usr/lib/x86_64-linux-gnu/libstdc++.so.6
+EXPOSE 8080
+CMD ["./application", "-Dquarkus.http.host=0.0.0.0"]

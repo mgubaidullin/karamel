@@ -1,0 +1,44 @@
+{@one.entropy.karamel.KaramelMessage kmessage}
+{#include base.html}
+{#title}Producer{/title}
+{#contents}
+<div class="modalenabled">
+    <h4 class="navbar-brand" href="#">Message</h4>
+    <form action="/messages/publish" method="POST" name="karamelForm" up-target=".container" enctype="multipart/form-data">
+        <div class="form-group">
+            <label for="topic">Topic</label>
+            <input id="topic" name="topic" type="text"  class="form-control form-text-width" required {#if view}value="{kmessage.topic}" readonly{/if}>
+        </div>
+
+        {#if view}
+        <div class="form-group">
+            <label for="partition">Partition</label>
+            <input id="partition" name="partition" type="text" class="form-control form-text-width" value="{kmessage.partition}" readonly>
+        </div>
+        <div class="form-group">
+            <label for="offset">Offset</label>
+            <input id="offset" name="offset" type="text" class="form-control form-text-width"  value="{kmessage.offset}" readonly>
+        </div>
+        <div class="form-group">
+            <label for="timestamp">Timestamp</label>
+            <input id="timestamp" name="timestamp" type="text" class="form-control form-text-width"  value="{kmessage.timestamp}" readonly>
+        </div>
+        {/if}
+
+        <div class="form-group">
+            <label for="key">Key</label>
+            <input id="key" name="key" type="text" class="form-control form-text-width" {#if view}value="{kmessage.key}" readonly{/if}>
+        </div>
+        <div class="form-group">
+            <label for="value">Value</label>
+            <textarea id="value" name="value" row="30" class="form-control form-text-width form-textarea-height" required {#if view} readonly {/if} >{#if view}{kmessage.value}{/if}</textarea>
+        </div>
+        {#if !view}
+        <div class="mr-auto mt-2 mt-lg-0">
+            <button type="submit" class="btn btn-primary">Publish</button>
+        </div>
+        {/if}
+    </form>
+</div>
+{/contents}
+{/include}
