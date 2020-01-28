@@ -27,7 +27,7 @@ public class KaramelSocket {
     @OnError
     public void onError(Session session, Throwable throwable) {
         this.session = null;
-        LOGGER.error("onError", throwable);
+        LOGGER.error("onError", throwable.getMessage());
     }
 
     protected void broadcast(String message) {

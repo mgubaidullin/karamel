@@ -3,9 +3,18 @@
 
 <main role="main" class="pf-c-page__main" tabindex="-1" id="main-content-page-default-nav-example">
   <section class="pf-c-page__main-section pf-m-light">
-    <div class="pf-c-content">
-      <h1>Messages</h1>
-      <p>List of messages consumed</p>
+    <div class="pf-l-split pf-m-gutter">
+      <div class="pf-l-split__item">
+        <div class="pf-c-content">
+          <h1>Messages</h1>
+        </div>
+      </div>
+      <div class="pf-l-split__item pf-m-fill"></div>
+      <div class="pf-l-split__item">
+        <form class="pf-u-align-self-center" action="/restart" method="POST" name="karamelForm" up-target=".container">
+          <button class="pf-c-button pf-m-primary" type="submit">Restart</button>
+        </form>
+      </div>
     </div>
   </section>
   <section class="pf-c-page__main-section">

@@ -11,12 +11,15 @@ import javax.inject.Singleton;
 @Singleton
 public class KaramelRoute extends RouteBuilder {
 
+    protected static final String CONSUMER_ROUTE_ID = "consumerRoute";
+
     @Inject
     EventBus bus;
 
     @Override
     public void configure() throws Exception {
         from("kafka:.*?topicIsPattern=true&autoOffsetReset=earliest")
+                .routeId(CONSUMER_ROUTE_ID)
                 .process(this::processIncoming);
 
         from("direct:message")

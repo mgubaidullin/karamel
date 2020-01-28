@@ -20,6 +20,8 @@ import java.util.List;
 import java.util.Objects;
 import java.util.stream.Collectors;
 
+import static one.entropy.karamel.KaramelRoute.CONSUMER_ROUTE_ID;
+
 @Path("/")
 public class KaramelResource {
 
@@ -101,6 +103,13 @@ public class KaramelResource {
     public Response publish(@MultipartForm KaramelMessageForm form) {
         KaramelMessage km = form.getKaramelMessage();
         context.createProducerTemplate().sendBody("direct:message", km);
+        return Response.status(301).location(URI.create("/consumer")).build();
+    }
+
+    @POST
+    @Path("/restart")
+    public Response restart() {
+        context.createProducerTemplate().sendBody("controlbus:route?routeId="+CONSUMER_ROUTE_ID+"&action=restart", null);
         return Response.status(301).location(URI.create("/consumer")).build();
     }
 }
