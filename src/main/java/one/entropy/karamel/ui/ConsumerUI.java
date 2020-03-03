@@ -1,9 +1,11 @@
-package one.entropy.karamel;
+package one.entropy.karamel.ui;
 
 import io.quarkus.qute.Template;
 import io.quarkus.qute.TemplateInstance;
 import io.quarkus.vertx.ConsumeEvent;
 import io.vertx.reactivex.core.eventbus.Message;
+import one.entropy.karamel.api.KaramelSocket;
+import one.entropy.karamel.data.KaramelMessage;
 import org.apache.camel.CamelContext;
 import org.jboss.resteasy.annotations.providers.multipart.MultipartForm;
 import org.slf4j.Logger;
@@ -20,12 +22,12 @@ import java.util.List;
 import java.util.Objects;
 import java.util.stream.Collectors;
 
-import static one.entropy.karamel.KaramelRoute.CONSUMER_ROUTE_ID;
+import static one.entropy.karamel.route.KaramelRoute.CONSUMER_ROUTE_ID;
 
 @Path("/")
-public class KaramelResource {
+public class ConsumerUI {
 
-    private static final Logger LOGGER = LoggerFactory.getLogger(KaramelResource.class.getCanonicalName());
+    private static final Logger LOGGER = LoggerFactory.getLogger(ConsumerUI.class.getCanonicalName());
 
     @Inject
     KaramelSocket karamelSocket;
@@ -75,8 +77,8 @@ public class KaramelResource {
 
     private List<KaramelMessage> find(String filter) {
         return filter != null && !filter.isEmpty()
-                ? kmessages.stream().filter(km -> km.getTopic().contains(filter)).sorted(Comparator.comparingLong(KaramelMessage::getTimestamp).reversed()).collect(Collectors.toList())
-                : kmessages.stream().sorted(Comparator.comparingLong(KaramelMessage::getTimestamp).reversed()).collect(Collectors.toList());
+                ? kmessages.stream().filter(km -> km.getTopic().contains(filter)).sorted(Comparator.comparing(KaramelMessage::getTimestamp).reversed()).collect(Collectors.toList())
+                : kmessages.stream().sorted(Comparator.comparing(KaramelMessage::getTimestamp).reversed()).collect(Collectors.toList());
     }
 
     @GET

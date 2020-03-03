@@ -1,0 +1,73 @@
+<section class="pf-c-page__main-section dashboard-subtitle">
+    <h1 class="pf-c-title pf-m-xl">Entity operator</h1>
+</section>
+<section class="pf-c-page__main-section">
+    <div class="pf-l-gallery pf-m-gutter dashboard">
+        {#for deployment in inject:strimziAPI.getEntityDeployments}
+        <div class="pf-c-card pf-m-hoverable pf-m-compact">
+            <div class="pf-c-card__header pf-c-title pf-m-md">
+                <p>{deployment.getKind()}</p>
+                <div class="pf-c-content">
+                    <small>{deployment.getMetadata().getUid()}</small>
+                    <small>{deployment.getMetadata().getName()}</small>
+                </div>
+            </div>
+            <div class="pf-c-card__body">
+
+            </div>
+            <div class="pf-c-card__footer">
+                <div class="pf-c-alert status pf-m-success" aria-label="Success alert">
+                    <div class="pf-c-alert__icon">
+                        <i class="fas fa-check-circle" aria-hidden="true"></i>
+                    </div>
+                    <h4 class="pf-c-alert__title">Desired: {deployment.getStatus().getReplicas()}, Ready: {deployment.getStatus().getReadyReplicas()}</h4>
+                </div>
+            </div>
+        </div>
+        {/for}
+        {#for replicaSet in inject:strimziAPI.getEntityReplicaSets}
+        <div class="pf-c-card pf-m-hoverable pf-m-compact">
+            <div class="pf-c-card__header pf-c-title pf-m-md">
+                <p>{replicaSet.getKind()}</p>
+                <div class="pf-c-content">
+                    <small>{replicaSet.getMetadata().getUid()}</small>
+                    <small>{replicaSet.getMetadata().getName()}</small>
+                </div>
+            </div>
+            <div class="pf-c-card__body">
+
+            </div>
+            <div class="pf-c-card__footer">
+                <div class="pf-c-alert status pf-m-success" aria-label="Success alert">
+                    <div class="pf-c-alert__icon">
+                        <i class="fas fa-check-circle" aria-hidden="true"></i>
+                    </div>
+                    <h4 class="pf-c-alert__title">Desired: {replicaSet.getStatus().getReplicas()}, Ready: {replicaSet.getStatus().getReadyReplicas()}</h4>
+                </div>
+            </div>
+        </div>
+        {/for}
+        {#for pod in inject:strimziAPI.getEntityPods}
+        <div class="pf-c-card pf-m-hoverable pf-m-compact">
+            <div class="pf-c-card__header pf-c-title pf-m-md">
+                <p>{pod.getKind()}</p>
+                <div class="pf-c-content">
+                    <small>{pod.getMetadata().getUid()}</small>
+                    <small>{pod.getMetadata().getName()}</small>
+                </div>
+            </div>
+            <div class="pf-c-card__body">
+
+            </div>
+            <div class="pf-c-card__footer">
+                <div class="pf-c-alert status pf-m-success" aria-label="Success alert">
+                    <div class="pf-c-alert__icon">
+                        <i class="fas fa-check-circle" aria-hidden="true"></i>
+                    </div>
+                    <h4 class="pf-c-alert__title">{pod.getStatus().getPhase()}</h4>
+                </div>
+            </div>
+        </div>
+        {/for}
+    </div>
+</section>

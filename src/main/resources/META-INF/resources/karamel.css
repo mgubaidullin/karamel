@@ -18,3 +18,25 @@
 .form-textarea-height {
     height: 300px !important;
 }
+
+.logo {
+    height: 1.3em;
+    margin-right: 0.3em;
+}
+
+.pf-c-table  .filter {
+    padding: 0.5em;
+}
+
+.pf-c-alert.status {
+    --pf-c-alert--BoxShadow: var(--pf-global--BoxShadow--md);
+}
+
+.pf-c-page__main-section.dashboard-subtitle {
+    padding-top: 1em;
+    padding-bottom: 0;
+}
+
+.pf-l-gallery.dashboard {
+    --pf-l-gallery--GridTemplateColumns: repeat(auto-fill,minmax(300px,1fr));
+}

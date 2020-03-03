@@ -11,8 +11,8 @@
       </div>
       <div class="pf-l-split__item pf-m-fill"></div>
       <div class="pf-l-split__item">
-        <form class="pf-u-align-self-center" action="/restart" method="POST" name="karamelForm" up-target=".container">
-          <button class="pf-c-button pf-m-primary" type="submit">Restart</button>
+        <form class="pf-u-align-self-center" action="/consumer" method="GET">
+          <button class="pf-c-button pf-m-primary" type="submit">Refresh</button>
         </form>
       </div>
     </div>
@@ -35,16 +35,23 @@
         <td colspan="6">No data found.</td>
       </tr>
       {#else}
-
+      <tr>
+        <td class="filter"><input class="pf-c-form-control" required type="text" id="topic" name="topic" placeholder="Filter"/></td>
+        <td class="filter"><input class="pf-c-form-control" required type="text" id="partition" name="partition" placeholder="Filter"/></td>
+        <td class="filter"><input class="pf-c-form-control" required type="text" id="offset" name="offset" placeholder="Filter"/></td>
+        <td class="filter"></td>
+        <td class="filter"><input class="pf-c-form-control" required type="text" id="key" name="key" placeholder="Filter"/></td>
+        <td/>
+      </tr>
       {#for kmessage in kmessages}
       <tr>
         <td>{kmessage.topic}</td>
         <td>{kmessage.partition}</td>
         <td>{kmessage.offset}</td>
-        <td>{kmessage.timestamp}</td>
+        <td>{kmessage.getTimestampString}</td>
         <td>{kmessage.key}</td>
         <td class="pf-c-table__action">
-          <a href="/message/{kmessage.id}" role="button" up-modal=".modalenabled">View</a>
+          <a href="/message/{kmessage.id}">View</a>
           </form>
         </td>
       </tr>
@@ -71,7 +78,7 @@
               };
           }
       };
-</script>
+    </script>
   </section>
 </main>
 {/contents}

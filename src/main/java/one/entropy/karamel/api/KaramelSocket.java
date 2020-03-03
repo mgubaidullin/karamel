@@ -1,4 +1,4 @@
-package one.entropy.karamel;
+package one.entropy.karamel.api;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -30,7 +30,7 @@ public class KaramelSocket {
         LOGGER.error("onError", throwable.getMessage());
     }
 
-    protected void broadcast(String message) {
+    public void broadcast(String message) {
         session.getAsyncRemote().sendObject(message, result -> {
             if (result.getException() != null) {
                 LOGGER.error("Unable to send message: ", result.getException());

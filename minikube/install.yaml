@@ -1,0 +1,87 @@
+---
+- name: Install Minikube and Strimzi
+  hosts: localhost
+
+  vars:
+    purge: true
+    strimzi:
+      namespace: kafka
+      version: 0.16.2
+
+  tasks:
+    - name: Install minikube on MacOS
+      shell: brew install minikube
+      when: ansible_system == 'Darwin'
+
+#      TODO: Install minikube for Linux
+#    - name: Install minikube on MacOS
+#      shell:
+#      when: ansible_system == 'Linux'
+
+    - name: Set default minikube config
+      shell: |
+        minikube config set cpus 4
+        minikube config set disk-size 80g
+        minikube config set memory 8192
+      when: purge == true
+
+    - name: Delete minikube
+      shell: minikube delete
+      when: purge == true
+
+    - name: Start minikube
+      shell: minikube start
+
+    - name: Download strimzi
+      get_url:
+        url: https://github.com/strimzi/strimzi-kafka-operator/releases/download/{{strimzi.version}}/strimzi-{{strimzi.version}}.tar.gz
+        dest: .
+      tags:
+        - files
+
+    - name: Unzip strimzi
+      shell: |
+        gunzip -c strimzi-{{strimzi.version}}.tar.gz | tar xopf -
+      tags:
+        - files
+
+    - name: Modify file (change namespace) on Linux
+      shell: "sed -i 's/namespace:.*/namespace: {{strimzi.namespace}}/' strimzi-{{strimzi.version}}/install/cluster-operator/*RoleBinding*.yaml"
+      when: ansible_system == 'Linux'
+      tags:
+        - files
+
+    - name: Modify file (change namespace) on MacOS
+      shell: |
+        sed -i "" 's/namespace:.*/namespace: {{strimzi.namespace}}/' strimzi-{{strimzi.version}}/install/cluster-operator/*RoleBinding*.yaml
+        exit 0
+      when: ansible_system == 'Darwin'
+      tags:
+        - files
+
+    - name: Create strimzi operator and kafka
+      shell: |
+        kubectl delete ns {{strimzi.namespace}} --force --grace-period 0
+        kubectl create ns {{strimzi.namespace}}
+        kubectl apply -f strimzi-{{strimzi.version}}/install/cluster-operator/ -n {{strimzi.namespace}}
+        kubectl apply -f strimzi-{{strimzi.version}}/install/cluster-operator/020-RoleBinding-strimzi-cluster-operator.yaml -n {{strimzi.namespace}}
+        kubectl apply -f strimzi-{{strimzi.version}}/install/cluster-operator/032-RoleBinding-strimzi-cluster-operator-topic-operator-delegation.yaml -n {{strimzi.namespace}}
+        kubectl apply -f strimzi-{{strimzi.version}}/install/cluster-operator/031-RoleBinding-strimzi-cluster-operator-entity-operator-delegation.yaml -n {{strimzi.namespace}}
+        kubectl create -f kafka-persistent-single.yaml -n {{strimzi.namespace}}
+      tags:
+        - kafka
+
+    - name: Remove strimzi files
+      file:
+        path: strimzi-{{strimzi.version}}
+        state: absent
+
+    - name: Remove strimzi archive
+      file:
+        path: strimzi-{{strimzi.version}}.tar.gz
+        state: absent
+
+    - name: Wait for kafka cluster to be deployed
+      shell: kubectl wait kafka/my-cluster --for=condition=Ready --timeout=300s -n kafka
+      register: kubectl_wait
+      until: kubectl_wait.stdout.find("condition met")

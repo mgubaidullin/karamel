@@ -1,0 +1,8 @@
+apiVersion: rbac.authorization.k8s.io/v1
+kind: ClusterRole
+metadata:
+  name: karamel
+rules:
+- apiGroups: ["", "extensions", "apps"]
+  resources: ["nodes", "services", "endpoints", "pods", "deployments", "replicasets"]
+  verbs: ["get", "list", "watch"]

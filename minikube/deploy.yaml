@@ -1,0 +1,45 @@
+---
+- name: Deploy karamel into Minikube
+  hosts: localhost
+
+  vars:
+    purge: true
+    strimzi:
+      namespace: kafka
+      version: 0.16.2
+
+  tasks:
+    - name: Get Java version
+      shell: java -version 2>&1 | grep version | awk '{print $3}' | sed 's/"//g'
+      register: java_version
+
+    - debug: msg="{{ java_version.stdout }}"
+
+    - assert:
+        that:
+          - java_version.stdout is version_compare('11', '>=')
+
+    - name: Get Docker env
+      shell: minikube docker-env
+      register: docker_env
+
+    - name: Delete
+      shell: |
+        eval {{ docker_env.stdout }}
+        kubectl config use-context minikube
+        kubectl delete service karamel --grace-period=0 --force -n kafka
+        kubectl delete deployment karamel --grace-period=0 --force -n kafka
+      ignore_errors: yes
+
+    - name: Add permissions
+      shell: |
+        eval {{ docker_env.stdout }}
+        kubectl apply -f karamel.clusterrole.yaml
+        kubectl apply -f karamel.serviceaccount.yaml
+        kubectl apply -f karamel.clusterrolebinding.yaml
+
+    - name: Build and deploy
+      shell: |
+        eval {{ docker_env.stdout }}
+        cd ../
+        mvn clean package fabric8:build fabric8:resource fabric8:deploy fabric8:apply  -Dfabric8.namespace=kafka

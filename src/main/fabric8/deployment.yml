@@ -1,0 +1,22 @@
+spec:
+  replicas: 1
+  template:
+    metadata:
+      labels:
+        app: karamel
+    spec:
+      serviceAccountName: karamel
+      containers:
+        - resources:
+            requests:
+              cpu: "0.2"
+              memory: 256Mi
+            limits:
+              cpu: "1.0"
+              memory: 256Mi
+          env:
+            - name: JVM_OPTS
+              value: "-Xms64M -Xmx256M"
+          ports:
+            - containerPort: 8080
+              protocol: "TCP"

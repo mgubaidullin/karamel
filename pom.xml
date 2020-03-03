@@ -4,7 +4,7 @@
     <modelVersion>4.0.0</modelVersion>
     <groupId>one.entropy</groupId>
     <artifactId>karamel</artifactId>
-    <version>1.0.0-SNAPSHOT</version>
+    <version>1.0.0</version>
     <properties>
         <compiler-plugin.version>3.8.1</compiler-plugin.version>
         <maven.compiler.parameters>true</maven.compiler.parameters>
@@ -61,6 +61,10 @@
             <artifactId>quarkus-undertow-websockets</artifactId>
         </dependency>
         <dependency>
+            <groupId>io.quarkus</groupId>
+            <artifactId>quarkus-kubernetes-client</artifactId>
+        </dependency>
+        <dependency>
             <groupId>org.apache.camel.quarkus</groupId>
             <artifactId>camel-quarkus-kafka</artifactId>
         </dependency>
@@ -71,6 +75,11 @@
         <dependency>
             <groupId>org.apache.camel.quarkus</groupId>
             <artifactId>camel-quarkus-controlbus</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>io.vavr</groupId>
+            <artifactId>vavr</artifactId>
+            <version>0.10.2</version>
         </dependency>
         <dependency>
             <groupId>org.projectlombok</groupId>
@@ -123,6 +132,36 @@
                 <configuration>
                     <source>9</source>
                     <target>9</target>
+                </configuration>
+            </plugin>
+            <plugin>
+                <groupId>io.fabric8</groupId>
+                <artifactId>fabric8-maven-plugin</artifactId>
+                <version>4.4.0</version>
+                <configuration>
+                    <buildStrategy>docker</buildStrategy>
+                    <verbose>true</verbose>
+                    <enricher>
+                        <config>
+                            <f8-service>
+                                <name>${project.artifactId}</name>
+                            </f8-service>
+                        </config>
+                    </enricher>
+                    <images>
+                        <image>
+                            <name>karamel/${project.artifactId}:${project.version}</name>
+                            <build>
+                                <dockerFile>${project.basedir}/Dockerfile</dockerFile>
+                                <assembly>
+                                    <descriptorRef>artifact</descriptorRef>
+                                </assembly>
+                                <args>
+                                    <FINAL_NAME>${project.build.finalName}.${project.packaging}</FINAL_NAME>
+                                </args>
+                            </build>
+                        </image>
+                    </images>
                 </configuration>
             </plugin>
         </plugins>

@@ -10,8 +10,9 @@
     <link href="/karamel.css" rel="stylesheet" type="text/css" media="all">
 
     <script src="/jquery.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/vue/dist/vue.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
     <title>Karamel</title>
-
 </head>
 <body>
 <div class="pf-c-page" id="page-default-nav-example">
@@ -19,11 +20,22 @@
         content</a>
     <header role="banner" class="pf-c-page__header">
         <div class="pf-c-page__header-brand">
+            <img class="logo" src="/logo.svg" alt="" />
             <a class="pf-c-page__header-brand-link">
                 <h1 class="header">KARAMEL</h1>
             </a>
         </div>
         <div class="pf-c-page__header-tools">
+            <div class="pf-c-page__header-tools-group pf-m-icons">
+<!--                <form class="pf-u-align-self-center" action="/restart" method="POST">-->
+<!--                    <button class="pf-c-button" type="submit">-->
+<!--                    <span class="pf-c-button__icon">-->
+<!--                        <i class="fas fa-sync" aria-hidden="true"></i>-->
+<!--                    </span>-->
+<!--                        <span class="pf-c-button__text">Restart</span>-->
+<!--                    </button>-->
+                </form>
+            </div>
             <img class="pf-c-avatar" src="/img_avatar.svg" alt="Avatar image"/>
         </div>
     </header>
@@ -32,16 +44,31 @@
             <nav class="pf-c-nav pf-m-dark" id="page-default-nav-example-primary-nav" aria-label="Global">
                 <ul class="pf-c-nav__list">
                     <li class="pf-c-nav__item">
-                        <a href="/consumer" class="pf-c-nav__link {#if consumer} pf-m-current {/if} " aria-current="page">Consumer</a>
+                        <a href="/operators" class="pf-c-nav__link {#if page == 'operators'} pf-m-current {/if} ">Operators</a>
                     </li>
                     <li class="pf-c-nav__item">
-                        <a href="/producer" class="pf-c-nav__link {#if producer} pf-m-current {/if}">Producer</a>
+                        <a href="/zookeeper" class="pf-c-nav__link {#if page == 'zookeeper'} pf-m-current {/if} ">Zookeeper</a>
+                    </li>
+                    <li class="pf-c-nav__item">
+                        <a href="/kafka" class="pf-c-nav__link {#if page == 'kafka'} pf-m-current {/if} ">Kafka</a>
+                    </li>
+                    <li class="pf-c-nav__item">
+                        <a href="/topics" class="pf-c-nav__link {#if page == 'topics'} pf-m-current {/if} ">Topics</a>
+                    </li>
+                    <li class="pf-c-nav__item">
+                        <a href="/consumer" class="pf-c-nav__link {#if page == 'consumer'} pf-m-current {/if} ">Consumer</a>
+                    </li>
+                    <li class="pf-c-nav__item">
+                        <a href="/producer" class="pf-c-nav__link {#if page == 'producer'} pf-m-current {/if}">Producer</a>
                     </li>
                 </ul>
             </nav>
         </div>
     </div>
-    {#insert contents}No contents!{/}
+
+    <main role="main" class="pf-c-page__main" tabindex="-1" id="main-content-page-default-nav-example">
+        {#insert contents}No contents!{/}
+    </main>
 </div>
 </body>
 </html>

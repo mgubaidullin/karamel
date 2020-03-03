@@ -1,7 +1,19 @@
 <main role="main" class="pf-c-page__main" tabindex="-1" id="main-content-page-expandable-nav-example">
 <section class="pf-c-page__main-section pf-m-light">
-    <div class="pf-c-content">
-        <h1>Message</h1>
+    <div class="pf-l-split pf-m-gutter">
+        <div class="pf-l-split__item">
+            <div class="pf-c-content">
+                <h1>Message</h1>
+            </div>
+        </div>
+        <div class="pf-l-split__item pf-m-fill"></div>
+        {#if view}
+            <div class="pf-l-split__item">
+                <form action="/consumer">
+                    <button class="pf-c-button pf-m-primary" type="submit">Back</button>
+                </form>
+            </div>
+        {/if}
     </div>
 </section>
 
@@ -10,7 +22,7 @@
         <div class="pf-l-gallery__item">
             <div class="pf-c-card form-text-width">
                 <div class="pf-c-card__body">
-                    <form novalidate class="pf-c-form" action="/publish" method="POST" name="karamelForm" up-target=".container" enctype="multipart/form-data">
+                    <form novalidate class="pf-c-form" action="/publish" method="POST" name="karamelForm" enctype="multipart/form-data">
                         <div class="pf-c-form__group">
                             <label class="pf-c-form__label" for="topic">
                                 <span class="pf-c-form__label-text">Topic</span>

@@ -1,13 +1,16 @@
-package one.entropy.karamel;
+package one.entropy.karamel.ui;
+
+import one.entropy.karamel.data.KaramelMessage;
 
 import javax.ws.rs.FormParam;
+import java.time.Instant;
 
 public class KaramelMessageForm {
 
     public @FormParam("topic")  String topic;
     public @FormParam("partition")  Long partition;
     public @FormParam("offset")  Long offset;
-    public @FormParam("timestamp")  Long timestamp;
+    public @FormParam("timestamp") Instant timestamp;
     public @FormParam("key")  String key;
     public @FormParam("value")  String value;
 
