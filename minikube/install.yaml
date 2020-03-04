@@ -3,6 +3,7 @@
   hosts: localhost
 
   vars:
+    install: false
     purge: true
     strimzi:
       namespace: kafka
@@ -11,12 +12,12 @@
   tasks:
     - name: Install minikube on MacOS
       shell: brew install minikube
-      when: ansible_system == 'Darwin'
+      when: ansible_system == 'Darwin' and install
 
 #      TODO: Install minikube for Linux
 #    - name: Install minikube on MacOS
 #      shell:
-#      when: ansible_system == 'Linux'
+#      when: ansible_system == 'Linux' and install
 
     - name: Set default minikube config
       shell: |
