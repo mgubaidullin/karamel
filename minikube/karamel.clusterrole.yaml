@@ -4,5 +4,5 @@ metadata:
   name: karamel
 rules:
 - apiGroups: ["", "extensions", "apps"]
-  resources: ["nodes", "services", "endpoints", "pods", "deployments", "replicasets"]
+  resources: ["nodes", "services", "endpoints", "pods", "deployments", "replicasets", "statefulsets"]
   verbs: ["get", "list", "watch"]
