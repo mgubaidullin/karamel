@@ -1,0 +1,66 @@
+{#include base.html}
+{#contents}
+<section class="pf-c-page__main-section pf-m-light">
+    <div class="pf-l-split pf-m-gutter">
+        <div class="pf-l-split__item">
+            <div class="pf-c-content">
+                <h1>Topics</h1>
+            </div>
+        </div>
+        <div class="pf-l-split__item pf-m-fill"></div>
+        <div class="pf-l-split__item" id="bootstraps">
+            <form class="pf-u-align-self-center" v-bind:action="'/topics/' + brokers" method="GET" v-on:submit="onSubmit">
+                <div class="pf-c-dropdown pf-m-expanded">
+                    <button class="pf-c-dropdown__toggle" type="button" id="dropdown-expanded-button" aria-expanded="true" v-on:click="dropdown">
+                        <span class="pf-c-dropdown__toggle-text">{brokerListHeader}</span>
+                        <i class="fas fa-caret-down pf-c-dropdown__toggle-icon" aria-hidden="true"></i>
+                    </button>
+                    <ul class="pf-c-dropdown__menu pf-m-align-right" aria-labelledby="dropdown-expanded-button" v-show="bootstrapShow">
+                        {#for broker in inject:strimziAPI.getBrokers}
+                        <li>
+                            <button class="pf-c-dropdown__menu-item" type="submit" v-on:click="select('{broker}')">{broker}</button>
+                        </li>
+                        </li>
+                        {/for}
+                    </ul>
+                </div>
+            </form>
+        </div>
+    </div>
+</section>
+<section class="pf-c-page__main-section">
+    <table class="pf-c-table pf-m-grid-md" role="grid">
+        <thead>
+        <tr>
+            <th>Name</th>
+            <th>Partitions</th>
+            <th>Internal</th>
+        </tr>
+        </thead>
+        {#if topicList.size == 0}
+            <tr class="pf-m-height-auto" role="row">
+                <td role="cell" colspan="8">
+                    <div class="pf-l-bullseye">
+                        <div class="pf-c-empty-state pf-m-sm">
+                            <i class="fas fa- fa-search pf-c-empty-state__icon" aria-hidden="true"></i>
+                            <h2 class="pf-c-title pf-m-lg">No results found</h2>
+                            <div class="pf-c-empty-state__body">No results match the select criteria.</div>
+                        </div>
+                    </div>
+                </td>
+            </tr>
+        {#else}
+        {#for topic in topicList}
+            <tr>
+                <td>{topic.name}</td>
+                <td>{topic.partitions.size}</td>
+                <td>{topic.internal}</td>
+                </td>
+            </tr>
+        {/for}
+        {/if}
+    </table>
+</section>
+<script src="/topics.js"></script>
+{/contents}
+{/include}
