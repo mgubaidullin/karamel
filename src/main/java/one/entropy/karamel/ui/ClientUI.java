@@ -2,17 +2,24 @@ package one.entropy.karamel.ui;
 
 import io.quarkus.qute.Template;
 import io.quarkus.qute.TemplateInstance;
+import one.entropy.karamel.api.KafkaAPI;
 import one.entropy.karamel.api.KaramelSocket;
-import one.entropy.karamel.data.KaramelMessage;
-import org.apache.camel.CamelContext;
+import one.entropy.karamel.data.JsonUtil;
+import one.entropy.karamel.data.KEventIn;
+import one.entropy.karamel.data.KEventOut;
+import one.entropy.karamel.route.KaramelConsumer;
+import one.entropy.karamel.route.KaramelProducer;
+import org.jboss.resteasy.annotations.providers.multipart.MultipartForm;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import javax.inject.Inject;
+import javax.servlet.http.HttpServletRequest;
 import javax.ws.rs.*;
+import javax.ws.rs.core.Context;
 import javax.ws.rs.core.MediaType;
-import java.util.ArrayList;
-import java.util.Comparator;
+import javax.ws.rs.core.Response;
+import java.util.Collection;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -22,37 +29,48 @@ public class ClientUI {
     private static final Logger LOGGER = LoggerFactory.getLogger(ClientUI.class.getCanonicalName());
 
     @Inject
-    KaramelSocket karamelSocket;
-
-    @Inject
-    Template error;
-
-    @Inject
-    Template message;
-
-    @Inject
-    Template producer;
+    KafkaAPI kafkaAPI;
 
     @Inject
     Template client;
 
     @Inject
-    CamelContext context;
+    KaramelProducer karamelProducer;
 
-    private static final List<KaramelMessage> kmessages = new ArrayList();
+    @Inject
+    KaramelConsumer karamelConsumer;
 
     @GET
     @Consumes(MediaType.TEXT_HTML)
     @Produces(MediaType.TEXT_HTML)
     @Path("client")
-    public TemplateInstance consumer(@QueryParam("filter") String filter) {
+    public TemplateInstance client() {
         return client
-                .data("kmessages", find(filter))
-                .data("kmessage", new KaramelMessage())
-                .data("filter", filter)
+                .data("topics", List.of())
+                .data("brokerListHeader", "Brokers")
+                .data("kmessages", karamelConsumer.getSortedEvents())
+                .data("kmessage", new KEventIn())
                 .data("page", "client")
-                .data("view", false)
-                .data("filtered", filter != null && !filter.isEmpty());
+                .data("view", false);
+    }
+
+    @GET
+    @Consumes(MediaType.TEXT_HTML)
+    @Produces(MediaType.TEXT_HTML)
+    @Path("client/{brokers}")
+    public TemplateInstance client(@PathParam("brokers") String brokers, @Context HttpServletRequest request) {
+        String sessionId = request.getSession(true).getId();
+        karamelProducer.create(brokers, sessionId);
+        karamelConsumer.create(brokers, sessionId);
+        Collection<String> topics = kafkaAPI.getTopics(brokers).stream().map(td -> td.name()).collect(Collectors.toList());
+        return client
+                .data("topics", topics)
+                .data("brokerListHeader", brokers)
+                .data("brokers", brokers)
+                .data("kmessages", karamelConsumer.getSortedEvents())
+                .data("kmessage", new KEventIn())
+                .data("page", "client")
+                .data("view", false);
     }
 
 //    @ConsumeEvent(value = "kmessage")
@@ -69,11 +87,6 @@ public class ClientUI {
 //        return find(filter);
 //    }
 //
-    private List<KaramelMessage> find(String filter) {
-        return filter != null && !filter.isEmpty()
-                ? kmessages.stream().filter(km -> km.getTopic().contains(filter)).sorted(Comparator.comparing(KaramelMessage::getTimestamp).reversed()).collect(Collectors.toList())
-                : kmessages.stream().sorted(Comparator.comparing(KaramelMessage::getTimestamp).reversed()).collect(Collectors.toList());
-    }
 //
 //    @GET
 //    @Produces(MediaType.TEXT_HTML)
@@ -93,14 +106,16 @@ public class ClientUI {
 //                .data("view", false);
 //    }
 //
-//    @POST
-//    @Consumes(MediaType.MULTIPART_FORM_DATA)
-//    @Path("/publish")
-//    public Response publish(@MultipartForm KaramelMessageForm form) {
-//        KaramelMessage km = form.getKaramelMessage();
-//        context.createProducerTemplate().sendBody("direct:message", km);
-//        return Response.status(301).location(URI.create("/consumer")).build();
-//    }
+    @POST
+    @Consumes(MediaType.APPLICATION_JSON)
+    @Produces(MediaType.APPLICATION_JSON)
+    @Path("/message")
+    public Response produce(@MultipartForm String json) {
+        LOGGER.info("PUBLISH: {}", json);
+        KEventOut kevent = JsonUtil.fromJson(json, KEventOut.class);
+        karamelProducer.publish(kevent);
+        return Response.status(200).build();//.location(URI.create("/client")).build();
+    }
 //
 //    @POST
 //    @Path("/restart")

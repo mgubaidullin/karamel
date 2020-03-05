@@ -34,8 +34,7 @@ public class KafkaUI {
     @Path("kafka")
     public TemplateInstance kafka() {
         String brokers = Try.of(() -> strimziAPI.getBrokers().toCompletableFuture().get().get(0)).getOrElse("");
-//        Collection<Node> nodes = kafkaAPI.getNodes(brokers);
-        Collection<Node> nodes = kafkaAPI.getNodes("192.168.64.43:32002");
+        Collection<Node> nodes = kafkaAPI.getNodes(brokers);
         return kafka
                 .data("nodes", nodes)
                 .data("page", "kafka");

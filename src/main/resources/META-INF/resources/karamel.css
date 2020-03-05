@@ -44,3 +44,7 @@
 .tabs {
     background: white;
 }
+
+.pf-c-form__group.padding {
+    padding-bottom: 1em;
+}

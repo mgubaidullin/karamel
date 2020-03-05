@@ -7,6 +7,25 @@
                 <h1>Client</h1>
             </div>
         </div>
+        <div class="pf-l-split__item pf-m-fill"></div>
+        <div class="pf-l-split__item" id="bootstraps">
+            <form class="pf-u-align-self-center" v-bind:action="'/client/' + brokers" method="GET" v-on:submit="onSubmitBroker">
+                <div class="pf-c-dropdown pf-m-expanded">
+                    <button class="pf-c-dropdown__toggle" type="button" id="dropdown-expanded-button" aria-expanded="true" v-on:click="onDropDownBroker">
+                        <span class="pf-c-dropdown__toggle-text">{brokerListHeader}</span>
+                        <i class="fas fa-caret-down pf-c-dropdown__toggle-icon" aria-hidden="true"></i>
+                    </button>
+                    <ul class="pf-c-dropdown__menu pf-m-align-right" aria-labelledby="dropdown-expanded-button" v-show="bootstrapShow">
+                        {#for broker in inject:strimziAPI.getBrokers}
+                        <li>
+                            <button class="pf-c-dropdown__menu-item" type="submit" v-on:click="onSelectBroker('{broker}')">{broker}</button>
+                        </li>
+                        </li>
+                        {/for}
+                    </ul>
+                </div>
+            </form>
+        </div>
     </div>
 </section>
 <section class="pf-c-page__main-section" id="client">
@@ -32,8 +51,6 @@
     <div v-show="producerVis">
         {#include producer.html /}
     </div>
-
 </section>
-<script src="/client.js"></script>
 {/contents}
 {/include}

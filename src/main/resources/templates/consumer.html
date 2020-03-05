@@ -23,14 +23,14 @@
         </td>
     </tr>
     {#else}
-    <tr>
-        <td class="filter"><input class="pf-c-form-control" required type="text" id="topic" name="topic" placeholder="Filter"/></td>
-        <td class="filter"><input class="pf-c-form-control" required type="text" id="partition" name="partition" placeholder="Filter"/></td>
-        <td class="filter"><input class="pf-c-form-control" required type="text" id="offset" name="offset" placeholder="Filter"/></td>
-        <td class="filter"></td>
-        <td class="filter"><input class="pf-c-form-control" required type="text" id="key" name="key" placeholder="Filter"/></td>
-        <td/>
-    </tr>
+<!--    <tr>-->
+<!--        <td class="filter"><input class="pf-c-form-control" required type="text" id="topic" name="topic" placeholder="Filter"/></td>-->
+<!--        <td class="filter"><input class="pf-c-form-control" required type="text" id="partition" name="partition" placeholder="Filter"/></td>-->
+<!--        <td class="filter"><input class="pf-c-form-control" required type="text" id="offset" name="offset" placeholder="Filter"/></td>-->
+<!--        <td class="filter"></td>-->
+<!--        <td class="filter"><input class="pf-c-form-control" required type="text" id="key" name="key" placeholder="Filter"/></td>-->
+<!--        <td/>-->
+<!--    </tr>-->
     {#for kmessage in kmessages}
     <tr>
         <td>{kmessage.topic}</td>

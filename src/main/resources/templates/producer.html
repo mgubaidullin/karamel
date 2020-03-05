@@ -1,1 +1,38 @@
-{#include message-form.html}{/include}
+<div class="pf-l-gallery pf-m-gutter">
+    <div class="pf-l-gallery__item">
+        <div class="pf-c-card form-text-width">
+            <div class="pf-c-card__body">
+                <div class="pf-c-form__group padding">
+                    <label class="pf-c-form__label" for="topic">
+                        <span class="pf-c-form__label-text">Topic</span>
+                        <span class="pf-c-form__label-required" aria-hidden="true">&#42;</span>
+                    </label>
+                    <select class="pf-c-form-control" id="topic" name="topic" aria-label="select topic" v-model="topic" required>
+                        {#for topic in topics}
+                        <option value={topic}>{topic}</option>
+                        {/for}
+                    </select>
+                </div>
+                <div class="pf-c-form__group padding">
+                    <label class="pf-c-form__label" for="key">
+                        <span class="pf-c-form__label-text">Key</span>
+                    </label>
+                    <input class="pf-c-form-control" type="text" id="key" name="key" v-model="key"/>
+                </div>
+                <div class="pf-c-form__group padding">
+                    <label class="pf-c-form__label" for="value">
+                        <span class="pf-c-form__label-text">Value</span>
+                        <span class="pf-c-form__label-required" aria-hidden="true">&#42;</span>
+                    </label>
+                    <textarea class="pf-c-form-control form-textarea-height" type="text" id="value" name="value" v-model="value" required></textarea>
+                </div>
+                <div class="pf-c-form__group pf-m-action">
+                    <div class="pf-c-form__actions">
+                        <button class="pf-c-button pf-m-primary" type="submit" v-on:click=onPublish>Publish</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{#include snackbar.html /}

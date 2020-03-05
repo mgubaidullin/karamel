@@ -1,6 +1,7 @@
 <!doctype html>
 <html lang="en">
 <head>
+    <title>Karamel</title>
     <!-- Required meta tags -->
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
@@ -8,11 +9,11 @@
     <!-- PatternFly CSS -->
     <link href="https://unpkg.com/@patternfly/patternfly/patternfly.min.css" rel="stylesheet" type="text/css" media="all">
     <link href="/karamel.css" rel="stylesheet" type="text/css" media="all">
+    <link href="/snackbar.css" rel="stylesheet" type="text/css" media="all">
 
     <script src="/jquery.min.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/vue/dist/vue.js"></script>
+    <script src="https://unpkg.com/vue"></script>
     <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
-    <title>Karamel</title>
 </head>
 <body>
 <div class="pf-c-page" id="page-default-nav-example">
@@ -26,16 +27,6 @@
             </a>
         </div>
         <div class="pf-c-page__header-tools">
-            <div class="pf-c-page__header-tools-group pf-m-icons">
-<!--                <form class="pf-u-align-self-center" action="/restart" method="POST">-->
-<!--                    <button class="pf-c-button" type="submit">-->
-<!--                    <span class="pf-c-button__icon">-->
-<!--                        <i class="fas fa-sync" aria-hidden="true"></i>-->
-<!--                    </span>-->
-<!--                        <span class="pf-c-button__text">Restart</span>-->
-<!--                    </button>-->
-                </form>
-            </div>
             <img class="pf-c-avatar" src="/img_avatar.svg" alt="Avatar image"/>
         </div>
     </header>
@@ -63,9 +54,10 @@
         </div>
     </div>
 
-    <main role="main" class="pf-c-page__main" tabindex="-1" id="main-content-page-default-nav-example">
+    <main role="main" class="pf-c-page__main" tabindex="-1" id="app">
         {#insert contents}No contents!{/}
     </main>
 </div>
+<script src="/karamel.js"></script>
 </body>
 </html>
