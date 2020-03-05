@@ -1,0 +1,39 @@
+{#include base.html}
+{#contents}
+<section class="pf-c-page__main-section pf-m-light">
+    <div class="pf-l-split pf-m-gutter">
+        <div class="pf-l-split__item">
+            <div class="pf-c-content">
+                <h1>Client</h1>
+            </div>
+        </div>
+    </div>
+</section>
+<section class="pf-c-page__main-section" id="client">
+    <div class="pf-c-tabs tabs" id="primary">
+        <button class="pf-c-tabs__scroll-button pf-m-secondary" aria-label="Scroll left">
+            <i class="fas fa-angle-left" aria-hidden="true"></i>
+        </button>
+        <ul class="pf-c-tabs__list">
+            <li class="pf-c-tabs__item" v-bind:class="{ 'pf-m-current': consumerVis }">
+                <button v-on:click="showConsumer" class="pf-c-tabs__button" id="consumerTab">Consumer</button>
+            </li>
+            <li class="pf-c-tabs__item" v-bind:class="{ 'pf-m-current': producerVis }">
+                <button v-on:click="showProducer" class="pf-c-tabs__button" id="producerTab">Producer</button>
+            </li>
+        </ul>
+        <button class="pf-c-tabs__scroll-button pf-m-secondary" aria-label="Scroll right">
+            <i class="fas fa-angle-right" aria-hidden="true"></i>
+        </button>
+    </div>
+    <div v-show="consumerVis">
+        {#include consumer.html /}
+    </div>
+    <div v-show="producerVis">
+        {#include producer.html /}
+    </div>
+
+</section>
+<script src="/client.js"></script>
+{/contents}
+{/include}

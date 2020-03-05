@@ -77,11 +77,12 @@ public class StrimziAPI {
     }
 
     public CompletionStage<List<String>> getBrokers() {
-        return getBrokerServices().thenApply(services -> services.stream().map(service -> {
-            String hostname = service.getMetadata().getName() + "." + service.getMetadata().getNamespace();
-            Integer port = Try.of(() -> service.getSpec().getPorts().stream().filter(sport -> Objects.equals(sport.getName(), "tcp-clients")).findFirst().get().getPort()).getOrElse(9092);
-            return hostname + ":" + port;
-        }).collect(Collectors.toList()));
+//        return getBrokerServices().thenApply(services -> services.stream().map(service -> {
+//            String hostname = service.getMetadata().getName() + "." + service.getMetadata().getNamespace();
+//            Integer port = Try.of(() -> service.getSpec().getPorts().stream().filter(sport -> Objects.equals(sport.getName(), "tcp-clients")).findFirst().get().getPort()).getOrElse(9092);
+//            return hostname + ":" + port;
+//        }).collect(Collectors.toList()));
+        return CompletableFuture.supplyAsync(() -> List.of("192.168.64.43:32002"));
     }
 
     private CompletionStage<List<Deployment>> getDeployments(String label, String value) {

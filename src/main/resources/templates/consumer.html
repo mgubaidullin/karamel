@@ -1,85 +1,49 @@
-{#include base.html}
-{#contents}
-
-<main role="main" class="pf-c-page__main" tabindex="-1" id="main-content-page-default-nav-example">
-  <section class="pf-c-page__main-section pf-m-light">
-    <div class="pf-l-split pf-m-gutter">
-      <div class="pf-l-split__item">
-        <div class="pf-c-content">
-          <h1>Messages</h1>
-        </div>
-      </div>
-      <div class="pf-l-split__item pf-m-fill"></div>
-      <div class="pf-l-split__item">
-        <form class="pf-u-align-self-center" action="/consumer" method="GET">
-          <button class="pf-c-button pf-m-primary" type="submit">Refresh</button>
-        </form>
-      </div>
-    </div>
-  </section>
-  <section class="pf-c-page__main-section">
-    <table class="pf-c-table pf-m-grid-md" role="grid">
-      <thead>
-      <tr>
+<table class="pf-c-table pf-m-grid-md" role="grid">
+    <thead>
+    <tr>
         <th>Topic</th>
         <th>Partition</th>
         <th>Offset</th>
         <th>Timestamp</th>
         <th>Key</th>
         <th>Value</th>
-      </tr>
-      </thead>
+    </tr>
+    </thead>
 
-      {#if kmessages.size == 0}
-      <tr>
-        <td colspan="6">No data found.</td>
-      </tr>
-      {#else}
-      <tr>
+    {#if kmessages.size == 0}
+    <tr class="pf-m-height-auto" role="row">
+        <td role="cell" colspan="8">
+            <div class="pf-l-bullseye">
+                <div class="pf-c-empty-state pf-m-sm">
+                    <i class="fas fa- fa-search pf-c-empty-state__icon" aria-hidden="true"></i>
+                    <h2 class="pf-c-title pf-m-lg">No results found</h2>
+                    <div class="pf-c-empty-state__body">No results match the select criteria.</div>
+                </div>
+            </div>
+        </td>
+    </tr>
+    {#else}
+    <tr>
         <td class="filter"><input class="pf-c-form-control" required type="text" id="topic" name="topic" placeholder="Filter"/></td>
         <td class="filter"><input class="pf-c-form-control" required type="text" id="partition" name="partition" placeholder="Filter"/></td>
         <td class="filter"><input class="pf-c-form-control" required type="text" id="offset" name="offset" placeholder="Filter"/></td>
         <td class="filter"></td>
         <td class="filter"><input class="pf-c-form-control" required type="text" id="key" name="key" placeholder="Filter"/></td>
         <td/>
-      </tr>
-      {#for kmessage in kmessages}
-      <tr>
+    </tr>
+    {#for kmessage in kmessages}
+    <tr>
         <td>{kmessage.topic}</td>
         <td>{kmessage.partition}</td>
         <td>{kmessage.offset}</td>
         <td>{kmessage.getTimestampString}</td>
         <td>{kmessage.key}</td>
         <td class="pf-c-table__action">
-          <a href="/message/{kmessage.id}">View</a>
-          </form>
+            <a href="/message/{kmessage.id}">View</a>
+            </form>
         </td>
-      </tr>
-      {/for}
-      {/if}
-    </table>
-    <script type="text/javascript">
-      var connected = false;
-      var socket;
+    </tr>
+    {/for}
+    {/if}
+</table>
 
-      $( document ).ready(function() {
-          var con = connect();
-      });
-
-      var connect = function() {
-          if (! connected) {
-              socket = new WebSocket("ws://" + location.host + "/events");
-              socket.onopen = function() {
-                  connected = true;
-                  console.log("Connected to the web socket");
-              };
-              socket.onmessage = function(m) {
-                location.reload();
-              };
-          }
-      };
-    </script>
-  </section>
-</main>
-{/contents}
-{/include}

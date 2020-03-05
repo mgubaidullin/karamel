@@ -40,3 +40,7 @@
 .pf-l-gallery.dashboard {
     --pf-l-gallery--GridTemplateColumns: repeat(auto-fill,minmax(300px,1fr));
 }
+
+.tabs {
+    background: white;
+}

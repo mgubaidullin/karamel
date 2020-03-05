@@ -2,32 +2,24 @@ package one.entropy.karamel.ui;
 
 import io.quarkus.qute.Template;
 import io.quarkus.qute.TemplateInstance;
-import io.quarkus.vertx.ConsumeEvent;
-import io.vertx.reactivex.core.eventbus.Message;
 import one.entropy.karamel.api.KaramelSocket;
 import one.entropy.karamel.data.KaramelMessage;
 import org.apache.camel.CamelContext;
-import org.jboss.resteasy.annotations.providers.multipart.MultipartForm;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import javax.inject.Inject;
 import javax.ws.rs.*;
 import javax.ws.rs.core.MediaType;
-import javax.ws.rs.core.Response;
-import java.net.URI;
 import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.List;
-import java.util.Objects;
 import java.util.stream.Collectors;
 
-import static one.entropy.karamel.route.KaramelRoute.CONSUMER_ROUTE_ID;
-
 @Path("/")
-public class ConsumerUI {
+public class ClientUI {
 
-    private static final Logger LOGGER = LoggerFactory.getLogger(ConsumerUI.class.getCanonicalName());
+    private static final Logger LOGGER = LoggerFactory.getLogger(ClientUI.class.getCanonicalName());
 
     @Inject
     KaramelSocket karamelSocket;
@@ -42,7 +34,7 @@ public class ConsumerUI {
     Template producer;
 
     @Inject
-    Template consumer;
+    Template client;
 
     @Inject
     CamelContext context;
@@ -52,11 +44,14 @@ public class ConsumerUI {
     @GET
     @Consumes(MediaType.TEXT_HTML)
     @Produces(MediaType.TEXT_HTML)
-    @Path("consumer")
+    @Path("client")
     public TemplateInstance consumer(@QueryParam("filter") String filter) {
-        return consumer.data("kmessages", find(filter))
+        return client
+                .data("kmessages", find(filter))
+                .data("kmessage", new KaramelMessage())
                 .data("filter", filter)
-                .data("page", "consumer")
+                .data("page", "client")
+                .data("view", false)
                 .data("filtered", filter != null && !filter.isEmpty());
     }
 
