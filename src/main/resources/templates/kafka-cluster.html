@@ -1,0 +1,26 @@
+<section class="pf-c-page__main-section dashboard-subtitle">
+    <h1 class="pf-c-title pf-m-xl">Cluster</h1>
+</section>
+<section class="pf-c-page__main-section">
+    <div class="pf-l-gallery pf-m-gutter dashboard">
+        {#for node in nodes}
+        <div class="pf-c-card pf-m-hoverable pf-m-compact">
+            <div class="pf-c-card__header pf-c-title pf-m-md">
+                <p>Node {node.idString}</p>
+                <div class="pf-c-content">
+                    <small>{node.host}:{node.port}</small>
+                    <small>{node.rack}</small>
+                </div>
+            </div>
+            <div class="pf-c-card__footer">
+                <div class="pf-c-alert status pf-m-success" aria-label="Success alert">
+                    <div class="pf-c-alert__icon">
+                        <i class="fas fa-check-circle" aria-hidden="true"></i>
+                    </div>
+                    <h4 class="pf-c-alert__title">Running</h4>
+                </div>
+            </div>
+        </div>
+        {/for}
+    </div>
+</section>

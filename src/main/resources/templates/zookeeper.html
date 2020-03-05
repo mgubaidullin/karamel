@@ -20,9 +20,6 @@
                     <small>{statefulSet.getMetadata().getUid()}</small>
                 </div>
             </div>
-            <div class="pf-c-card__body">
-
-            </div>
             <div class="pf-c-card__footer">
                 <div class="pf-c-alert status pf-m-success" aria-label="Success alert">
                     <div class="pf-c-alert__icon">
@@ -36,21 +33,18 @@
         {#for pod in inject:strimziAPI.getZookeeperPods}
         <div class="pf-c-card pf-m-hoverable pf-m-compact">
             <div class="pf-c-card__header pf-c-title pf-m-md">
-                <p>{pod.getKind()}</p>
+                <p>Pod</p>
                 <div class="pf-c-content">
-                    <small>{pod.getMetadata().getName()}</small>
-                    <small>{pod.getMetadata().getUid()}</small>
+                    <small>{pod.uid}</small>
+                    <small>{pod.name}</small>
                 </div>
             </div>
-            <div class="pf-c-card__body">
-
-            </div>
             <div class="pf-c-card__footer">
-                <div class="pf-c-alert status pf-m-success" aria-label="Success alert">
+                <div class="pf-c-alert status {pod.getClassName()}" aria-label="Success alert">
                     <div class="pf-c-alert__icon">
-                        <i class="fas fa-check-circle" aria-hidden="true"></i>
+                        <i class="fas {pod.getIcon()}" aria-hidden="true"></i>
                     </div>
-                    <h4 class="pf-c-alert__title">{pod.getStatus().getPhase()}</h4>
+                    <h4 class="pf-c-alert__title">{pod.phase}</h4>
                 </div>
             </div>
         </div>

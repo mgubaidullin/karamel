@@ -7,6 +7,7 @@ import io.fabric8.kubernetes.api.model.apps.ReplicaSet;
 import io.fabric8.kubernetes.api.model.apps.StatefulSet;
 import io.fabric8.kubernetes.client.KubernetesClient;
 import io.vavr.control.Try;
+import one.entropy.karamel.data.PodInfo;
 
 import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Named;
@@ -35,7 +36,7 @@ public class StrimziAPI {
         return getReplicaSets("strimzi.io/kind", "cluster-operator");
     }
 
-    public CompletionStage<List<Pod>> getClusterPods() {
+    public CompletionStage<List<PodInfo>> getClusterPods() {
         return getPods("strimzi.io/kind", "cluster-operator");
     }
 
@@ -47,7 +48,7 @@ public class StrimziAPI {
         return getReplicaSets("strimzi.io/name", "my-cluster-entity-operator");
     }
 
-    public CompletionStage<List<Pod>> getEntityPods() {
+    public CompletionStage<List<PodInfo>> getEntityPods() {
         return getPods("strimzi.io/name", "my-cluster-entity-operator");
     }
 
@@ -55,7 +56,7 @@ public class StrimziAPI {
         return getStatefulSets("strimzi.io/name", "my-cluster-zookeeper");
     }
 
-    public CompletionStage<List<Pod>> getZookeeperPods() {
+    public CompletionStage<List<PodInfo>> getZookeeperPods() {
         return getPods("strimzi.io/name", "my-cluster-zookeeper");
     }
 
@@ -63,7 +64,7 @@ public class StrimziAPI {
         return getStatefulSets("strimzi.io/name", "my-cluster-kafka");
     }
 
-    public CompletionStage<List<Pod>> getKafkaPods() {
+    public CompletionStage<List<PodInfo>> getKafkaPods() {
         return getPods("strimzi.io/name", "my-cluster-kafka");
     }
 
@@ -72,13 +73,13 @@ public class StrimziAPI {
     }
 
     public CompletionStage<List<Service>> getBrokerServices() {
-         return getServices("strimzi.io/name", "my-cluster-kafka-brokers");
+        return getServices("strimzi.io/name", "my-cluster-kafka-brokers");
     }
 
     public CompletionStage<List<String>> getBrokers() {
         return getBrokerServices().thenApply(services -> services.stream().map(service -> {
             String hostname = service.getMetadata().getName() + "." + service.getMetadata().getNamespace();
-            Integer port = Try.of( () ->service.getSpec().getPorts().stream().filter(sport -> Objects.equals(sport.getName(), "tcp-clients")).findFirst().get().getPort()).getOrElse(9092);
+            Integer port = Try.of(() -> service.getSpec().getPorts().stream().filter(sport -> Objects.equals(sport.getName(), "tcp-clients")).findFirst().get().getPort()).getOrElse(9092);
             return hostname + ":" + port;
         }).collect(Collectors.toList()));
     }
@@ -97,11 +98,14 @@ public class StrimziAPI {
                 .completeOnTimeout(List.of(), 5, TimeUnit.SECONDS);
     }
 
-    private CompletionStage<List<Pod>> getPods(String label, String value) {
-        return CompletableFuture.supplyAsync(() ->
-                kubernetesClient.pods().inAnyNamespace().list().getItems().stream().filter(pod ->
-                        Objects.equals(pod.getMetadata().getLabels().get(label), value)).collect(Collectors.toList()))
-                .completeOnTimeout(List.of(), 5, TimeUnit.SECONDS);
+    private CompletionStage<List<PodInfo>> getPods(String label, String value) {
+        return CompletableFuture.supplyAsync(() -> {
+            List<Pod> pods = kubernetesClient.pods().inAnyNamespace().list().getItems().stream().filter(pod -> Objects.equals(pod.getMetadata().getLabels().get(label), value)).collect(Collectors.toList());
+            return pods.stream().map(pod -> {
+                boolean ready = Try.of(() -> pod.getStatus().getConditions().stream().filter(c -> c.getType().equalsIgnoreCase("Ready")).findFirst().get().getStatus().equalsIgnoreCase("True")).getOrElse(false);
+                return PodInfo.builder().phase(pod.getStatus().getPhase()).ready(ready).name(pod.getMetadata().getName()).uid(pod.getMetadata().getUid()).build();
+            }).collect(Collectors.toList());
+        }).completeOnTimeout(List.of(), 5, TimeUnit.SECONDS);
     }
 
     private CompletionStage<List<StatefulSet>> getStatefulSets(String label, String value) {

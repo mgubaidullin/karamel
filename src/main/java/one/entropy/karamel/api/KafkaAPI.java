@@ -1,0 +1,54 @@
+package one.entropy.karamel.api;
+
+import io.vavr.control.Try;
+import org.apache.kafka.clients.admin.*;
+import org.apache.kafka.common.Node;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+import javax.enterprise.context.ApplicationScoped;
+import javax.inject.Named;
+import java.util.Collection;
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.Map;
+
+@ApplicationScoped
+@Named("kafkaAPI")
+public class KafkaAPI {
+    private static final Logger LOGGER = LoggerFactory.getLogger(KafkaAPI.class.getCanonicalName());
+
+    public Collection<TopicDescription> getTopics(String brokers) {
+        return Try.of(() -> {
+            Map<String, Object> conf = new HashMap<>();
+            conf.put(AdminClientConfig.BOOTSTRAP_SERVERS_CONFIG, brokers);
+            conf.put(AdminClientConfig.CLIENT_ID_CONFIG, "karamel");
+            AdminClient adminClient = KafkaAdminClient.create(conf);
+
+            ListTopicsOptions options = new ListTopicsOptions();
+            options.listInternal(true);
+
+            Collection<String> topicNames =  adminClient.listTopics(options).names().get();
+            Collection<TopicDescription> list =  adminClient.describeTopics(topicNames).all().get().values();
+            adminClient.close();
+            return list;
+        }).onFailure((throwable -> LOGGER.error("", throwable))).getOrElse(Collections.EMPTY_LIST);
+    }
+
+    public Collection<Node> getNodes(String brokers) {
+        return Try.of(() -> {
+            Map<String, Object> conf = new HashMap<>();
+            conf.put(AdminClientConfig.BOOTSTRAP_SERVERS_CONFIG, brokers);
+            conf.put(AdminClientConfig.CLIENT_ID_CONFIG, "karamel");
+            AdminClient adminClient = KafkaAdminClient.create(conf);
+
+
+            DescribeClusterOptions options = new DescribeClusterOptions();
+            options.includeAuthorizedOperations(true);
+
+            Collection<Node> nodes =  adminClient.describeCluster(options).nodes().get();
+            adminClient.close();
+            return nodes;
+        }).onFailure((throwable -> LOGGER.error("", throwable))).getOrElse(Collections.EMPTY_LIST);
+    }
+}

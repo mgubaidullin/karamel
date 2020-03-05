@@ -53,65 +53,64 @@ public class ConsumerUI {
     @Consumes(MediaType.TEXT_HTML)
     @Produces(MediaType.TEXT_HTML)
     @Path("consumer")
-    public TemplateInstance listMessages(@QueryParam("filter") String filter) {
+    public TemplateInstance consumer(@QueryParam("filter") String filter) {
         return consumer.data("kmessages", find(filter))
                 .data("filter", filter)
-                .data("consumer", true)
-                .data("producer", false)
+                .data("page", "consumer")
                 .data("filtered", filter != null && !filter.isEmpty());
     }
 
-    @ConsumeEvent(value = "kmessage")
-    public void consume(Message<KaramelMessage> message) {
-        kmessages.add(message.body());
-        karamelSocket.broadcast("refresh");
-    }
-
-    @GET
-    @Produces(MediaType.APPLICATION_JSON)
-    @Consumes(MediaType.APPLICATION_JSON)
-    @Path("consumer")
-    public List<KaramelMessage> listMessagesJson(@QueryParam("filter") String filter) {
-        return find(filter);
-    }
-
+//    @ConsumeEvent(value = "kmessage")
+//    public void consume(Message<KaramelMessage> message) {
+//        kmessages.add(message.body());
+//        karamelSocket.broadcast("refresh");
+//    }
+//
+//    @GET
+//    @Produces(MediaType.APPLICATION_JSON)
+//    @Consumes(MediaType.APPLICATION_JSON)
+//    @Path("consumer")
+//    public List<KaramelMessage> listMessagesJson(@QueryParam("filter") String filter) {
+//        return find(filter);
+//    }
+//
     private List<KaramelMessage> find(String filter) {
         return filter != null && !filter.isEmpty()
                 ? kmessages.stream().filter(km -> km.getTopic().contains(filter)).sorted(Comparator.comparing(KaramelMessage::getTimestamp).reversed()).collect(Collectors.toList())
                 : kmessages.stream().sorted(Comparator.comparing(KaramelMessage::getTimestamp).reversed()).collect(Collectors.toList());
     }
-
-    @GET
-    @Produces(MediaType.TEXT_HTML)
-    @Path("/message/{id}")
-    public TemplateInstance openMessageForm(@PathParam("id") String id) {
-        KaramelMessage kmessage = kmessages.stream().filter(km -> Objects.equals(km.getId(), id)).findFirst().get();
-        return message.data("kmessage", kmessage).data("view", true);
-    }
-
-    @GET
-    @Produces(MediaType.TEXT_HTML)
-    @Path("/producer")
-    public TemplateInstance openProducerForm() {
-        return message.data("kmessage", new KaramelMessage())
-                .data("consumer", false)
-                .data("producer", true)
-                .data("view", false);
-    }
-
-    @POST
-    @Consumes(MediaType.MULTIPART_FORM_DATA)
-    @Path("/publish")
-    public Response publish(@MultipartForm KaramelMessageForm form) {
-        KaramelMessage km = form.getKaramelMessage();
-        context.createProducerTemplate().sendBody("direct:message", km);
-        return Response.status(301).location(URI.create("/consumer")).build();
-    }
-
-    @POST
-    @Path("/restart")
-    public Response restart() {
-        context.createProducerTemplate().sendBody("controlbus:route?routeId="+CONSUMER_ROUTE_ID+"&action=restart", null);
-        return Response.status(301).location(URI.create("/consumer")).build();
-    }
+//
+//    @GET
+//    @Produces(MediaType.TEXT_HTML)
+//    @Path("/message/{id}")
+//    public TemplateInstance openMessageForm(@PathParam("id") String id) {
+//        KaramelMessage kmessage = kmessages.stream().filter(km -> Objects.equals(km.getId(), id)).findFirst().get();
+//        return message.data("kmessage", kmessage).data("view", true);
+//    }
+//
+//    @GET
+//    @Produces(MediaType.TEXT_HTML)
+//    @Path("/producer")
+//    public TemplateInstance openProducerForm() {
+//        return message.data("kmessage", new KaramelMessage())
+//                .data("consumer", false)
+//                .data("producer", true)
+//                .data("view", false);
+//    }
+//
+//    @POST
+//    @Consumes(MediaType.MULTIPART_FORM_DATA)
+//    @Path("/publish")
+//    public Response publish(@MultipartForm KaramelMessageForm form) {
+//        KaramelMessage km = form.getKaramelMessage();
+//        context.createProducerTemplate().sendBody("direct:message", km);
+//        return Response.status(301).location(URI.create("/consumer")).build();
+//    }
+//
+//    @POST
+//    @Path("/restart")
+//    public Response restart() {
+//        context.createProducerTemplate().sendBody("controlbus:route?routeId="+CONSUMER_ROUTE_ID+"&action=restart", null);
+//        return Response.status(301).location(URI.create("/consumer")).build();
+//    }
 }

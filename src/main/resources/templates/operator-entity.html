@@ -1,9 +1,9 @@
 <section class="pf-c-page__main-section dashboard-subtitle">
-    <h1 class="pf-c-title pf-m-xl">Cluster operator</h1>
+    <h1 class="pf-c-title pf-m-xl">Entity operator</h1>
 </section>
 <section class="pf-c-page__main-section">
     <div class="pf-l-gallery pf-m-gutter dashboard">
-        {#for deployment in inject:strimziAPI.getClusterDeployments}
+        {#for deployment in inject:strimziAPI.getEntityDeployments}
         <div class="pf-c-card pf-m-hoverable pf-m-compact">
             <div class="pf-c-card__header pf-c-title pf-m-md">
                 <p>{deployment.getKind()}</p>
@@ -11,9 +11,6 @@
                     <small>{deployment.getMetadata().getUid()}</small>
                     <small>{deployment.getMetadata().getName()}</small>
                 </div>
-            </div>
-            <div class="pf-c-card__body">
-
             </div>
             <div class="pf-c-card__footer">
                 <div class="pf-c-alert status pf-m-success" aria-label="Success alert">
@@ -25,7 +22,7 @@
             </div>
         </div>
         {/for}
-        {#for replicaSet in inject:strimziAPI.getClusterReplicaSets}
+        {#for replicaSet in inject:strimziAPI.getEntityReplicaSets}
         <div class="pf-c-card pf-m-hoverable pf-m-compact">
             <div class="pf-c-card__header pf-c-title pf-m-md">
                 <p>{replicaSet.getKind()}</p>
@@ -33,9 +30,6 @@
                     <small>{replicaSet.getMetadata().getUid()}</small>
                     <small>{replicaSet.getMetadata().getName()}</small>
                 </div>
-            </div>
-            <div class="pf-c-card__body">
-
             </div>
             <div class="pf-c-card__footer">
                 <div class="pf-c-alert status pf-m-success" aria-label="Success alert">
@@ -47,24 +41,21 @@
             </div>
         </div>
         {/for}
-        {#for pod in inject:strimziAPI.getClusterPods}
+        {#for pod in inject:strimziAPI.getEntityPods}
         <div class="pf-c-card pf-m-hoverable pf-m-compact">
             <div class="pf-c-card__header pf-c-title pf-m-md">
-                <p>{pod.getKind()}</p>
+                <p>Pod</p>
                 <div class="pf-c-content">
-                    <small>{pod.getMetadata().getUid()}</small>
-                    <small>{pod.getMetadata().getName()}</small>
+                    <small>{pod.uid}</small>
+                    <small>{pod.name}</small>
                 </div>
             </div>
-            <div class="pf-c-card__body">
-
-            </div>
             <div class="pf-c-card__footer">
-                <div class="pf-c-alert status pf-m-success" aria-label="Success alert">
+                <div class="pf-c-alert status {pod.getClassName()}" aria-label="Success alert">
                     <div class="pf-c-alert__icon">
-                        <i class="fas fa-check-circle" aria-hidden="true"></i>
+                        <i class="fas {pod.getIcon()}" aria-hidden="true"></i>
                     </div>
-                    <h4 class="pf-c-alert__title">{pod.getStatus().getPhase()}</h4>
+                    <h4 class="pf-c-alert__title">{pod.phase}</h4>
                 </div>
             </div>
         </div>
