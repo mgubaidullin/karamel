@@ -55,6 +55,8 @@ java -jar target/karamel-1.0.0-SNAPSHOT-runner.jar
 ![Screenshot](docs/img/kafka.png)
 #### Strimzi operator
 ![Screenshot](docs/img/operator.png)
+#### Zookeeper
+![Screenshot](docs/img/zookeeper.png)
 #### Topics
 ![Screenshot](docs/img/topics.png)
 #### Client - consumer
