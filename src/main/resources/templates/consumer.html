@@ -10,7 +10,7 @@
     </tr>
     </thead>
 
-    {#if kmessages.size == 0}
+    {#if kevents.size == 0}
     <tr class="pf-m-height-auto" role="row">
         <td role="cell" colspan="8">
             <div class="pf-l-bullseye">
@@ -31,15 +31,15 @@
 <!--        <td class="filter"><input class="pf-c-form-control" required type="text" id="key" name="key" placeholder="Filter"/></td>-->
 <!--        <td/>-->
 <!--    </tr>-->
-    {#for kmessage in kmessages}
+    {#for kevent in kevents}
     <tr>
-        <td>{kmessage.topic}</td>
-        <td>{kmessage.partition}</td>
-        <td>{kmessage.offset}</td>
-        <td>{kmessage.getTimestampString}</td>
-        <td>{kmessage.key}</td>
+        <td>{kevent.topic}</td>
+        <td>{kevent.partition}</td>
+        <td>{kevent.offset}</td>
+        <td>{kevent.getTimestampString}</td>
+        <td>{kevent.key}</td>
         <td class="pf-c-table__action">
-            <a href="/message/{kmessage.id}">View</a>
+            <a href="/message/{kevent.topic}/{kevent.partition}/{kevent.offset}">View</a>
             </form>
         </td>
     </tr>

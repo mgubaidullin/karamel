@@ -17,6 +17,7 @@ import org.slf4j.LoggerFactory;
 import javax.annotation.PreDestroy;
 import javax.enterprise.context.SessionScoped;
 import javax.inject.Inject;
+import javax.ws.rs.PathParam;
 import java.time.Instant;
 import java.util.ArrayList;
 import java.util.Comparator;
@@ -92,5 +93,11 @@ public class KaramelConsumer {
 
     public List<KEventIn> getSortedEvents() {
         return events.stream().sorted(Comparator.comparing(KEventIn::getTimestamp).reversed()).collect(Collectors.toList());
+    }
+
+    public KEventIn findEvent(String topic, Long partition, Long offset) {
+        return events.stream().filter(e ->
+                Objects.equals(e.getTopic(), topic) && Objects.equals(e.getPartition(), partition) && Objects.equals(e.getOffset(), offset)
+        ).findFirst().get();
     }
 }

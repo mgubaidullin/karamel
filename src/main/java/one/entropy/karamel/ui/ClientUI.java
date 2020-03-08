@@ -37,6 +37,9 @@ public class ClientUI {
     Template client;
 
     @Inject
+    Template message;
+
+    @Inject
     KaramelProducer karamelProducer;
 
     @Inject
@@ -50,10 +53,9 @@ public class ClientUI {
         return client
                 .data("topics", List.of())
                 .data("brokerListHeader", "Brokers")
-                .data("kmessages", karamelConsumer.getSortedEvents())
-                .data("kmessage", new KEventIn())
-                .data("page", "client")
-                .data("view", false);
+                .data("kevents", karamelConsumer.getSortedEvents())
+                .data("kevent", new KEventIn())
+                .data("page", "client");
     }
 
     @GET
@@ -73,18 +75,29 @@ public class ClientUI {
                 .data("topics", topics)
                 .data("brokerListHeader", brokers)
                 .data("brokers", brokers)
-                .data("kmessages", karamelConsumer.getSortedEvents())
-                .data("kmessage", new KEventIn())
-                .data("page", "client")
-                .data("view", false);
+                .data("kevents", karamelConsumer.getSortedEvents())
+                .data("kevent", new KEventIn())
+                .data("page", "client");
     }
+
+    @GET
+    @Consumes(MediaType.TEXT_HTML)
+    @Produces(MediaType.TEXT_HTML)
+    @Path("message/{topic}/{partition}/{offset}")
+    public TemplateInstance message(@PathParam("topic") String topic, @PathParam("partition") Long partition, @PathParam("offset") Long offset) {
+        KEventIn kevent = karamelConsumer.findEvent(topic, partition, offset);
+        return message
+                .data("kevent", kevent)
+                .data("page", "client");
+    }
+
 
     @POST
     @Consumes(MediaType.APPLICATION_JSON)
     @Produces(MediaType.APPLICATION_JSON)
     @Path("/message")
     public Response produce(@MultipartForm String json) {
-        LOGGER.info("PUBLISH: {}", json);
+        LOGGER.info("Publishing: {}", json);
         KEventOut kevent = JsonUtil.fromJson(json, KEventOut.class);
         karamelProducer.publish(kevent);
         return Response.status(200).build();//.location(URI.create("/client")).build();
