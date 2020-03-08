@@ -174,6 +174,7 @@ public class KaramelAPI {
         return kubernetesClient.apps().statefulSets().inAnyNamespace().list().getItems().stream()
                 .filter(statefulSet -> statefulSet.getMetadata().getLabels().containsKey(CLUSTER_LABEL))
                 .map(statefulSet -> statefulSet.getMetadata().getLabels().get(CLUSTER_LABEL))
+                .distinct()
                 .collect(Collectors.toList());
     }
 
