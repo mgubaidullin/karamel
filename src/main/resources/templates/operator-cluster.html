@@ -3,7 +3,7 @@
 </section>
 <section class="pf-c-page__main-section">
     <div class="pf-l-gallery pf-m-gutter dashboard">
-        {#for deployment in inject:strimziAPI.getClusterDeployments}
+        {#for deployment in inject:karamelAPI.getClusterDeployments}
         <div class="pf-c-card pf-m-hoverable pf-m-compact">
             <div class="pf-c-card__header pf-c-title pf-m-md">
                 <p>{deployment.getKind()}</p>
@@ -22,7 +22,7 @@
             </div>
         </div>
         {/for}
-        {#for replicaSet in inject:strimziAPI.getClusterReplicaSets}
+        {#for replicaSet in inject:karamelAPI.getClusterReplicaSets}
         <div class="pf-c-card pf-m-hoverable pf-m-compact">
             <div class="pf-c-card__header pf-c-title pf-m-md">
                 <p>{replicaSet.getKind()}</p>
@@ -41,7 +41,7 @@
             </div>
         </div>
         {/for}
-        {#for pod in inject:strimziAPI.getClusterPods}
+        {#for pod in inject:karamelAPI.getClusterPods}
         <div class="pf-c-card pf-m-hoverable pf-m-compact">
             <div class="pf-c-card__header pf-c-title pf-m-md">
                 <p>Pod</p>

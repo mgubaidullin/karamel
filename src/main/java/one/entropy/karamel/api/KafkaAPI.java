@@ -8,17 +8,21 @@ import org.slf4j.LoggerFactory;
 
 import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Named;
-import java.util.Collection;
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.Map;
+import java.util.*;
+import java.util.concurrent.CompletableFuture;
+import java.util.concurrent.CompletionStage;
+import java.util.concurrent.TimeUnit;
 
 @ApplicationScoped
 @Named("kafkaAPI")
 public class KafkaAPI {
     private static final Logger LOGGER = LoggerFactory.getLogger(KafkaAPI.class.getCanonicalName());
 
-    public Collection<TopicDescription> getTopics(String brokers) {
+    public CompletionStage<Collection<TopicDescription>> getTopics(String brokers) {
+        return CompletableFuture.supplyAsync(() -> getKafkaTopics(brokers)).completeOnTimeout(List.of(), 5, TimeUnit.SECONDS);
+    }
+
+    private Collection<TopicDescription> getKafkaTopics(String brokers) {
         return Try.of(() -> {
             Map<String, Object> conf = new HashMap<>();
             conf.put(AdminClientConfig.BOOTSTRAP_SERVERS_CONFIG, brokers);
@@ -35,7 +39,10 @@ public class KafkaAPI {
         }).onFailure((throwable -> LOGGER.error("", throwable))).getOrElse(Collections.EMPTY_LIST);
     }
 
-    public Collection<Node> getNodes(String brokers) {
+    public CompletionStage<Collection<Node>> getNodes(String brokers) {
+        return CompletableFuture.supplyAsync(() -> getKafkaNodes(brokers)).completeOnTimeout(List.of(), 5, TimeUnit.SECONDS);
+    }
+    private Collection<Node> getKafkaNodes(String brokers) {
         return Try.of(() -> {
             Map<String, Object> conf = new HashMap<>();
             conf.put(AdminClientConfig.BOOTSTRAP_SERVERS_CONFIG, brokers);

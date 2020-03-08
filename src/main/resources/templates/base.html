@@ -35,12 +35,6 @@
             <nav class="pf-c-nav pf-m-dark" id="page-default-nav-example-primary-nav" aria-label="Global">
                 <ul class="pf-c-nav__list">
                     <li class="pf-c-nav__item">
-                        <a href="/operators" class="pf-c-nav__link {#if page == 'operators'} pf-m-current {/if} ">Operators</a>
-                    </li>
-                    <li class="pf-c-nav__item">
-                        <a href="/zookeeper" class="pf-c-nav__link {#if page == 'zookeeper'} pf-m-current {/if} ">Zookeeper</a>
-                    </li>
-                    <li class="pf-c-nav__item">
                         <a href="/kafka" class="pf-c-nav__link {#if page == 'kafka'} pf-m-current {/if} ">Kafka</a>
                     </li>
                     <li class="pf-c-nav__item">
@@ -49,6 +43,14 @@
                     <li class="pf-c-nav__item">
                         <a href="/client" class="pf-c-nav__link {#if page == 'client'} pf-m-current {/if} ">Client</a>
                     </li>
+                    {#if inject:karamelAPI.isKubernetes}
+                    <li class="pf-c-nav__item">
+                        <a href="/operators" class="pf-c-nav__link {#if page == 'operators'} pf-m-current {/if} ">Operators</a>
+                    </li>
+                    <li class="pf-c-nav__item">
+                        <a href="/zookeeper" class="pf-c-nav__link {#if page == 'zookeeper'} pf-m-current {/if} ">Zookeeper</a>
+                    </li>
+                    {/if}
                 </ul>
             </nav>
         </div>

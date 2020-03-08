@@ -1,4 +1,4 @@
-package one.entropy.karamel.route;
+package one.entropy.karamel.kafka;
 
 import io.vavr.control.Try;
 import one.entropy.karamel.data.KEventOut;
@@ -12,8 +12,6 @@ import javax.annotation.PreDestroy;
 import javax.enterprise.context.SessionScoped;
 import java.util.Map;
 import java.util.Objects;
-
-import static org.checkerframework.checker.units.UnitsTools.km;
 
 @SessionScoped
 public class KaramelProducer {

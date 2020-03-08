@@ -4,8 +4,7 @@ import io.quarkus.qute.Template;
 import io.quarkus.qute.TemplateInstance;
 import io.vavr.control.Try;
 import one.entropy.karamel.api.KafkaAPI;
-import one.entropy.karamel.api.StrimziAPI;
-import org.apache.kafka.clients.admin.TopicDescription;
+import one.entropy.karamel.api.KaramelAPI;
 import org.apache.kafka.common.Node;
 
 import javax.inject.Inject;
@@ -15,6 +14,9 @@ import javax.ws.rs.Path;
 import javax.ws.rs.Produces;
 import javax.ws.rs.core.MediaType;
 import java.util.Collection;
+import java.util.List;
+import java.util.concurrent.CompletableFuture;
+import java.util.concurrent.CompletionStage;
 
 @Path("/")
 public class KafkaUI {
@@ -23,7 +25,7 @@ public class KafkaUI {
     KafkaAPI kafkaAPI;
 
     @Inject
-    StrimziAPI strimziAPI;
+    KaramelAPI karamelAPI;
 
     @Inject
     Template kafka;
@@ -33,8 +35,9 @@ public class KafkaUI {
     @Produces(MediaType.TEXT_HTML)
     @Path("kafka")
     public TemplateInstance kafka() {
-        String brokers = Try.of(() -> strimziAPI.getBrokers().toCompletableFuture().get().get(0)).getOrElse("");
-        Collection<Node> nodes = kafkaAPI.getNodes(brokers);
+        CompletionStage<List<String>> list = karamelAPI.getBrokers();
+        CompletionStage<Collection<Node>> nodeList = list.thenCompose(brokers -> kafkaAPI.getNodes(brokers.get(0)));
+        Collection<Node> nodes = Try.of(() -> nodeList.toCompletableFuture().get()).getOrElse(List.of());
         return kafka
                 .data("nodes", nodes)
                 .data("page", "kafka");

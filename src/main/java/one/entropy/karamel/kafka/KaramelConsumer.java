@@ -1,4 +1,4 @@
-package one.entropy.karamel.route;
+package one.entropy.karamel.kafka;
 
 import io.vavr.control.Try;
 import io.vertx.reactivex.core.eventbus.EventBus;
@@ -23,8 +23,6 @@ import java.util.Comparator;
 import java.util.List;
 import java.util.Objects;
 import java.util.stream.Collectors;
-
-import static one.entropy.karamel.api.KaramelSocket.ADDRESS;
 
 @SessionScoped
 public class KaramelConsumer {
