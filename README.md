@@ -1,43 +1,63 @@
 # Karamel
 
-Simple Web-based Kafka Consumer and Producer.
+Simple Web-based Kafka Browser that supports standalone Kafka and Strimzi operator.
 
-- Consumer listens all topics
-- Messages could be filtered by topic
-- Producer could publish in any topic
+- Kafka cluster status
+- Topic list
+- Consumer (filter WIP)
+- Producer 
+- Strimzi Operator status (Kubernetes only)
+- Zookepers status (Kubernetes only)
+- Kafka resources status (Kubernetes only)
 
-## Running the application in dev mode
+## Running in Minikube
 
-You can run your application in dev mode that enables live coding using:
+#### Install strimzi 
+Prequisites: Minikube, Ansible
+```
+ansible-playbook minikube/install.yaml 
+```
+#### Deploy karamel
+Prequisites: Java 11
+```
+ansible-playbook minikube/deploy.yaml 
+```
+
+## Running in Docker compose
+
+#### Build Karamel Docker 
+Prequisites: Docker Desktop
+```
+docker build -f Dockerfile.multistage -t karamel/karamel .
+```
+#### Run in Docker Compose with Kafka
+Prequisites: Java 11
+```
+cd compose
+docker-compose up 
+```
+
+## Development
+#### Running the application in dev mode
 ```
 ./mvnw quarkus:dev
 ```
-
-## Packaging and running the application
-
+#### Packaging and running the application
 The application is packageable using 
 ```
 ./mvnw package
 java -jar target/karamel-1.0.0-SNAPSHOT-runner.jar
 ```
 
-## Creating a native executable
-
-You can create a native executable using: 
-```
-docker build -f src/main/docker/Dockerfile.multistage -t karamel/karamel .
-```
-
-## Running the native executable via Docker Compose with Kafka
-
-```
-cd compose
-docker-compose up
-```
 
 ### Screenshots
-#### Consumer
-![Screenshot](docs/img/consumer.png)
-
-#### Producer
-![Screenshot](docs/img/producer.png)
+#### Kafka
+![Screenshot](docs/img/kafka.png)
+#### Strimzi operator
+![Screenshot](docs/img/operator.png)
+#### Topics
+![Screenshot](docs/img/topics.png)
+#### Client - consumer
+![Screenshot](docs/img/client-consumer.png)
+#### Client - producer
+![Screenshot](docs/img/client-producer.png)
