@@ -3,11 +3,11 @@ services:
 
   karamel:
     container_name: karamel
-    image: karamel/karamel:latest
+    image: entropy1/karamel:latest
     ports:
       - "8080:8080"
     environment:
-      CAMEL_COMPONENT_KAFKA_BROKERS: kafka:29092
+      KARAMEL_BROKERS: kafka:29092
     depends_on:
       - kafka
     networks:
