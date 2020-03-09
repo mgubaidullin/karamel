@@ -1,6 +1,6 @@
 # Karamel
 
-Simple Web-based Kafka Browser that supports standalone Kafka and Strimzi operator.
+Simple Kafka Browser that supports standalone Kafka and Strimzi operator.
 
 - Kafka cluster status
 - Topic list
