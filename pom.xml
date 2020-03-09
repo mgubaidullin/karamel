@@ -12,8 +12,8 @@
         <maven.compiler.target>11</maven.compiler.target>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
-        <quarkus-plugin.version>1.2.0.Final</quarkus-plugin.version>
-        <quarkus.version>1.2.0.Final</quarkus.version>
+        <quarkus-plugin.version>1.2.1.Final</quarkus-plugin.version>
+        <quarkus.version>1.2.1.Final</quarkus.version>
         <camel.version>1.0.0-M3</camel.version>
         <surefire-plugin.version>2.22.1</surefire-plugin.version>
     </properties>
@@ -120,6 +120,10 @@
             <plugin>
                 <artifactId>maven-compiler-plugin</artifactId>
                 <version>${compiler-plugin.version}</version>
+                <configuration>
+                    <meminitial>2048m</meminitial>
+                    <maxmem>8196m</maxmem>
+                </configuration>
             </plugin>
             <plugin>
                 <artifactId>maven-surefire-plugin</artifactId>
