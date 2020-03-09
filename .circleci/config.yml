@@ -35,10 +35,35 @@ jobs:
           keys:
             - karamel-maven-cache
       - run:
-          name: Maven - Package Uber Jar, Build Docker Image, Push to DockerHub
+          name: Maven - Package Uber Jar, Build Docker Image
           command: |
             export PATH=$PWD/apache-maven-3.6.3/bin:$PWD/jdk-11.0.6+10/bin:$PATH
-            mvn clean package fabric8:build fabric8:push -Ddocker.username=$DOCKER_HUB_USERNAME -Ddocker.password=$DOCKER_HUB_PASSWORD
+            mvn clean package fabric8:build
+      - save_cache:
+          paths:
+            - ~/.m2
+          key: karamel-maven-cache
+      - persist_to_workspace:
+          root: /tmp
+          paths:
+            - workspace
+
+  push:
+    machine: true
+    working_directory: /tmp/workspace
+    steps:
+      - checkout
+      - run: rm -rf .git
+      - attach_workspace:
+          at: /tmp
+      - restore_cache:
+          keys:
+            - karamel-maven-cache
+      - run:
+          name: Maven - Push to DockerHub
+          command: |
+            export PATH=$PWD/apache-maven-3.6.3/bin:$PWD/jdk-11.0.6+10/bin:$PATH
+            mvn fabric8:push -Ddocker.username=$DOCKER_HUB_USERNAME -Ddocker.password=$DOCKER_HUB_PASSWORD
       - save_cache:
           paths:
             - ~/.m2
@@ -56,3 +81,6 @@ workflows:
       - build:
           requires:
             - install-jdk-11
+      - push:
+          requires:
+            - build
