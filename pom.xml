@@ -121,10 +121,6 @@
             <plugin>
                 <artifactId>maven-compiler-plugin</artifactId>
                 <version>${compiler-plugin.version}</version>
-                <configuration>
-                    <meminitial>2048m</meminitial>
-                    <maxmem>8196m</maxmem>
-                </configuration>
             </plugin>
             <plugin>
                 <artifactId>maven-surefire-plugin</artifactId>
@@ -139,8 +135,8 @@
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-compiler-plugin</artifactId>
                 <configuration>
-                    <source>9</source>
-                    <target>9</target>
+                    <source>11</source>
+                    <target>11</target>
                 </configuration>
             </plugin>
             <plugin>
@@ -159,8 +155,12 @@
                     </enricher>
                     <images>
                         <image>
-                            <name>entropy1/${project.artifactId}:${project.version}</name>
+                            <name>entropy1/${project.artifactId}</name>
                             <build>
+                                <tags>
+                                    <tag>latest</tag>
+                                    <tag>${project.version}</tag>
+                                </tags>
                                 <dockerFile>${project.basedir}/Dockerfile</dockerFile>
                                 <assembly>
                                     <descriptorRef>artifact</descriptorRef>
