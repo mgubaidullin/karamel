@@ -4,8 +4,9 @@
     <modelVersion>4.0.0</modelVersion>
     <groupId>one.entropy</groupId>
     <artifactId>karamel</artifactId>
-    <version>1.0.0</version>
+    <version>${revision}</version>
     <properties>
+        <revision>0.0.1</revision>
         <compiler-plugin.version>3.8.1</compiler-plugin.version>
         <maven.compiler.parameters>true</maven.compiler.parameters>
         <maven.compiler.source>11</maven.compiler.source>
@@ -158,7 +159,7 @@
                     </enricher>
                     <images>
                         <image>
-                            <name>karamel/${project.artifactId}:${project.version}</name>
+                            <name>entropy1/${project.artifactId}:${project.version}</name>
                             <build>
                                 <dockerFile>${project.basedir}/Dockerfile</dockerFile>
                                 <assembly>

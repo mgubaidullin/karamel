@@ -1,0 +1,58 @@
+version: 2.1
+executorType: machine
+
+jobs:
+  install-jdk-11:
+    machine: true
+    working_directory: /tmp/workspace
+    steps:
+      - attach_workspace:
+          at: /tmp
+      - run:
+          name: Install Java 11
+          command: |
+            wget https://github.com/AdoptOpenJDK/openjdk11-binaries/releases/download/jdk-11.0.6%2B10/OpenJDK11U-jdk_x64_linux_hotspot_11.0.6_10.tar.gz
+            tar -xf OpenJDK11U-jdk_x64_linux_hotspot_11.0.6_10.tar.gz
+            wget http://mirror.its.dal.ca/apache/maven/maven-3/3.6.3/binaries/apache-maven-3.6.3-bin.tar.gz
+            tar xzvf apache-maven-3.6.3-bin.tar.gz
+            export PATH=$PWD/apache-maven-3.6.3/bin:$PWD/jdk-11.0.6+10/bin:$PATH
+            java -version
+            mvn -v
+      - persist_to_workspace:
+          root: /tmp
+          paths:
+            - workspace
+
+  build:
+    machine: true
+    working_directory: /tmp/workspace
+    steps:
+      - checkout
+      - run: rm -rf .git
+      - attach_workspace:
+          at: /tmp
+      - restore_cache:
+          keys:
+            - karamel-maven-cache
+      - run:
+          name: Maven - Package Uber Jar, Build Docker Image, Push (WIP)
+          command: |
+            export PATH=$PWD/apache-maven-3.6.3/bin:$PWD/jdk-11.0.6+10/bin:$PATH
+            mvn clean package fabric8:build
+      - save_cache:
+          paths:
+            - ~/.m2
+          key: karamel-maven-cache
+      - persist_to_workspace:
+          root: /tmp
+          paths:
+            - workspace
+
+workflows:
+  version: 2
+  pipeline:
+    jobs:
+      - "install-jdk-11"
+      - build:
+          requires:
+            - install-jdk-11
