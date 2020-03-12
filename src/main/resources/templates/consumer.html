@@ -38,10 +38,13 @@
         <td>{kevent.offset}</td>
         <td>{kevent.getTimestampString}</td>
         <td>{kevent.key}</td>
-        <td class="pf-c-table__action">
-            <a href="/message/{kevent.topic}/{kevent.partition}/{kevent.offset}">View</a>
-            </form>
-        </td>
+        {#if kevent.showLink == true}
+            <td class="value">
+                <a href="/message/{kevent.topic}/{kevent.partition}/{kevent.offset}">View</a>
+            </td>
+        {#else}
+            <td class="value">{kevent.value}</td>
+        {/if}
     </tr>
     {/for}
     {/if}

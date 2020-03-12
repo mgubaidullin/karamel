@@ -66,9 +66,11 @@ public class ClientUI {
             karamelProducer.create();
             karamelConsumer.create(sessionId);
 
-            CompletionStage<Collection<TopicDescription>> list = kafkaAPI.getTopics(session.getBrokers());
+            CompletionStage<Collection<TopicDescription>> list = kafkaAPI.getTopics(session.getBrokers(), false);
             Collection<String> topics = Try.of(() ->
-                    list.toCompletableFuture().get().stream().map(td -> td.name()).collect(Collectors.toList()))
+                    list.toCompletableFuture().get().stream()
+                            .filter(td -> !td.name().startsWith("__confluent"))
+                            .map(td -> td.name()).collect(Collectors.toList()))
                     .getOrElse(List.of());
             return client
                     .data("topics", topics)

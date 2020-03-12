@@ -32,7 +32,7 @@ public class TopicUI {
     @Path("topics")
     public TemplateInstance operators() {
         if (session.getBrokers() != null) {
-            CompletionStage<Collection<TopicDescription>> list = kafkaAPI.getTopics(session.getBrokers());
+            CompletionStage<Collection<TopicDescription>> list = kafkaAPI.getTopics(session.getBrokers(), true);
             Collection<TopicDescription> topicList = Try.of(() -> list.toCompletableFuture().get()).getOrElse(List.of());
             return topics
                     .data("topicList", topicList)

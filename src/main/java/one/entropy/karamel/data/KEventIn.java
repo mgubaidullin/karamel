@@ -1,5 +1,6 @@
 package one.entropy.karamel.data;
 
+import io.vavr.control.Try;
 import lombok.*;
 
 import java.time.Instant;
@@ -30,5 +31,9 @@ public class KEventIn {
 //        System.out.println(DateTimeFormatter.ISO_INSTANT.format(timestamp));
 //        System.out.println(DateTimeFormatter.ISO_DATE_TIME.format(timestamp.atZone(ZoneId.systemDefault())));
         return DateTimeFormatter.ISO_INSTANT.format(timestamp.atZone(ZoneId.systemDefault()));
+    }
+
+    public boolean showLink(){
+        return Try.of(() -> value.length() > 100).getOrElse(false);
     }
 }

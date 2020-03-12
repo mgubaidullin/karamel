@@ -48,3 +48,7 @@
 .pf-c-form__group.padding {
     padding-bottom: 1em;
 }
+
+.value {
+    width: 20%;
+}

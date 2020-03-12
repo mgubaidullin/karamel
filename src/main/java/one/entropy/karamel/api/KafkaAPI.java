@@ -18,11 +18,11 @@ import java.util.concurrent.TimeUnit;
 public class KafkaAPI {
     private static final Logger LOGGER = LoggerFactory.getLogger(KafkaAPI.class.getCanonicalName());
 
-    public CompletionStage<Collection<TopicDescription>> getTopics(String brokers) {
-        return CompletableFuture.supplyAsync(() -> getKafkaTopics(brokers)).completeOnTimeout(List.of(), 5, TimeUnit.SECONDS);
+    public CompletionStage<Collection<TopicDescription>> getTopics(String brokers, boolean listInternal) {
+        return CompletableFuture.supplyAsync(() -> getKafkaTopics(brokers, listInternal)).completeOnTimeout(List.of(), 5, TimeUnit.SECONDS);
     }
 
-    private Collection<TopicDescription> getKafkaTopics(String brokers) {
+    private Collection<TopicDescription> getKafkaTopics(String brokers, boolean listInternal) {
         return Try.of(() -> {
             Map<String, Object> conf = new HashMap<>();
             conf.put(AdminClientConfig.BOOTSTRAP_SERVERS_CONFIG, brokers);
@@ -30,7 +30,7 @@ public class KafkaAPI {
             AdminClient adminClient = KafkaAdminClient.create(conf);
 
             ListTopicsOptions options = new ListTopicsOptions();
-            options.listInternal(true);
+            options.listInternal(listInternal);
 
             Collection<String> topicNames =  adminClient.listTopics(options).names().get();
             Collection<TopicDescription> list =  adminClient.describeTopics(topicNames).all().get().values();
