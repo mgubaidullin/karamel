@@ -53,14 +53,12 @@ var client = new Vue({
         }
       },
       onDropDownBroker: function (event) {
-        this.bootstrapShow = !this.bootstrapShow
+        this.bootstrapShow = !this.bootstrapShow;
       },
       onSelectBroker: function (broker) {
         this.brokers = broker;
-        console.log(this.brokers);
         axios.post('/brokers', { brokers: this.brokers })
             .then(function (response) {
-              console.log(response);
               location.reload();
             });
       },
@@ -85,7 +83,6 @@ var client = new Vue({
       onReconnect: function (event) {
         axios.post('/reconnect', {})
           .then(function (response) {
-            console.log(response);
           });
       }
     },
