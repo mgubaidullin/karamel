@@ -4,6 +4,7 @@ import io.vavr.control.Try;
 import io.vertx.reactivex.core.eventbus.EventBus;
 import one.entropy.karamel.api.KaramelSocket;
 import one.entropy.karamel.data.KEventIn;
+import one.entropy.karamel.ui.KaramelSession;
 import org.apache.camel.CamelContext;
 import org.apache.camel.Exchange;
 import org.apache.camel.Message;
@@ -11,25 +12,22 @@ import org.apache.camel.builder.EndpointConsumerBuilder;
 import org.apache.camel.builder.RouteBuilder;
 import org.apache.camel.builder.endpoint.EndpointRouteBuilder;
 import org.apache.camel.component.kafka.KafkaConstants;
+import org.apache.camel.quarkus.core.FastCamelContext;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import javax.annotation.PreDestroy;
 import javax.enterprise.context.SessionScoped;
 import javax.inject.Inject;
-import javax.ws.rs.PathParam;
 import java.time.Instant;
-import java.util.ArrayList;
-import java.util.Comparator;
-import java.util.List;
-import java.util.Objects;
+import java.util.*;
 import java.util.stream.Collectors;
 
 @SessionScoped
 public class KaramelConsumer {
     private static final Logger LOGGER = LoggerFactory.getLogger(KaramelConsumer.class.getCanonicalName());
 
-    private String brokers;
+    private String consumerBrokers;
     private String sessionId;
     private final List<KEventIn> events = new ArrayList<>();
     @Inject
@@ -37,24 +35,32 @@ public class KaramelConsumer {
     @Inject
     EventBus bus;
 
-    public void create(String brokers, String sessionId) {
-        if (context.getRoute(sessionId) != null && Objects.equals(brokers, this.brokers)) {
-            LOGGER.info("Reuse consumer for : {}", brokers);
-        } else if (context.getRoute(sessionId) != null && !Objects.equals(brokers, this.brokers)) {
+    @Inject
+    KaramelSession session;
+
+    public void create(String sessionId) {
+        this.sessionId = sessionId;
+        if (context.getRoute(sessionId) != null && Objects.equals(session.getBrokers(), consumerBrokers)) {
+            LOGGER.info("Reuse consumer for : {}", consumerBrokers);
+        } else if (context.getRoute(sessionId) != null && !Objects.equals(session.getBrokers(), consumerBrokers)) {
             close();
-            initialize(brokers, sessionId);
+            initialize(session.getBrokers());
         } else {
-            initialize(brokers, sessionId);
+            initialize(session.getBrokers());
         }
     }
 
-    private void initialize(String brokers, String sessionId) {
+    public void reconnect() throws Exception {
+        ((FastCamelContext)context).stopRoute(sessionId);
+        ((FastCamelContext)context).startRoute(sessionId);
+    }
+
+    private void initialize(String brokers) {
         LOGGER.info("Create consumer route for : {}", brokers);
-        this.brokers = brokers;
-        this.sessionId = sessionId;
+        this.consumerBrokers = brokers;
         this.events.clear();
         Try.run(() -> {
-            context.addRoutes(createRouteBuilder(brokers, sessionId));
+            context.addRoutes(createRouteBuilder());
         }).onFailure(throwable -> LOGGER.error("", throwable));
     }
 
@@ -73,11 +79,11 @@ public class KaramelConsumer {
         bus.publish(KaramelSocket.ADDRESS, kevent);
     }
 
-    private RouteBuilder createRouteBuilder(String brokers, String sessionId) {
+    private RouteBuilder createRouteBuilder() {
         return new EndpointRouteBuilder() {
             @Override
             public void configure() throws Exception {
-                EndpointConsumerBuilder endpoint = kafka(".*").groupId(sessionId).brokers(KaramelConsumer.this.brokers).topicIsPattern(true).autoOffsetReset("earliest");
+                EndpointConsumerBuilder endpoint = kafka(".*").groupId(sessionId).brokers(KaramelConsumer.this.consumerBrokers).topicIsPattern(true).autoOffsetReset("earliest");
                 from(endpoint).routeId(sessionId).process(KaramelConsumer.this::process);
             }
         };

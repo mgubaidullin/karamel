@@ -31,7 +31,6 @@ var client = new Vue({
     value: ''
   },
   mounted:function(){
-    console.log("LOADED");
     this.onLoadPage();
     },
   methods: {
@@ -39,7 +38,6 @@ var client = new Vue({
         var str = window.location.pathname;
         var isClient = str.startsWith("/client");
         if (isClient) {
-            console.log(isClient);
             this.onSocketConnect();
         }
       },
@@ -48,10 +46,8 @@ var client = new Vue({
             this.socket = new WebSocket("ws://" + location.host + "/events/" + getJSessionId());
             this.socket.onopen = function() {
                 this.connected = true;
-                console.log("Connected to the web socket");
             };
             this.socket.onmessage = function(m) {
-                console.log(m);
                 location.reload();
             };
         }
@@ -61,10 +57,12 @@ var client = new Vue({
       },
       onSelectBroker: function (broker) {
         this.brokers = broker;
-        this.bootstrapShow = false;
-      },
-      onSubmitBroker: function(e) {
-        var formAction = e.target.action;
+        console.log(this.brokers);
+        axios.post('/brokers', { brokers: this.brokers })
+            .then(function (response) {
+              console.log(response);
+              location.reload();
+            });
       },
       showConsumer: function (event) {
         this.consumerVis = true
@@ -81,12 +79,14 @@ var client = new Vue({
               value: this.value
             })
             .then(function (response) {
-              console.log(response);
               showSnackbar();
-            })
-            .catch(function (error) {
-              console.log(error);
             });
+      },
+      onReconnect: function (event) {
+        axios.post('/reconnect', {})
+          .then(function (response) {
+            console.log(response);
+          });
       }
     },
 });

@@ -23,32 +23,29 @@ public class TopicUI {
     @Inject
     Template topics;
 
-    @GET
-    @Consumes(MediaType.TEXT_HTML)
-    @Produces(MediaType.TEXT_HTML)
-    @Path("topics/{brokers}")
-    public TemplateInstance operators(@PathParam("brokers") String brokers) {
-        CompletionStage<Collection<TopicDescription>> list = kafkaAPI.getTopics(brokers);
-        Collection<TopicDescription> topicList = Try.of(() -> list.toCompletableFuture().get()).getOrElse(List.of());
-        return topics
-                .data("topicList", topicList)
-                .data("brokerListHeader", brokers)
-                .data("brokers", brokers)
-                .data("page", "topics");
-    }
+    @Inject
+    KaramelSession session;
 
     @GET
     @Consumes(MediaType.TEXT_HTML)
     @Produces(MediaType.TEXT_HTML)
     @Path("topics")
     public TemplateInstance operators() {
-        return topics
-                .data("topicList", List.of())
-                .data("brokerListHeader", "Brokers")
-                .data("brokers", "")
-                .data("page", "topics");
+        if (session.getBrokers() != null) {
+            CompletionStage<Collection<TopicDescription>> list = kafkaAPI.getTopics(session.getBrokers());
+            Collection<TopicDescription> topicList = Try.of(() -> list.toCompletableFuture().get()).getOrElse(List.of());
+            return topics
+                    .data("topicList", topicList)
+                    .data("brokerListHeader", session.getBrokers())
+                    .data("brokers", session.getBrokers())
+                    .data("page", "topics");
+        } else {
+            return topics
+                    .data("topicList", List.of())
+                    .data("brokerListHeader", "Brokers")
+                    .data("brokers", "")
+                    .data("page", "topics");
+        }
     }
-
-
 }
 

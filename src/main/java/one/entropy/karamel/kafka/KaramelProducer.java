@@ -2,6 +2,7 @@ package one.entropy.karamel.kafka;
 
 import io.vavr.control.Try;
 import one.entropy.karamel.data.KEventOut;
+import one.entropy.karamel.ui.KaramelSession;
 import org.apache.kafka.clients.producer.KafkaProducer;
 import org.apache.kafka.clients.producer.ProducerConfig;
 import org.apache.kafka.clients.producer.ProducerRecord;
@@ -10,6 +11,7 @@ import org.slf4j.LoggerFactory;
 
 import javax.annotation.PreDestroy;
 import javax.enterprise.context.SessionScoped;
+import javax.inject.Inject;
 import java.util.Map;
 import java.util.Objects;
 
@@ -17,27 +19,31 @@ import java.util.Objects;
 public class KaramelProducer {
     private static final Logger LOGGER = LoggerFactory.getLogger(KaramelProducer.class.getCanonicalName());
 
-    private String brokers;
     private KafkaProducer<String, String> producer;
 
-    public void create(String brokers, String sessionId) {
-        if (producer != null && Objects.equals(brokers, this.brokers)) {
-            LOGGER.info("Reuse producer for : {}", brokers);
-        } else if (producer != null && !Objects.equals(brokers, this.brokers)) {
+    private String producerBrokers;
+
+    @Inject
+    KaramelSession session;
+
+    public void create() {
+        if (producer != null && Objects.equals(session.getBrokers(), producerBrokers)) {
+            LOGGER.info("Reuse producer for : {}", producerBrokers);
+        } else if (producer != null && !Objects.equals(session.getBrokers(), producerBrokers)) {
             close();
-            initialize(brokers);
+            initialize(session.getBrokers());
         } else {
-            initialize(brokers);
+            initialize(session.getBrokers());
         }
     }
 
     private void initialize(String brokers) {
         LOGGER.info("Create producer for : {}", brokers);
-        this.brokers = brokers;
+        producerBrokers = brokers;
         Try.run(() -> {
             Map<String, String> config = Map.of(
-                    ProducerConfig.BOOTSTRAP_SERVERS_CONFIG, this.brokers,
-                    ProducerConfig.CLIENT_ID_CONFIG, this.brokers,
+                    ProducerConfig.BOOTSTRAP_SERVERS_CONFIG, producerBrokers,
+                    ProducerConfig.CLIENT_ID_CONFIG, producerBrokers,
                     ProducerConfig.KEY_SERIALIZER_CLASS_CONFIG, "org.apache.kafka.common.serialization.StringSerializer",
                     ProducerConfig.VALUE_SERIALIZER_CLASS_CONFIG, "org.apache.kafka.common.serialization.StringSerializer",
                     ProducerConfig.ACKS_CONFIG, "1"
@@ -58,7 +64,7 @@ public class KaramelProducer {
     void close() {
         Try.run(() -> {
             producer.close();
-            LOGGER.info("Producer closed for : {}", brokers);
+            LOGGER.info("Producer closed for : {}", producerBrokers);
         }).onFailure(throwable -> LOGGER.error("", throwable));
     }
 }

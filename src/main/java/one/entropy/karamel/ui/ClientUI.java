@@ -3,6 +3,7 @@ package one.entropy.karamel.ui;
 import io.quarkus.qute.Template;
 import io.quarkus.qute.TemplateInstance;
 import io.vavr.control.Try;
+import io.vertx.core.json.JsonObject;
 import one.entropy.karamel.api.KafkaAPI;
 import one.entropy.karamel.data.JsonUtil;
 import one.entropy.karamel.data.KEventIn;
@@ -45,39 +46,38 @@ public class ClientUI {
     @Inject
     KaramelConsumer karamelConsumer;
 
+    @Inject
+    KaramelSession session;
+
     @GET
     @Consumes(MediaType.TEXT_HTML)
     @Produces(MediaType.TEXT_HTML)
     @Path("client")
-    public TemplateInstance client() {
-        return client
-                .data("topics", List.of())
-                .data("brokerListHeader", "Brokers")
-                .data("kevents", karamelConsumer.getSortedEvents())
-                .data("kevent", new KEventIn())
-                .data("page", "client");
-    }
+    public TemplateInstance client(@Context HttpServletRequest request) {
+        if (session.getBrokers() == null) {
+            return client
+                    .data("topics", List.of())
+                    .data("brokerListHeader", "Brokers")
+                    .data("kevents", karamelConsumer.getSortedEvents())
+                    .data("kevent", new KEventIn())
+                    .data("page", "client");
+        } else {
+            String sessionId = request.getSession(true).getId();
+            karamelProducer.create();
+            karamelConsumer.create(sessionId);
 
-    @GET
-    @Consumes(MediaType.TEXT_HTML)
-    @Produces(MediaType.TEXT_HTML)
-    @Path("client/{brokers}")
-    public TemplateInstance client(@PathParam("brokers") String brokers, @Context HttpServletRequest request) {
-        String sessionId = request.getSession(true).getId();
-        karamelProducer.create(brokers, sessionId);
-        karamelConsumer.create(brokers, sessionId);
-
-        CompletionStage<Collection<TopicDescription>> list = kafkaAPI.getTopics(brokers);
-        Collection<String> topics = Try.of(() ->
-                list.toCompletableFuture().get().stream().map(td -> td.name()).collect(Collectors.toList()))
-                .getOrElse(List.of());
-        return client
-                .data("topics", topics)
-                .data("brokerListHeader", brokers)
-                .data("brokers", brokers)
-                .data("kevents", karamelConsumer.getSortedEvents())
-                .data("kevent", new KEventIn())
-                .data("page", "client");
+            CompletionStage<Collection<TopicDescription>> list = kafkaAPI.getTopics(session.getBrokers());
+            Collection<String> topics = Try.of(() ->
+                    list.toCompletableFuture().get().stream().map(td -> td.name()).collect(Collectors.toList()))
+                    .getOrElse(List.of());
+            return client
+                    .data("topics", topics)
+                    .data("brokerListHeader", session.getBrokers())
+                    .data("brokers", session.getBrokers())
+                    .data("kevents", karamelConsumer.getSortedEvents())
+                    .data("kevent", new KEventIn())
+                    .data("page", "client");
+        }
     }
 
     @GET
@@ -101,5 +101,26 @@ public class ClientUI {
         KEventOut kevent = JsonUtil.fromJson(json, KEventOut.class);
         karamelProducer.publish(kevent);
         return Response.status(200).build();//.location(URI.create("/client")).build();
+    }
+
+    @POST
+    @Consumes(MediaType.APPLICATION_JSON)
+    @Produces(MediaType.APPLICATION_JSON)
+    @Path("/brokers")
+    public Response brokers(@MultipartForm String json) {
+        LOGGER.info("Set {}", json);
+        session.setBrokers(new JsonObject(json).getString("brokers"));
+        return Response.ok().build();
+    }
+
+    @POST
+    @Path("/reconnect")
+    public Response reconnect(@MultipartForm String json) {
+        LOGGER.info("Reconnect {}", json);
+        return Try.of(() -> {
+            karamelConsumer.reconnect();
+            return Response.ok().build();
+        }).onFailure(throwable -> LOGGER.error("", throwable))
+                .getOrElse(() -> Response.serverError().build());
     }
 }

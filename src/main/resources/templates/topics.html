@@ -8,8 +8,8 @@
             </div>
         </div>
         <div class="pf-l-split__item pf-m-fill"></div>
-        <div class="pf-l-split__item" id="bootstraps">
-            <form class="pf-u-align-self-center" v-bind:action="'/topics/' + brokers" method="GET" v-on:submit="onSubmitBroker">
+        <div class="pf-l-split__item">
+            <form class="pf-u-align-self-center" action="/topics" method="GET" v-on:submit="onSubmitBroker">
                 <div class="pf-c-dropdown pf-m-expanded">
                     <button class="pf-c-dropdown__toggle" type="button" id="dropdown-expanded-button" aria-expanded="true" v-on:click="onDropDownBroker">
                         <span class="pf-c-dropdown__toggle-text">{brokerListHeader}</span>
