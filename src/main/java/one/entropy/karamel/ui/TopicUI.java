@@ -2,23 +2,27 @@ package one.entropy.karamel.ui;
 
 import io.quarkus.qute.Template;
 import io.quarkus.qute.TemplateInstance;
-import io.vavr.control.Try;
 import one.entropy.karamel.api.KafkaAPI;
+import one.entropy.karamel.api.KaramelAPI;
 import org.apache.kafka.clients.admin.TopicDescription;
-import org.apache.kafka.common.Node;
 
 import javax.inject.Inject;
-import javax.ws.rs.*;
+import javax.ws.rs.Consumes;
+import javax.ws.rs.GET;
+import javax.ws.rs.Path;
+import javax.ws.rs.Produces;
 import javax.ws.rs.core.MediaType;
 import java.util.Collection;
 import java.util.List;
-import java.util.concurrent.CompletionStage;
 
 @Path("/")
 public class TopicUI {
 
     @Inject
     KafkaAPI kafkaAPI;
+
+    @Inject
+    KaramelAPI karamelAPI;
 
     @Inject
     Template topics;
@@ -31,12 +35,13 @@ public class TopicUI {
     @Produces(MediaType.TEXT_HTML)
     @Path("topics")
     public TemplateInstance operators() {
+        Collection<String> brokerList = karamelAPI.getBrokers();
         if (session.getBrokers() != null) {
-            CompletionStage<Collection<TopicDescription>> list = kafkaAPI.getTopics(session.getBrokers(), true);
-            Collection<TopicDescription> topicList = Try.of(() -> list.toCompletableFuture().get()).getOrElse(List.of());
+            Collection<TopicDescription> topicList = kafkaAPI.getTopics(session.getBrokers(), true);
             return topics
                     .data("topicList", topicList)
                     .data("brokerListHeader", session.getBrokers())
+                    .data("brokerList", brokerList)
                     .data("brokers", session.getBrokers())
                     .data("page", "topics");
         } else {
@@ -44,6 +49,7 @@ public class TopicUI {
                     .data("topicList", List.of())
                     .data("brokerListHeader", "Brokers")
                     .data("brokers", "")
+                    .data("brokerList", brokerList)
                     .data("page", "topics");
         }
     }

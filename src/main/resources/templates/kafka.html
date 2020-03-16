@@ -9,7 +9,7 @@
         </div>
     </div>
 </section>
-{#if inject:karamelAPI.isKubernetes}
+{#if isKubernetes}
     {#include kafka-kubernetes.html /}
 {/}
 {#include kafka-cluster.html /}

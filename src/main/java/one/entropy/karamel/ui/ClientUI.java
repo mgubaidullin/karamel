@@ -5,6 +5,7 @@ import io.quarkus.qute.TemplateInstance;
 import io.vavr.control.Try;
 import io.vertx.core.json.JsonObject;
 import one.entropy.karamel.api.KafkaAPI;
+import one.entropy.karamel.api.KaramelAPI;
 import one.entropy.karamel.data.JsonUtil;
 import one.entropy.karamel.data.KEventIn;
 import one.entropy.karamel.data.KEventOut;
@@ -23,7 +24,6 @@ import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 import java.util.Collection;
 import java.util.List;
-import java.util.concurrent.CompletionStage;
 import java.util.stream.Collectors;
 
 @Path("/")
@@ -33,6 +33,9 @@ public class ClientUI {
 
     @Inject
     KafkaAPI kafkaAPI;
+
+    @Inject
+    KaramelAPI karamelAPI;
 
     @Inject
     Template client;
@@ -54,10 +57,12 @@ public class ClientUI {
     @Produces(MediaType.TEXT_HTML)
     @Path("client")
     public TemplateInstance client(@Context HttpServletRequest request) {
+        Collection<String> brokerList = karamelAPI.getBrokers();
         if (session.getBrokers() == null) {
             return client
                     .data("topics", List.of())
                     .data("brokerListHeader", "Brokers")
+                    .data("brokerList", brokerList)
                     .data("kevents", karamelConsumer.getSortedEvents())
                     .data("kevent", new KEventIn())
                     .data("page", "client");
@@ -66,15 +71,15 @@ public class ClientUI {
             karamelProducer.create();
             karamelConsumer.create(sessionId);
 
-            CompletionStage<Collection<TopicDescription>> list = kafkaAPI.getTopics(session.getBrokers(), false);
-            Collection<String> topics = Try.of(() ->
-                    list.toCompletableFuture().get().stream()
-                            .filter(td -> !td.name().startsWith("__confluent"))
-                            .map(td -> td.name()).collect(Collectors.toList()))
+            Collection<TopicDescription> list = kafkaAPI.getTopics(session.getBrokers(), false);
+            Collection<String> topics = Try.of(() -> list.stream()
+                    .filter(td -> !td.name().startsWith("__confluent"))
+                    .map(td -> td.name()).collect(Collectors.toList()))
                     .getOrElse(List.of());
             return client
                     .data("topics", topics)
                     .data("brokerListHeader", session.getBrokers())
+                    .data("brokerList", brokerList)
                     .data("brokers", session.getBrokers())
                     .data("kevents", karamelConsumer.getSortedEvents())
                     .data("kevent", new KEventIn())

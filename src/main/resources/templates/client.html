@@ -15,7 +15,7 @@
                     <i class="fas fa-caret-down pf-c-dropdown__toggle-icon" aria-hidden="true"></i>
                 </button>
                 <ul class="pf-c-dropdown__menu pf-m-align-right" aria-labelledby="dropdown-expanded-button" v-show="bootstrapShow">
-                    {#for broker in inject:karamelAPI.getBrokers}
+                    {#for broker in brokerList}
                     <li>
                         <button class="pf-c-dropdown__menu-item" type="submit" v-on:click="onSelectBroker('{broker}')">{broker}</button>
                     </li>

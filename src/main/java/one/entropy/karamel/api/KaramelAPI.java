@@ -9,7 +9,6 @@ import io.fabric8.kubernetes.client.KubernetesClient;
 import io.quarkus.runtime.StartupEvent;
 import io.vavr.control.Try;
 import one.entropy.karamel.data.PodInfo;
-import one.entropy.karamel.ui.ClientUI;
 import org.eclipse.microprofile.config.inject.ConfigProperty;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -21,15 +20,12 @@ import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.util.List;
 import java.util.Objects;
-import java.util.concurrent.CompletableFuture;
-import java.util.concurrent.CompletionStage;
-import java.util.concurrent.TimeUnit;
 import java.util.stream.Collectors;
 
 @ApplicationScoped
 @Named("karamelAPI")
 public class KaramelAPI {
-    private static final Logger LOGGER = LoggerFactory.getLogger(ClientUI.class.getCanonicalName());
+    private static final Logger LOGGER = LoggerFactory.getLogger(KaramelAPI.class.getCanonicalName());
     private static final String CLUSTER_LABEL = "strimzi.io/cluster";
     private static final String NAME_LABEL = "strimzi.io/name";
     private static final String KIND_LABEL = "strimzi.io/kind";
@@ -55,90 +51,72 @@ public class KaramelAPI {
         return Files.exists(Paths.get("/var/run/secrets/kubernetes.io/serviceaccount/namespace"));
     }
 
-    public CompletionStage<List<Deployment>> getClusterDeployments() {
-        return CompletableFuture.supplyAsync(() -> getDeployments("app", "strimzi")).completeOnTimeout(List.of(), 5, TimeUnit.SECONDS);
+    public List<Deployment> getClusterDeployments() {
+        return getDeployments("app", "strimzi");
     }
 
-    public CompletionStage<List<ReplicaSet>> getClusterReplicaSets() {
-        return CompletableFuture.supplyAsync(() -> getReplicaSets(KIND_LABEL, "cluster-operator")).completeOnTimeout(List.of(), 5, TimeUnit.SECONDS);
+    public List<ReplicaSet> getClusterReplicaSets() {
+        return getReplicaSets(KIND_LABEL, "cluster-operator");
     }
 
-    public CompletionStage<List<PodInfo>> getClusterPods() {
-        return CompletableFuture.supplyAsync(() -> getPods(KIND_LABEL, "cluster-operator")).completeOnTimeout(List.of(), 5, TimeUnit.SECONDS);
+    public List<PodInfo> getClusterPods() {
+        return getPods(KIND_LABEL, "cluster-operator");
     }
 
-    public CompletionStage<List<Deployment>> getEntityDeployments() {
-        return CompletableFuture.supplyAsync(() -> {
+    public List<Deployment> getEntityDeployments() {
             List<String> clusterNames = getClusterNames();
             return clusterNames.stream().flatMap(cluster -> getDeployments(NAME_LABEL, cluster + "-entity-operator").stream()).collect(Collectors.toList());
-        }).completeOnTimeout(List.of(), 5, TimeUnit.SECONDS);
     }
 
-    public CompletionStage<List<ReplicaSet>> getEntityReplicaSets() {
-        return CompletableFuture.supplyAsync(() -> {
+    public List<ReplicaSet> getEntityReplicaSets() {
             List<String> clusterNames = getClusterNames();
             return clusterNames.stream().flatMap(cluster -> getReplicaSets(NAME_LABEL, cluster + "-entity-operator").stream()).collect(Collectors.toList());
-        }).completeOnTimeout(List.of(), 5, TimeUnit.SECONDS);
     }
 
-    public CompletionStage<List<PodInfo>> getEntityPods() {
-        return CompletableFuture.supplyAsync(() -> {
+    public List<PodInfo> getEntityPods() {
             List<String> clusterNames = getClusterNames();
             return clusterNames.stream().flatMap(cluster -> getPods(NAME_LABEL, cluster + "-entity-operator").stream()).collect(Collectors.toList());
-        }).completeOnTimeout(List.of(), 5, TimeUnit.SECONDS);
     }
 
-    public CompletionStage<List<StatefulSet>> getZookeeperStatefulSets() {
-        return CompletableFuture.supplyAsync(() -> {
+    public List<StatefulSet> getZookeeperStatefulSets() {
             List<String> clusterNames = getClusterNames();
             return clusterNames.stream().flatMap(cluster -> getStatefulSets(NAME_LABEL, cluster + "-zookeeper").stream()).collect(Collectors.toList());
-        }).completeOnTimeout(List.of(), 5, TimeUnit.SECONDS);
     }
 
-    public CompletionStage<List<PodInfo>> getZookeeperPods() {
-        return CompletableFuture.supplyAsync(() -> {
+    public List<PodInfo> getZookeeperPods() {
             List<String> clusterNames = getClusterNames();
             return clusterNames.stream().flatMap(cluster -> getPods(NAME_LABEL, cluster + "-zookeeper").stream()).collect(Collectors.toList());
-        }).completeOnTimeout(List.of(), 5, TimeUnit.SECONDS);
     }
 
-    public CompletionStage<List<StatefulSet>> getKafkaStatefulSets() {
-        return CompletableFuture.supplyAsync(() -> {
+    public List<StatefulSet> getKafkaStatefulSets() {
             List<String> clusterNames = getClusterNames();
             return clusterNames.stream().flatMap(cluster -> getStatefulSets(NAME_LABEL, cluster + "-kafka").stream()).collect(Collectors.toList());
-        }).completeOnTimeout(List.of(), 5, TimeUnit.SECONDS);
     }
 
-    public CompletionStage<List<PodInfo>> getKafkaPods() {
-        return CompletableFuture.supplyAsync(() -> {
+    public List<PodInfo> getKafkaPods() {
             List<String> clusterNames = getClusterNames();
             return clusterNames.stream().flatMap(cluster -> getPods(NAME_LABEL, cluster + "-kafka").stream()).collect(Collectors.toList());
-        }).completeOnTimeout(List.of(), 5, TimeUnit.SECONDS);
     }
 
-    public CompletionStage<List<Service>> getBootstrapServices() {
-        return CompletableFuture.supplyAsync(() -> {
+    public List<Service> getBootstrapServices() {
             List<String> clusterNames = getClusterNames();
             return clusterNames.stream().flatMap(cluster -> getServices(NAME_LABEL, cluster + "-kafka-bootstrap").stream()).collect(Collectors.toList());
-        }).completeOnTimeout(List.of(), 5, TimeUnit.SECONDS);
     }
 
-    public CompletionStage<List<Service>> getBrokerServices() {
-        return CompletableFuture.supplyAsync(() -> {
+    public List<Service> getBrokerServices() {
             List<String> clusterNames = getClusterNames();
             return clusterNames.stream().flatMap(cluster -> getServices(NAME_LABEL, cluster + "-kafka-brokers").stream()).collect(Collectors.toList());
-        }).completeOnTimeout(List.of(), 5, TimeUnit.SECONDS);
     }
 
-    public CompletionStage<List<String>> getBrokers() {
+    public List<String> getBrokers() {
         if (!isKubernetes()) {
-            return CompletableFuture.supplyAsync(() -> brokers);
+            return brokers;
         } else {
-            return getBrokerServices().thenApply(services -> services.stream().map(service -> {
+            return getBrokerServices().stream().map(service -> {
                 String hostname = service.getMetadata().getName() + "." + service.getMetadata().getNamespace();
                 Integer port = Try.of(() -> service.getSpec().getPorts().stream().filter(sport -> Objects.equals(sport.getName(), "tcp-clients")).findFirst().get().getPort()).getOrElse(9092);
                 return hostname + ":" + port;
-            }).collect(Collectors.toList()));
+            }).collect(Collectors.toList());
         }
     }
 

@@ -49,6 +49,10 @@
     padding-bottom: 1em;
 }
 
+.pf-c-title.status {
+    height: 9em;
+}
+
 .value {
     width: 20%;
 }

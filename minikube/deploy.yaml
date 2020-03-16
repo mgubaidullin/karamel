@@ -42,4 +42,4 @@
       shell: |
         eval {{ docker_env.stdout }}
         cd ../
-        mvn clean package fabric8:build fabric8:resource fabric8:deploy fabric8:apply  -Dfabric8.namespace=kafka
+        mvn clean package fabric8:build fabric8:resource fabric8:deploy fabric8:apply  -Dfabric8.namespace=kafka -Dquarkus.package.uber-jar=true
