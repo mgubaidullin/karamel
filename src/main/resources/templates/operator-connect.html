@@ -1,0 +1,83 @@
+<section class="pf-c-page__main-section dashboard-subtitle">
+    <h1 class="pf-c-title pf-m-xl">Connect</h1>
+</section>
+<section class="pf-c-page__main-section">
+    <div class="pf-l-gallery pf-m-gutter dashboard">
+        {#for deployment in connectDeployments}
+        <div class="pf-c-card pf-m-hoverable pf-m-compact">
+            <div class="pf-c-card__header pf-c-title pf-m-md status">
+                <p>{deployment.getKind()}</p>
+                <div class="pf-c-content">
+                    <small>{deployment.getMetadata().getUid()}</small>
+                    <small>{deployment.getMetadata().getName()}</small>
+                </div>
+            </div>
+            <div class="pf-c-card__footer">
+                <div class="pf-c-alert status pf-m-success" aria-label="Success alert">
+                    <div class="pf-c-alert__icon">
+                        <i class="fas fa-check-circle" aria-hidden="true"></i>
+                    </div>
+                    <h4 class="pf-c-alert__title">Desired: {deployment.getStatus().getReplicas()}, Ready: {deployment.getStatus().getReadyReplicas()}</h4>
+                </div>
+            </div>
+        </div>
+        {/for}
+        {#for replicaSet in connectReplicaSets}
+        <div class="pf-c-card pf-m-hoverable pf-m-compact">
+            <div class="pf-c-card__header pf-c-title pf-m-md status">
+                <p>{replicaSet.getKind()}</p>
+                <div class="pf-c-content">
+                    <small>{replicaSet.getMetadata().getUid()}</small>
+                    <small>{replicaSet.getMetadata().getName()}</small>
+                </div>
+            </div>
+            <div class="pf-c-card__footer">
+                <div class="pf-c-alert status pf-m-success" aria-label="Success alert">
+                    <div class="pf-c-alert__icon">
+                        <i class="fas fa-check-circle" aria-hidden="true"></i>
+                    </div>
+                    <h4 class="pf-c-alert__title">Desired: {replicaSet.getStatus().getReplicas()}, Ready: {replicaSet.getStatus().getReadyReplicas()}</h4>
+                </div>
+            </div>
+        </div>
+        {/for}
+        {#for pod in connectPods}
+        <div class="pf-c-card pf-m-hoverable pf-m-compact">
+            <div class="pf-c-card__header pf-c-title pf-m-md status">
+                <p>Pod</p>
+                <div class="pf-c-content">
+                    <small>{pod.uid}</small>
+                    <small>{pod.name}</small>
+                </div>
+            </div>
+            <div class="pf-c-card__footer">
+                <div class="pf-c-alert status {pod.getClassName()}" aria-label="Success alert">
+                    <div class="pf-c-alert__icon">
+                        <i class="fas {pod.getIcon()}" aria-hidden="true"></i>
+                    </div>
+                    <h4 class="pf-c-alert__title">{pod.phase}</h4>
+                </div>
+            </div>
+        </div>
+        {/for}
+        {#for service in connectServices}
+        <div class="pf-c-card pf-m-hoverable pf-m-compact">
+            <div class="pf-c-card__header pf-c-title pf-m-md status">
+                <p>{service.getKind()}: {service.getSpec().getType()}</p>
+                <div class="pf-c-content">
+                    <small>{service.getMetadata().getUid()}</small>
+                    <small>{service.getMetadata().getName()}</small>
+                </div>
+            </div>
+            <div class="pf-c-card__footer">
+                <div class="pf-c-alert status pf-m-success" aria-label="Success alert">
+                    <div class="pf-c-alert__icon">
+                        <i class="fas fa-check-circle" aria-hidden="true"></i>
+                    </div>
+                    <h4 class="pf-c-alert__title">Running</h4>
+                </div>
+            </div>
+        </div>
+        {/for}
+    </div>
+</section>

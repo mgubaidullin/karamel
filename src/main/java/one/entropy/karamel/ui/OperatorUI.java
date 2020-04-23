@@ -1,5 +1,6 @@
 package one.entropy.karamel.ui;
 
+import io.fabric8.kubernetes.api.model.Service;
 import io.fabric8.kubernetes.api.model.apps.Deployment;
 import io.fabric8.kubernetes.api.model.apps.ReplicaSet;
 import io.quarkus.qute.Template;
@@ -33,20 +34,28 @@ public class OperatorUI {
     public TemplateInstance operators() {
         Collection<Deployment> clusterDeployments = karamelAPI.getClusterDeployments();
         Collection<Deployment> entityDeployments = karamelAPI.getEntityDeployments();
+        Collection<Deployment> connectDeployments = karamelAPI.getConnectDeployments();
 
         Collection<ReplicaSet> clusterReplicaSets = karamelAPI.getClusterReplicaSets();
         Collection<ReplicaSet> entityReplicaSets = karamelAPI.getEntityReplicaSets();
+        Collection<ReplicaSet> connectReplicaSets = karamelAPI.getConnectReplicaSets();
 
         Collection<PodInfo> clusterPods = karamelAPI.getClusterPods();
         Collection<PodInfo> entityPods = karamelAPI.getEntityPods();
+        Collection<PodInfo> connectPods = karamelAPI.getConnectPods();
 
+        Collection<Service> connectServices = karamelAPI.getConnectServices();
         return operators
                 .data("clusterDeployments", clusterDeployments)
                 .data("entityDeployments", entityDeployments)
+                .data("connectDeployments", connectDeployments)
                 .data("clusterReplicaSets", clusterReplicaSets)
                 .data("entityReplicaSets", entityReplicaSets)
+                .data("connectReplicaSets", connectReplicaSets)
                 .data("clusterPods", clusterPods)
                 .data("entityPods", entityPods)
+                .data("connectPods", connectPods)
+                .data("connectServices", connectServices)
                 .data("page", "operators");
     }
 }

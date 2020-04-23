@@ -78,6 +78,26 @@ public class KaramelAPI {
             return clusterNames.stream().flatMap(cluster -> getPods(NAME_LABEL, cluster + "-entity-operator").stream()).collect(Collectors.toList());
     }
 
+    public List<Deployment> getConnectDeployments() {
+        List<String> clusterNames = getClusterNames();
+        return clusterNames.stream().flatMap(cluster -> getDeployments(KIND_LABEL, "KafkaConnect").stream()).collect(Collectors.toList());
+    }
+
+    public List<ReplicaSet> getConnectReplicaSets() {
+        List<String> clusterNames = getClusterNames();
+        return clusterNames.stream().flatMap(cluster -> getReplicaSets(KIND_LABEL, "KafkaConnect").stream()).collect(Collectors.toList());
+    }
+
+    public List<PodInfo> getConnectPods() {
+        List<String> clusterNames = getClusterNames();
+        return clusterNames.stream().flatMap(cluster -> getPods(KIND_LABEL, "KafkaConnect").stream()).collect(Collectors.toList());
+    }
+
+    public List<Service> getConnectServices() {
+        List<String> clusterNames = getClusterNames();
+        return clusterNames.stream().flatMap(cluster -> getServices(KIND_LABEL, "KafkaConnect").stream()).collect(Collectors.toList());
+    }
+
     public List<StatefulSet> getZookeeperStatefulSets() {
             List<String> clusterNames = getClusterNames();
             return clusterNames.stream().flatMap(cluster -> getStatefulSets(NAME_LABEL, cluster + "-zookeeper").stream()).collect(Collectors.toList());

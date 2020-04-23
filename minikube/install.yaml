@@ -7,7 +7,7 @@
     purge: true
     strimzi:
       namespace: kafka
-      version: 0.16.2
+      version: 0.17.0
 
   tasks:
     - name: Install minikube on MacOS
@@ -60,7 +60,7 @@
       tags:
         - files
 
-    - name: Create strimzi operator and kafka
+    - name: Create strimzi operator and kafka and connect
       shell: |
         kubectl delete ns {{strimzi.namespace}} --force --grace-period 0
         kubectl create ns {{strimzi.namespace}}
@@ -69,6 +69,7 @@
         kubectl apply -f strimzi-{{strimzi.version}}/install/cluster-operator/032-RoleBinding-strimzi-cluster-operator-topic-operator-delegation.yaml -n {{strimzi.namespace}}
         kubectl apply -f strimzi-{{strimzi.version}}/install/cluster-operator/031-RoleBinding-strimzi-cluster-operator-entity-operator-delegation.yaml -n {{strimzi.namespace}}
         kubectl create -f kafka-persistent-single.yaml -n {{strimzi.namespace}}
+        kubectl create -f kafka-connect-single-node-kafka.yaml -n {{strimzi.namespace}}
       tags:
         - kafka
 
