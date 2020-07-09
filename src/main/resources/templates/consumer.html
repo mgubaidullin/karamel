@@ -15,22 +15,24 @@
         <td role="cell" colspan="8">
             <div class="pf-l-bullseye">
                 <div class="pf-c-empty-state pf-m-sm">
-                    <i class="fas fa- fa-search pf-c-empty-state__icon" aria-hidden="true"></i>
-                    <h2 class="pf-c-title pf-m-lg">No results found</h2>
-                    <div class="pf-c-empty-state__body">No results match the select criteria.</div>
+                    <div class="pf-c-empty-state__content">
+                        <i class="fas fa- fa-search pf-c-empty-state__icon" aria-hidden="true"></i>
+                        <h2 class="pf-c-title pf-m-lg">No results found</h2>
+                        <div class="pf-c-empty-state__body">No results match the select criteria.</div>
+                    </div>
                 </div>
             </div>
         </td>
     </tr>
     {#else}
-<!--    <tr>-->
-<!--        <td class="filter"><input class="pf-c-form-control" required type="text" id="topic" name="topic" placeholder="Filter"/></td>-->
-<!--        <td class="filter"><input class="pf-c-form-control" required type="text" id="partition" name="partition" placeholder="Filter"/></td>-->
-<!--        <td class="filter"><input class="pf-c-form-control" required type="text" id="offset" name="offset" placeholder="Filter"/></td>-->
-<!--        <td class="filter"></td>-->
-<!--        <td class="filter"><input class="pf-c-form-control" required type="text" id="key" name="key" placeholder="Filter"/></td>-->
-<!--        <td/>-->
-<!--    </tr>-->
+    <!--    <tr>-->
+    <!--        <td class="filter"><input class="pf-c-form-control" required type="text" id="topic" name="topic" placeholder="Filter"/></td>-->
+    <!--        <td class="filter"><input class="pf-c-form-control" required type="text" id="partition" name="partition" placeholder="Filter"/></td>-->
+    <!--        <td class="filter"><input class="pf-c-form-control" required type="text" id="offset" name="offset" placeholder="Filter"/></td>-->
+    <!--        <td class="filter"></td>-->
+    <!--        <td class="filter"><input class="pf-c-form-control" required type="text" id="key" name="key" placeholder="Filter"/></td>-->
+    <!--        <td/>-->
+    <!--    </tr>-->
     {#for kevent in kevents}
     <tr>
         <td>{kevent.topic}</td>
@@ -39,11 +41,11 @@
         <td>{kevent.getTimestampString}</td>
         <td>{kevent.key}</td>
         {#if kevent.showLink == true}
-            <td class="value">
-                <a href="/message/{kevent.topic}/{kevent.partition}/{kevent.offset}">View</a>
-            </td>
+        <td class="value">
+            <a href="/message/{kevent.topic}/{kevent.partition}/{kevent.offset}">View</a>
+        </td>
         {#else}
-            <td class="value">{kevent.value}</td>
+        <td class="value">{kevent.value}</td>
         {/if}
     </tr>
     {/for}

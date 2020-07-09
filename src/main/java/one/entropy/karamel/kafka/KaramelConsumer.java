@@ -1,7 +1,7 @@
 package one.entropy.karamel.kafka;
 
 import io.vavr.control.Try;
-import io.vertx.reactivex.core.eventbus.EventBus;
+import io.vertx.mutiny.core.eventbus.EventBus;
 import one.entropy.karamel.api.KaramelSocket;
 import one.entropy.karamel.data.KEventIn;
 import one.entropy.karamel.ui.KaramelSession;

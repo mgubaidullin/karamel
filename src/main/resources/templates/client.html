@@ -41,10 +41,10 @@
         </button>
         <ul class="pf-c-tabs__list">
             <li class="pf-c-tabs__item" v-bind:class="{ 'pf-m-current': consumerVis }">
-                <button v-on:click="showConsumer" class="pf-c-tabs__button" id="consumerTab">Consumer</button>
+                <button v-on:click="showConsumer" class="pf-c-tabs__link" id="consumerTab">Consumer</button>
             </li>
             <li class="pf-c-tabs__item" v-bind:class="{ 'pf-m-current': producerVis }">
-                <button v-on:click="showProducer" class="pf-c-tabs__button" id="producerTab">Producer</button>
+                <button v-on:click="showProducer" class="pf-c-tabs__link" id="producerTab">Producer</button>
             </li>
         </ul>
         <button class="pf-c-tabs__scroll-button pf-m-secondary" aria-label="Scroll right">

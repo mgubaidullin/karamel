@@ -40,12 +40,12 @@ docker-compose up
 ## Development
 #### Running the application in dev mode
 ```
-./mvnw quarkus:dev
+mvn quarkus:dev
 ```
 #### Packaging and running the application
 The application is packageable using 
 ```
-./mvnw package
+mvn package
 java -jar target/karamel-1.0.0-SNAPSHOT-runner.jar
 ```
 

@@ -2,7 +2,7 @@ package one.entropy.karamel.api;
 
 import io.quarkus.vertx.ConsumeEvent;
 import io.vavr.control.Try;
-import io.vertx.reactivex.core.eventbus.Message;
+import io.vertx.mutiny.core.eventbus.Message;
 import one.entropy.karamel.data.KEventIn;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
