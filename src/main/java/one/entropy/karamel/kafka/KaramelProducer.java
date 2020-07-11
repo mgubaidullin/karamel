@@ -55,7 +55,7 @@ public class KaramelProducer {
     public void publish(KEventOut kevent) {
         LOGGER.info("Publish: to {}", kevent);
         Try.run(() -> {
-            ProducerRecord<String, String> data = new ProducerRecord(kevent.getTopic(), kevent.getKey(), kevent.getValue());
+            ProducerRecord<String, String> data = new ProducerRecord(kevent.topic, kevent.key, kevent.value);
             producer.send(data);
         }).onFailure(throwable -> LOGGER.error("", throwable));
     }

@@ -1,25 +1,26 @@
 package one.entropy.karamel.data;
 
-import lombok.*;
+import io.quarkus.qute.TemplateData;
 
-import java.time.Instant;
-import java.time.ZoneId;
-import java.time.format.DateTimeFormatter;
-
-@AllArgsConstructor
-@NoArgsConstructor
-@Builder
-@ToString
-@Getter
-@Setter
+@TemplateData
 public class PodInfo {
 
-     String uid;
-     String name;
-     String phase;
-     boolean ready;
+    public String uid;
+    public String name;
+    public String phase;
+    public  boolean ready;
 
-     public String getClassName(){
+    public PodInfo() {
+    }
+
+    public PodInfo(String uid, String name, String phase, boolean ready) {
+        this.uid = uid;
+        this.name = name;
+        this.phase = phase;
+        this.ready = ready;
+    }
+
+    public String getClassName(){
          return ready ? "pf-m-success" : "pf-m-danger";
      }
 

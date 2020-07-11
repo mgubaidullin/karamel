@@ -51,8 +51,8 @@ public class KaramelConsumer {
     }
 
     public void reconnect() throws Exception {
-        ((FastCamelContext)context).stopRoute(sessionId);
-        ((FastCamelContext)context).startRoute(sessionId);
+        ((FastCamelContext) context).stopRoute(sessionId);
+        ((FastCamelContext) context).startRoute(sessionId);
     }
 
     private void initialize(String brokers) {
@@ -66,15 +66,14 @@ public class KaramelConsumer {
 
     private void process(Exchange exchange) {
         Message message = exchange.getIn();
-        KEventIn kevent = KEventIn.builder()
-                .sessionId(sessionId)
-                .topic(message.getHeader(KafkaConstants.TOPIC, String.class))
-                .partition(message.getHeader(KafkaConstants.PARTITION, Long.class))
-                .offset(message.getHeader(KafkaConstants.OFFSET, Long.class))
-                .timestamp(Instant.ofEpochMilli(exchange.getIn().getHeader(KafkaConstants.TIMESTAMP, Long.class)))
-                .key(message.getHeader(KafkaConstants.KEY, String.class))
-                .value(message.getBody(String.class))
-                .build();
+        KEventIn kevent = new KEventIn(
+                sessionId,
+                message.getHeader(KafkaConstants.TOPIC, String.class),
+                message.getHeader(KafkaConstants.PARTITION, Long.class),
+                message.getHeader(KafkaConstants.OFFSET, Long.class),
+                Instant.ofEpochMilli(exchange.getIn().getHeader(KafkaConstants.TIMESTAMP, Long.class)),
+                message.getHeader(KafkaConstants.KEY, String.class),
+                message.getBody(String.class));
         events.add(kevent);
         bus.publish(KaramelSocket.ADDRESS, kevent);
     }
@@ -103,7 +102,8 @@ public class KaramelConsumer {
 
     public KEventIn findEvent(String topic, Long partition, Long offset) {
         return events.stream().filter(e ->
-                Objects.equals(e.getTopic(), topic) && Objects.equals(e.getPartition(), partition) && Objects.equals(e.getOffset(), offset)
+                Objects.equals(e.topic, topic) && Objects.equals(e.partition, partition) && Objects.equals(e.offset, offset)
         ).findFirst().get();
     }
+
 }

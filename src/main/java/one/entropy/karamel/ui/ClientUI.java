@@ -9,9 +9,9 @@ import one.entropy.karamel.api.KaramelAPI;
 import one.entropy.karamel.data.JsonUtil;
 import one.entropy.karamel.data.KEventIn;
 import one.entropy.karamel.data.KEventOut;
+import one.entropy.karamel.data.TopicInfo;
 import one.entropy.karamel.kafka.KaramelConsumer;
 import one.entropy.karamel.kafka.KaramelProducer;
-import org.apache.kafka.clients.admin.TopicDescription;
 import org.jboss.resteasy.annotations.providers.multipart.MultipartForm;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -71,10 +71,10 @@ public class ClientUI {
             karamelProducer.create();
             karamelConsumer.create(sessionId);
 
-            Collection<TopicDescription> list = kafkaAPI.getTopics(session.getBrokers(), false);
+            Collection<TopicInfo> list = kafkaAPI.getTopics(session.getBrokers(), false);
             Collection<String> topics = Try.of(() -> list.stream()
-                    .filter(td -> !td.name().startsWith("__confluent"))
-                    .map(td -> td.name()).collect(Collectors.toList()))
+                    .filter(td -> !td.name.startsWith("__confluent"))
+                    .map(td -> td.name).collect(Collectors.toList()))
                     .getOrElse(List.of());
             return client
                     .data("topics", topics)

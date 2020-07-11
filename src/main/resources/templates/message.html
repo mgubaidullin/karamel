@@ -56,7 +56,11 @@
                             <label class="pf-c-form__label" for="key">
                                 <span class="pf-c-form__label-text">Key</span>
                             </label>
+                            {#if kevent.showKey == true}
                             <input class="pf-c-form-control" required type="text" id="key" name="key" value="{kevent.key}" readonly />
+                            {#else}
+                            <textarea class="pf-c-form-control form-textarea-height" type="text" id="key" name="key">{kevent.key}</textarea>
+                            {/if}
                         </div>
 
                         <div class="pf-c-form__group">

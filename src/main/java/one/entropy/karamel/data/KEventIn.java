@@ -1,39 +1,53 @@
 package one.entropy.karamel.data;
 
+import io.quarkus.qute.TemplateData;
 import io.vavr.control.Try;
-import lombok.*;
 
 import java.time.Instant;
 import java.time.ZoneId;
 import java.time.format.DateTimeFormatter;
 
-@NoArgsConstructor
-@AllArgsConstructor
-@ToString
-@Getter
-@Setter
-@Builder
+@TemplateData
 public class KEventIn {
 
-    private String sessionId;
-    private String topic;
-    private Long partition;
-    private Long offset;
-    private Instant timestamp;
-    private String key;
-    private String value;
+    public String sessionId;
+    public String topic;
+    public Long partition;
+    public Long offset;
+    public Instant timestamp;
+    public String key;
+    public String value;
+
+    public KEventIn() {
+    }
+
+    public KEventIn(String sessionId, String topic, Long partition, Long offset, Instant timestamp, String key, String value) {
+        this.sessionId = sessionId;
+        this.topic = topic;
+        this.partition = partition;
+        this.offset = offset;
+        this.timestamp = timestamp;
+        this.key = key;
+        this.value = value;
+    }
+
+    public Instant getTimestamp() {
+        return timestamp;
+    }
 
     public String getId(){
         return topic + "-" + offset;
     }
 
     public String getTimestampString(){
-//        System.out.println(DateTimeFormatter.ISO_INSTANT.format(timestamp));
-//        System.out.println(DateTimeFormatter.ISO_DATE_TIME.format(timestamp.atZone(ZoneId.systemDefault())));
         return DateTimeFormatter.ISO_INSTANT.format(timestamp.atZone(ZoneId.systemDefault()));
     }
 
-    public boolean showLink(){
-        return Try.of(() -> value.length() > 100).getOrElse(false);
+    public boolean showValue(){
+        return Try.of(() -> value == null || value.length() < 100).getOrElse(false);
+    }
+
+    public boolean showKey(){
+        return Try.of(() -> key == null || key.length() < 100).getOrElse(false);
     }
 }

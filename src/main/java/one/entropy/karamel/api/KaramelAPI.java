@@ -154,7 +154,7 @@ public class KaramelAPI {
         List<Pod> pods = kubernetesClient.pods().inAnyNamespace().list().getItems().stream().filter(pod -> Objects.equals(pod.getMetadata().getLabels().get(label), value)).collect(Collectors.toList());
         return pods.stream().map(pod -> {
             boolean ready = Try.of(() -> pod.getStatus().getConditions().stream().filter(c -> c.getType().equalsIgnoreCase("Ready")).findFirst().get().getStatus().equalsIgnoreCase("True")).getOrElse(false);
-            return PodInfo.builder().phase(pod.getStatus().getPhase()).ready(ready).name(pod.getMetadata().getName()).uid(pod.getMetadata().getUid()).build();
+            return new PodInfo(pod.getMetadata().getUid(), pod.getMetadata().getName(), pod.getStatus().getPhase(), ready);
         }).collect(Collectors.toList());
     }
 

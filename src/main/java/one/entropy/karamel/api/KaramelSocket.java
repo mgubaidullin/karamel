@@ -40,7 +40,7 @@ public class KaramelSocket {
 
     @ConsumeEvent(value = ADDRESS)
     public void consume(Message<KEventIn> message) {
-        broadcast(message.body().getSessionId(), message.body().toString());
+        broadcast(message.body().sessionId, message.body().toString());
     }
 
     public void broadcast(String sessionId, String message) {

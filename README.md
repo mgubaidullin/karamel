@@ -27,8 +27,14 @@ ansible-playbook minikube/deploy.yaml
 
 #### Build Karamel Docker 
 Prequisites: Docker Desktop
+Build jdk version
 ```
-docker build -f Dockerfile.multistage -m 12g -t entropy1/karamel .
+mvn package
+docker build -t entropy1/karamel .
+```
+Build native application
+```
+docker build -f Dockerfile.native -t entropy1/karamel-native .
 ```
 #### Run in Docker Compose with Kafka
 Prequisites: Java 11

@@ -6,6 +6,7 @@ import io.quarkus.qute.Template;
 import io.quarkus.qute.TemplateInstance;
 import one.entropy.karamel.api.KafkaAPI;
 import one.entropy.karamel.api.KaramelAPI;
+import one.entropy.karamel.data.NodeInfo;
 import one.entropy.karamel.data.PodInfo;
 import org.apache.kafka.common.Node;
 
@@ -17,6 +18,7 @@ import javax.ws.rs.Produces;
 import javax.ws.rs.core.MediaType;
 import java.util.Collection;
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Path("/")
 public class KafkaUI {
@@ -50,10 +52,9 @@ public class KafkaUI {
                     .data("pods", pods);
         }
         List<String> list = karamelAPI.getBrokers();
-        Collection<Node> nodeList = kafkaAPI.getNodes(list.get(0));
-        Collection<Node> nodes = nodeList;
+        Collection<NodeInfo> nodeList = kafkaAPI.getNodes(list.get(0));
         return kafka
-                .data("nodes", nodes)
+                .data("nodes", nodeList)
                 .data("page", "kafka");
     }
 

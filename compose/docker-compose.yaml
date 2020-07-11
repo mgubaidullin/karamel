@@ -1,17 +1,17 @@
 version: '2.1'
 services:
 
-#  karamel:
-#    container_name: karamel
-#    image: entropy1/karamel:latest
-#    ports:
-#      - "8080:8080"
-#    environment:
-#      KARAMEL_BROKERS: kafka:29092
-#    depends_on:
-#      - kafka
-#    networks:
-#      - karamel-network
+  karamel:
+    container_name: karamel
+    image: entropy1/karamel-native:latest
+    ports:
+      - "8080:8080"
+    environment:
+      KARAMEL_BROKERS: kafka:29092
+    depends_on:
+      - kafka
+    networks:
+      - karamel-network
 
   zookeeper:
     container_name: zookeeper

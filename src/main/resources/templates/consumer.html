@@ -1,12 +1,12 @@
 <table class="pf-c-table pf-m-grid-md" role="grid">
     <thead>
     <tr>
-        <th>Topic</th>
-        <th>Partition</th>
-        <th>Offset</th>
-        <th>Timestamp</th>
-        <th>Key</th>
-        <th>Value</th>
+        <th class="pf-m-width-20" scope="col">Topic</th>
+        <th class="pf-m-width-10" scope="col">Partition</th>
+        <th class="pf-m-width-10" scope="col">Offset</th>
+        <th class="pf-m-width-20" scope="col">Timestamp</th>
+        <th class="pf-m-width-20" scope="col">Key</th>
+        <th class="pf-m-width-20" scope="col">Value</th>
     </tr>
     </thead>
 
@@ -38,14 +38,20 @@
         <td>{kevent.topic}</td>
         <td>{kevent.partition}</td>
         <td>{kevent.offset}</td>
-        <td>{kevent.getTimestampString}</td>
-        <td>{kevent.key}</td>
-        {#if kevent.showLink == true}
+        <td>{kevent.timestamp}</td>
+        {#if kevent.showKey == true}
+        <td class="value">{kevent.key}</td>
+        {#else}
         <td class="value">
             <a href="/message/{kevent.topic}/{kevent.partition}/{kevent.offset}">View</a>
         </td>
-        {#else}
+        {/if}
+        {#if kevent.showValue == true}
         <td class="value">{kevent.value}</td>
+        {#else}
+        <td class="value">
+            <a href="/message/{kevent.topic}/{kevent.partition}/{kevent.offset}">View</a>
+        </td>
         {/if}
     </tr>
     {/for}
