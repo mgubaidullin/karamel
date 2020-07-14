@@ -4,7 +4,7 @@
 
   vars:
     install: false
-    purge: true
+    purge: false
     strimzi:
       namespace: kafka
       version: 0.18.0
@@ -60,10 +60,22 @@
       tags:
         - files
 
-    - name: Create strimzi operator and kafka and connect
+    - name: Delete namespace
+      shell: kubectl delete ns {{strimzi.namespace}} --force --grace-period 0
+      ignore_errors: yes
+
+    - name: Create namespace
+      shell: kubectl create ns {{strimzi.namespace}}
+
+    - name: Check namespace created
+      shell: kubectl get namespaces -o name
+      register: create_namespace_result
+      until: create_namespace_result.stdout.find("namespace/kafka") != -1
+      retries: 10
+      delay: 5
+
+    - name: Create strimzi operator, kafka and connect
       shell: |
-        kubectl delete ns {{strimzi.namespace}} --force --grace-period 0
-        kubectl create ns {{strimzi.namespace}}
         kubectl apply -f strimzi-{{strimzi.version}}/install/cluster-operator/ -n {{strimzi.namespace}}
         kubectl apply -f strimzi-{{strimzi.version}}/install/cluster-operator/020-RoleBinding-strimzi-cluster-operator.yaml -n {{strimzi.namespace}}
         kubectl apply -f strimzi-{{strimzi.version}}/install/cluster-operator/032-RoleBinding-strimzi-cluster-operator-topic-operator-delegation.yaml -n {{strimzi.namespace}}

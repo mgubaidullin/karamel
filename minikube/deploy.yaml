@@ -6,7 +6,6 @@
     purge: true
     strimzi:
       namespace: kafka
-      version: 0.16.2
 
   tasks:
     - name: Get Java version
@@ -27,8 +26,8 @@
       shell: |
         eval {{ docker_env.stdout }}
         kubectl config use-context minikube
-        kubectl delete service karamel --grace-period=0 --force -n kafka
-        kubectl delete deployment karamel --grace-period=0 --force -n kafka
+        kubectl delete service karamel --grace-period=0 --force -n {{namespace}}
+        kubectl delete deployment karamel --grace-period=0 --force -n {{namespace}}
       ignore_errors: yes
 
     - name: Add permissions
