@@ -6,7 +6,7 @@
     <artifactId>karamel</artifactId>
     <version>${revision}</version>
     <properties>
-        <revision>0.0.7</revision>
+        <revision>0.0.8</revision>
         <compiler-plugin.version>3.8.1</compiler-plugin.version>
         <maven.compiler.parameters>true</maven.compiler.parameters>
         <maven.compiler.source>11</maven.compiler.source>

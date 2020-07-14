@@ -16,6 +16,8 @@ import org.slf4j.LoggerFactory;
 import javax.enterprise.context.ApplicationScoped;
 import javax.enterprise.event.Observes;
 import javax.inject.Named;
+import java.nio.file.Files;
+import java.nio.file.Paths;
 import java.util.List;
 import java.util.Objects;
 import java.util.stream.Collectors;
@@ -46,8 +48,7 @@ public class KaramelAPI {
     }
 
     public boolean isKubernetes() {
-        return true;
-//        return Files.exists(Paths.get("/var/run/secrets/kubernetes.io/serviceaccount/namespace"));
+        return Files.exists(Paths.get("/var/run/secrets/kubernetes.io/serviceaccount/namespace"));
     }
 
     public List<DeploymentInfo> getClusterDeployments() {
