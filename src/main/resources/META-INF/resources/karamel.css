@@ -53,6 +53,10 @@
     height: 9em;
 }
 
+.pf-c-card__title {
+    height: 100%;
+}
+
 .value {
     width: 20%;
 }

@@ -5,11 +5,10 @@
     <div class="pf-l-gallery pf-m-gutter dashboard">
         {#for statefulSet in statefulSets}
         <div class="pf-c-card pf-m-hoverable pf-m-compact">
-            <div class="pf-c-card__header pf-c-title pf-m-md status">
-                <p>{statefulSet.getKind()}</p>
+            <div class="pf-c-card__title pf-m-md status">
+                <p>{statefulSet.kind}</p>
                 <div class="pf-c-content">
-                    <small>{statefulSet.getMetadata().getUid()}</small>
-                    <small>{statefulSet.getMetadata().getName()}</small>
+                    <small>{statefulSet.uuid}</small>
                 </div>
             </div>
             <div class="pf-c-card__footer">
@@ -17,14 +16,14 @@
                     <div class="pf-c-alert__icon">
                         <i class="fas fa-check-circle" aria-hidden="true"></i>
                     </div>
-                    <h4 class="pf-c-alert__title">Desired: {statefulSet.getStatus().getReplicas()}, Ready: {statefulSet.getStatus().getReadyReplicas()}</h4>
+                    <h4 class="pf-c-alert__title">Desired: {statefulSet.replicas}, Ready: {statefulSet.readyReplicas}</h4>
                 </div>
             </div>
         </div>
         {/for}
         {#for pod in pods}
         <div class="pf-c-card pf-m-hoverable pf-m-compact">
-            <div class="pf-c-card__header pf-c-title pf-m-md status">
+            <div class="pf-c-card__title pf-m-md status">
                 <p>Pod</p>
                 <div class="pf-c-content">
                     <small>{pod.uid}</small>
@@ -43,7 +42,7 @@
         {/for}
         {#for service in bootstrapServices}
         <div class="pf-c-card pf-m-hoverable pf-m-compact">
-            <div class="pf-c-card__header pf-c-title pf-m-md status">
+            <div class="pf-c-card__title pf-m-md status">
                 <p>{service.getKind()}: {service.getSpec().getType()}</p>
                 <div class="pf-c-content">
                     <small>{service.getMetadata().getUid()}</small>
@@ -62,7 +61,7 @@
         {/for}
         {#for service in brokerServices}
         <div class="pf-c-card pf-m-hoverable pf-m-compact">
-            <div class="pf-c-card__header pf-c-title pf-m-md status">
+            <div class="pf-c-card__title pf-m-md status">
                 <p>{service.getKind()}: {service.getSpec().getType()}</p>
                 <div class="pf-c-content">
                     <small>{service.getMetadata().getUid()}</small>

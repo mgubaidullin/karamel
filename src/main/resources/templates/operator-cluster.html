@@ -5,7 +5,7 @@
     <div class="pf-l-gallery pf-m-gutter dashboard">
         {#for deployment in clusterDeployments}
         <div class="pf-c-card pf-m-hoverable pf-m-compact">
-            <div class="pf-c-card__header pf-c-title pf-m-md status">
+            <div class="pf-c-card__title pf-m-md status">
                 <p>{deployment.getKind()}</p>
                 <div class="pf-c-content">
                     <small>{deployment.getMetadata().getUid()}</small>
@@ -24,7 +24,7 @@
         {/for}
         {#for replicaSet in clusterReplicaSets}
         <div class="pf-c-card pf-m-hoverable pf-m-compact">
-            <div class="pf-c-card__header pf-c-title pf-m-md status">
+            <div class="pf-c-card__title pf-m-md status">
                 <p>{replicaSet.getKind()}</p>
                 <div class="pf-c-content">
                     <small>{replicaSet.getMetadata().getUid()}</small>
@@ -43,7 +43,7 @@
         {/for}
         {#for pod in clusterPods}
         <div class="pf-c-card pf-m-hoverable pf-m-compact">
-            <div class="pf-c-card__header pf-c-title pf-m-md status">
+            <div class="pf-c-card__title pf-m-md status">
                 <p>Pod</p>
                 <div class="pf-c-content">
                     <small>{pod.uid}</small>
