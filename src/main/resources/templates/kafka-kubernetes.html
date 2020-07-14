@@ -8,7 +8,7 @@
             <div class="pf-c-card__title pf-m-md status">
                 <p>{statefulSet.kind}</p>
                 <div class="pf-c-content">
-                    <small>{statefulSet.uuid}</small>
+                    <small>{statefulSet.uid}</small>
                 </div>
             </div>
             <div class="pf-c-card__footer">
@@ -43,10 +43,10 @@
         {#for service in bootstrapServices}
         <div class="pf-c-card pf-m-hoverable pf-m-compact">
             <div class="pf-c-card__title pf-m-md status">
-                <p>{service.getKind()}: {service.getSpec().getType()}</p>
+                <p>{service.kind}: {service.type}</p>
                 <div class="pf-c-content">
-                    <small>{service.getMetadata().getUid()}</small>
-                    <small>{service.getMetadata().getName()}</small>
+                    <small>{service.uid}</small>
+                    <small>{service.name}</small>
                 </div>
             </div>
             <div class="pf-c-card__footer">
@@ -62,10 +62,10 @@
         {#for service in brokerServices}
         <div class="pf-c-card pf-m-hoverable pf-m-compact">
             <div class="pf-c-card__title pf-m-md status">
-                <p>{service.getKind()}: {service.getSpec().getType()}</p>
+                <p>{service.kind}: {service.type}</p>
                 <div class="pf-c-content">
-                    <small>{service.getMetadata().getUid()}</small>
-                    <small>{service.getMetadata().getName()}</small>
+                    <small>{service.uid}</small>
+                    <small>{service.name}</small>
                 </div>
             </div>
             <div class="pf-c-card__footer">

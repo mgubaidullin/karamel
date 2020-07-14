@@ -15,7 +15,10 @@ import io.fabric8.kubernetes.api.model.apps.ReplicaSet;
 import io.quarkus.qute.Template;
 import io.quarkus.qute.TemplateInstance;
 import one.entropy.karamel.api.KaramelAPI;
+import one.entropy.karamel.data.DeploymentInfo;
 import one.entropy.karamel.data.PodInfo;
+import one.entropy.karamel.data.ReplicaSetInfo;
+import one.entropy.karamel.data.ServiceInfo;
 
 @Path("/")
 public class ConnectorUI {
@@ -31,14 +34,10 @@ public class ConnectorUI {
     @Produces(MediaType.TEXT_HTML)
     @Path("connectors")
     public TemplateInstance operators() {
-        Collection<Deployment> connectDeployments = karamelAPI.getConnectDeployments();
-
-        Collection<ReplicaSet> connectReplicaSets = karamelAPI.getConnectReplicaSets();
-
+        Collection<DeploymentInfo> connectDeployments = karamelAPI.getConnectDeployments();
+        Collection<ReplicaSetInfo> connectReplicaSets = karamelAPI.getConnectReplicaSets();
         Collection<PodInfo> connectPods = karamelAPI.getConnectPods();
-
-        Collection<Service> connectServices = karamelAPI.getConnectServices();
-
+        Collection<ServiceInfo> connectServices = karamelAPI.getConnectServices();
         return connectors
                 .data("connectDeployments", connectDeployments)
                 .data("connectReplicaSets", connectReplicaSets)

@@ -8,7 +8,7 @@ import io.fabric8.kubernetes.api.model.apps.StatefulSet;
 import io.fabric8.kubernetes.client.KubernetesClient;
 import io.quarkus.runtime.StartupEvent;
 import io.vavr.control.Try;
-import one.entropy.karamel.data.PodInfo;
+import one.entropy.karamel.data.*;
 import org.eclipse.microprofile.config.inject.ConfigProperty;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -16,8 +16,6 @@ import org.slf4j.LoggerFactory;
 import javax.enterprise.context.ApplicationScoped;
 import javax.enterprise.event.Observes;
 import javax.inject.Named;
-import java.nio.file.Files;
-import java.nio.file.Paths;
 import java.util.List;
 import java.util.Objects;
 import java.util.stream.Collectors;
@@ -48,14 +46,15 @@ public class KaramelAPI {
     }
 
     public boolean isKubernetes() {
-        return Files.exists(Paths.get("/var/run/secrets/kubernetes.io/serviceaccount/namespace"));
+        return true;
+//        return Files.exists(Paths.get("/var/run/secrets/kubernetes.io/serviceaccount/namespace"));
     }
 
-    public List<Deployment> getClusterDeployments() {
+    public List<DeploymentInfo> getClusterDeployments() {
         return getDeployments("app", "strimzi");
     }
 
-    public List<ReplicaSet> getClusterReplicaSets() {
+    public List<ReplicaSetInfo> getClusterReplicaSets() {
         return getReplicaSets(KIND_LABEL, "cluster-operator");
     }
 
@@ -63,12 +62,12 @@ public class KaramelAPI {
         return getPods(KIND_LABEL, "cluster-operator");
     }
 
-    public List<Deployment> getEntityDeployments() {
+    public List<DeploymentInfo> getEntityDeployments() {
             List<String> clusterNames = getClusterNames();
             return clusterNames.stream().flatMap(cluster -> getDeployments(NAME_LABEL, cluster + "-entity-operator").stream()).collect(Collectors.toList());
     }
 
-    public List<ReplicaSet> getEntityReplicaSets() {
+    public List<ReplicaSetInfo> getEntityReplicaSets() {
             List<String> clusterNames = getClusterNames();
             return clusterNames.stream().flatMap(cluster -> getReplicaSets(NAME_LABEL, cluster + "-entity-operator").stream()).collect(Collectors.toList());
     }
@@ -78,12 +77,12 @@ public class KaramelAPI {
             return clusterNames.stream().flatMap(cluster -> getPods(NAME_LABEL, cluster + "-entity-operator").stream()).collect(Collectors.toList());
     }
 
-    public List<Deployment> getConnectDeployments() {
+    public List<DeploymentInfo> getConnectDeployments() {
         List<String> clusterNames = getClusterNames();
         return clusterNames.stream().flatMap(cluster -> getDeployments(KIND_LABEL, "KafkaConnect").stream()).collect(Collectors.toList());
     }
 
-    public List<ReplicaSet> getConnectReplicaSets() {
+    public List<ReplicaSetInfo> getConnectReplicaSets() {
         List<String> clusterNames = getClusterNames();
         return clusterNames.stream().flatMap(cluster -> getReplicaSets(KIND_LABEL, "KafkaConnect").stream()).collect(Collectors.toList());
     }
@@ -93,14 +92,18 @@ public class KaramelAPI {
         return clusterNames.stream().flatMap(cluster -> getPods(KIND_LABEL, "KafkaConnect").stream()).collect(Collectors.toList());
     }
 
-    public List<Service> getConnectServices() {
+    public List<ServiceInfo> getConnectServices() {
         List<String> clusterNames = getClusterNames();
-        return clusterNames.stream().flatMap(cluster -> getServices(KIND_LABEL, "KafkaConnect").stream()).collect(Collectors.toList());
+        return clusterNames.stream().flatMap(cluster -> getServices(KIND_LABEL, "KafkaConnect").stream())
+                .map(s -> new ServiceInfo(s.getKind(), s.getMetadata().getUid(), s.getMetadata().getName(), s.getSpec().getType(), s.getMetadata().getNamespace()))
+                .collect(Collectors.toList());
     }
 
-    public List<StatefulSet> getZookeeperStatefulSets() {
+    public List<StatefulSetInfo> getZookeeperStatefulSets() {
             List<String> clusterNames = getClusterNames();
-            return clusterNames.stream().flatMap(cluster -> getStatefulSets(NAME_LABEL, cluster + "-zookeeper").stream()).collect(Collectors.toList());
+            return clusterNames.stream().flatMap(cluster -> getStatefulSets(NAME_LABEL, cluster + "-zookeeper").stream())
+                    .map(s -> new StatefulSetInfo(s.getKind(), s.getMetadata().getUid(), s.getMetadata().getName(), s.getStatus().getReplicas(), s.getStatus().getReadyReplicas()))
+                    .collect(Collectors.toList());
     }
 
     public List<PodInfo> getZookeeperPods() {
@@ -108,9 +111,11 @@ public class KaramelAPI {
             return clusterNames.stream().flatMap(cluster -> getPods(NAME_LABEL, cluster + "-zookeeper").stream()).collect(Collectors.toList());
     }
 
-    public List<StatefulSet> getKafkaStatefulSets() {
+    public List<StatefulSetInfo> getKafkaStatefulSets() {
             List<String> clusterNames = getClusterNames();
-            return clusterNames.stream().flatMap(cluster -> getStatefulSets(NAME_LABEL, cluster + "-kafka").stream()).collect(Collectors.toList());
+            return clusterNames.stream().flatMap(cluster -> getStatefulSets(NAME_LABEL, cluster + "-kafka").stream())
+                    .map(s -> new StatefulSetInfo(s.getKind(), s.getMetadata().getUid(), s.getMetadata().getName(), s.getStatus().getReplicas(), s.getStatus().getReadyReplicas()))
+                    .collect(Collectors.toList());
     }
 
     public List<PodInfo> getKafkaPods() {
@@ -118,21 +123,26 @@ public class KaramelAPI {
             return clusterNames.stream().flatMap(cluster -> getPods(NAME_LABEL, cluster + "-kafka").stream()).collect(Collectors.toList());
     }
 
-    public List<Service> getBootstrapServices() {
+    public List<ServiceInfo> getBootstrapServices() {
             List<String> clusterNames = getClusterNames();
-            return clusterNames.stream().flatMap(cluster -> getServices(NAME_LABEL, cluster + "-kafka-bootstrap").stream()).collect(Collectors.toList());
+            return clusterNames.stream().flatMap(cluster -> getServices(NAME_LABEL, cluster + "-kafka-bootstrap").stream())
+                    .map(s -> new ServiceInfo(s.getKind(), s.getMetadata().getUid(), s.getMetadata().getName(), s.getSpec().getType(), s.getMetadata().getNamespace()))
+                    .collect(Collectors.toList());
     }
 
-    public List<Service> getBrokerServices() {
+    public List<ServiceInfo> getBrokerServices() {
             List<String> clusterNames = getClusterNames();
-            return clusterNames.stream().flatMap(cluster -> getServices(NAME_LABEL, cluster + "-kafka-brokers").stream()).collect(Collectors.toList());
+            return clusterNames.stream().flatMap(cluster -> getServices(NAME_LABEL, cluster + "-kafka-brokers").stream())
+                    .map(s -> new ServiceInfo(s.getKind(), s.getMetadata().getUid(), s.getMetadata().getName(), s.getSpec().getType(), s.getMetadata().getNamespace()))
+                    .collect(Collectors.toList());
     }
 
     public List<String> getBrokers() {
         if (!isKubernetes()) {
             return brokers;
         } else {
-            return getBrokerServices().stream().map(service -> {
+            List<String> clusterNames = getClusterNames();
+            return clusterNames.stream().flatMap(cluster -> getServices(NAME_LABEL, cluster + "-kafka-brokers").stream()).map(service -> {
                 String hostname = service.getMetadata().getName() + "." + service.getMetadata().getNamespace();
                 Integer port = Try.of(() -> service.getSpec().getPorts().stream().filter(sport -> Objects.equals(sport.getName(), "tcp-clients")).findFirst().get().getPort()).getOrElse(9092);
                 return hostname + ":" + port;
@@ -140,14 +150,18 @@ public class KaramelAPI {
         }
     }
 
-    private List<Deployment> getDeployments(String label, String value) {
+    private List<DeploymentInfo> getDeployments(String label, String value) {
         return kubernetesClient.apps().deployments().list().getItems().stream().filter(deployment ->
-                Objects.equals(deployment.getMetadata().getLabels().get(label), value)).collect(Collectors.toList());
+                Objects.equals(deployment.getMetadata().getLabels().get(label), value))
+                .map(s -> new DeploymentInfo(s.getKind(), s.getMetadata().getUid(), s.getMetadata().getName(), s.getStatus().getReplicas(), s.getStatus().getReadyReplicas()))
+                .collect(Collectors.toList());
     }
 
-    private List<ReplicaSet> getReplicaSets(String label, String value) {
+    private List<ReplicaSetInfo> getReplicaSets(String label, String value) {
         return kubernetesClient.apps().replicaSets().list().getItems().stream().filter(replicaSet ->
-                Objects.equals(replicaSet.getMetadata().getLabels().get(label), value)).collect(Collectors.toList());
+                Objects.equals(replicaSet.getMetadata().getLabels().get(label), value))
+                .map(s -> new ReplicaSetInfo(s.getKind(), s.getMetadata().getUid(), s.getMetadata().getName(), s.getStatus().getReplicas(), s.getStatus().getReadyReplicas()))
+                .collect(Collectors.toList());
     }
 
     private List<PodInfo> getPods(String label, String value) {

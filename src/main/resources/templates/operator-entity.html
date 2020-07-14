@@ -6,10 +6,10 @@
         {#for deployment in entityDeployments}
         <div class="pf-c-card pf-m-hoverable pf-m-compact">
             <div class="pf-c-card__title pf-m-md status">
-                <p>{deployment.getKind()}</p>
+                <p>{deployment.kind}</p>
                 <div class="pf-c-content">
-                    <small>{deployment.getMetadata().getUid()}</small>
-                    <small>{deployment.getMetadata().getName()}</small>
+                    <small>{deployment.uid}</small>
+                    <small>{deployment.name}</small>
                 </div>
             </div>
             <div class="pf-c-card__footer">
@@ -17,7 +17,7 @@
                     <div class="pf-c-alert__icon">
                         <i class="fas fa-check-circle" aria-hidden="true"></i>
                     </div>
-                    <h4 class="pf-c-alert__title">Desired: {deployment.getStatus().getReplicas()}, Ready: {deployment.getStatus().getReadyReplicas()}</h4>
+                    <h4 class="pf-c-alert__title">Desired: {deployment.replicas}, Ready: {deployment.readyReplicas}</h4>
                 </div>
             </div>
         </div>
@@ -25,10 +25,10 @@
         {#for replicaSet in entityReplicaSets}
         <div class="pf-c-card pf-m-hoverable pf-m-compact">
             <div class="pf-c-card__title pf-m-md status">
-                <p>{replicaSet.getKind()}</p>
+                <p>{replicaSet.kind}</p>
                 <div class="pf-c-content">
-                    <small>{replicaSet.getMetadata().getUid()}</small>
-                    <small>{replicaSet.getMetadata().getName()}</small>
+                    <small>{replicaSet.uid}</small>
+                    <small>{replicaSet.uid}</small>
                 </div>
             </div>
             <div class="pf-c-card__footer">
@@ -36,7 +36,7 @@
                     <div class="pf-c-alert__icon">
                         <i class="fas fa-check-circle" aria-hidden="true"></i>
                     </div>
-                    <h4 class="pf-c-alert__title">Desired: {replicaSet.getStatus().getReplicas()}, Ready: {replicaSet.getStatus().getReadyReplicas()}</h4>
+                    <h4 class="pf-c-alert__title">Desired: {replicaSet.replicas}, Ready: {replicaSet.readyReplicas}</h4>
                 </div>
             </div>
         </div>

@@ -7,7 +7,10 @@ import io.quarkus.qute.Template;
 import io.quarkus.qute.TemplateInstance;
 import io.vavr.control.Try;
 import one.entropy.karamel.api.KaramelAPI;
+import one.entropy.karamel.data.DeploymentInfo;
 import one.entropy.karamel.data.PodInfo;
+import one.entropy.karamel.data.ReplicaSetInfo;
+import one.entropy.karamel.data.ServiceInfo;
 
 import javax.inject.Inject;
 import javax.ws.rs.Consumes;
@@ -32,19 +35,19 @@ public class OperatorUI {
     @Produces(MediaType.TEXT_HTML)
     @Path("operators")
     public TemplateInstance operators() {
-        Collection<Deployment> clusterDeployments = karamelAPI.getClusterDeployments();
-        Collection<Deployment> entityDeployments = karamelAPI.getEntityDeployments();
-        Collection<Deployment> connectDeployments = karamelAPI.getConnectDeployments();
+        Collection<DeploymentInfo> clusterDeployments = karamelAPI.getClusterDeployments();
+        Collection<DeploymentInfo> entityDeployments = karamelAPI.getEntityDeployments();
+        Collection<DeploymentInfo> connectDeployments = karamelAPI.getConnectDeployments();
 
-        Collection<ReplicaSet> clusterReplicaSets = karamelAPI.getClusterReplicaSets();
-        Collection<ReplicaSet> entityReplicaSets = karamelAPI.getEntityReplicaSets();
-        Collection<ReplicaSet> connectReplicaSets = karamelAPI.getConnectReplicaSets();
+        Collection<ReplicaSetInfo> clusterReplicaSets = karamelAPI.getClusterReplicaSets();
+        Collection<ReplicaSetInfo> entityReplicaSets = karamelAPI.getEntityReplicaSets();
+        Collection<ReplicaSetInfo> connectReplicaSets = karamelAPI.getConnectReplicaSets();
 
         Collection<PodInfo> clusterPods = karamelAPI.getClusterPods();
         Collection<PodInfo> entityPods = karamelAPI.getEntityPods();
         Collection<PodInfo> connectPods = karamelAPI.getConnectPods();
 
-        Collection<Service> connectServices = karamelAPI.getConnectServices();
+        Collection<ServiceInfo> connectServices = karamelAPI.getConnectServices();
         return operators
                 .data("clusterDeployments", clusterDeployments)
                 .data("entityDeployments", entityDeployments)

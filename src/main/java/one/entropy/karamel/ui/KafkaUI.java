@@ -8,6 +8,8 @@ import one.entropy.karamel.api.KafkaAPI;
 import one.entropy.karamel.api.KaramelAPI;
 import one.entropy.karamel.data.NodeInfo;
 import one.entropy.karamel.data.PodInfo;
+import one.entropy.karamel.data.ServiceInfo;
+import one.entropy.karamel.data.StatefulSetInfo;
 import org.apache.kafka.common.Node;
 
 import javax.inject.Inject;
@@ -37,23 +39,26 @@ public class KafkaUI {
     @Produces(MediaType.TEXT_HTML)
     @Path("kafka")
     public TemplateInstance kafka() {
-
+        List<String> list = karamelAPI.getBrokers();
+        Collection<NodeInfo> nodeList = kafkaAPI.getNodes(list.get(0));
 
         boolean isKubernetes = karamelAPI.isKubernetes();
         if (isKubernetes) {
-            Collection<StatefulSet> statefulSets = karamelAPI.getKafkaStatefulSets();
+            Collection<StatefulSetInfo> statefulSets = karamelAPI.getKafkaStatefulSets();
             Collection<PodInfo> pods = karamelAPI.getKafkaPods();
-            Collection<Service> bootstrapServices = karamelAPI.getBootstrapServices();
-            Collection<Service> brokerServices = karamelAPI.getBrokerServices();
-            kafka
+            Collection<ServiceInfo> bootstrapServices = karamelAPI.getBootstrapServices();
+            Collection<ServiceInfo> brokerServices = karamelAPI.getBrokerServices();
+            return kafka
                     .data("statefulSets", statefulSets)
                     .data("bootstrapServices", bootstrapServices)
                     .data("brokerServices", brokerServices)
-                    .data("pods", pods);
+                    .data("pods", pods)
+                    .data("isKubernetes", isKubernetes)
+                    .data("nodes", nodeList)
+                    .data("page", "kafka");
         }
-        List<String> list = karamelAPI.getBrokers();
-        Collection<NodeInfo> nodeList = kafkaAPI.getNodes(list.get(0));
         return kafka
+                .data("isKubernetes", isKubernetes)
                 .data("nodes", nodeList)
                 .data("page", "kafka");
     }
@@ -66,7 +71,7 @@ public class KafkaUI {
     @Produces(MediaType.TEXT_HTML)
     @Path("zookeeper")
     public TemplateInstance zookeeper() {
-        Collection<StatefulSet> statefulSets = karamelAPI.getZookeeperStatefulSets();
+        Collection<StatefulSetInfo> statefulSets = karamelAPI.getZookeeperStatefulSets();
         Collection<PodInfo> pods = karamelAPI.getZookeeperPods();
         return zookeeper
                 .data("statefulSets", statefulSets)
