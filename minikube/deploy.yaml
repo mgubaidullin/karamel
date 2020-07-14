@@ -38,8 +38,16 @@
         kubectl apply -f karamel.serviceaccount.yaml
         kubectl apply -f karamel.clusterrolebinding.yaml
 
-    - name: Build and deploy
+    - name: Compile and package
+      shell: |
+        cd ../
+        mvn clean package
+
+    - name: Build container
       shell: |
         eval {{ docker_env.stdout }}
         cd ../
-        mvn clean package fabric8:build fabric8:resource fabric8:deploy fabric8:apply  -Dfabric8.namespace=kafka -Dquarkus.package.uber-jar=true
+        docker build -f Dockerfile -t entropy1/karamel .
+
+    - name: Deploy
+      shell: kubectl apply -f ../target/kubernetes/minikube.json -n kafka

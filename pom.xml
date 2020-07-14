@@ -6,7 +6,7 @@
     <artifactId>karamel</artifactId>
     <version>${revision}</version>
     <properties>
-        <revision>0.0.6</revision>
+        <revision>0.0.7</revision>
         <compiler-plugin.version>3.8.1</compiler-plugin.version>
         <maven.compiler.parameters>true</maven.compiler.parameters>
         <maven.compiler.source>11</maven.compiler.source>
@@ -78,6 +78,10 @@
             <artifactId>camel-quarkus-endpointdsl</artifactId>
         </dependency>
         <dependency>
+            <groupId>io.quarkus</groupId>
+            <artifactId>quarkus-minikube</artifactId>
+        </dependency>
+        <dependency>
             <groupId>io.vavr</groupId>
             <artifactId>vavr</artifactId>
             <version>0.10.2</version>
@@ -128,7 +132,7 @@
             <plugin>
                 <groupId>io.fabric8</groupId>
                 <artifactId>fabric8-maven-plugin</artifactId>
-                <version>4.4.0</version>
+                <version>4.4.1</version>
                 <configuration>
                     <buildStrategy>docker</buildStrategy>
                     <verbose>true</verbose>
