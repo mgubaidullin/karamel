@@ -1,22 +1,10 @@
-{#include base.html}
-{#contents}
-<section class="pf-c-page__main-section pf-m-light">
+<section class="pf-c-page__main-section" id="message">
     <div class="pf-l-split pf-m-gutter">
-        <div class="pf-l-split__item">
-            <div class="pf-c-content">
-                <h1>Message</h1>
-            </div>
-        </div>
         <div class="pf-l-split__item pf-m-fill"></div>
         <div class="pf-l-split__item">
-            <form action="/client">
-                <button class="pf-c-button pf-m-primary" type="submit">Back</button>
-            </form>
+                <button class="pf-c-button pf-m-primary" v-on:click="closeMessage()">Back</button>
         </div>
     </div>
-</section>
-
-<section class="pf-c-page__main-section" id="client">
     <div class="pf-l-gallery pf-m-gutter">
         <div class="pf-l-gallery__item">
             <div class="pf-c-card form-text-width">
@@ -27,7 +15,7 @@
                                 <span class="pf-c-form__label-text">Topic</span>
                                 <span class="pf-c-form__label-required" aria-hidden="true">&#42;</span>
                             </label>
-                            <input class="pf-c-form-control" required type="text" id="topic" name="topic" required value="{kevent.topic}" readonly/>
+                            <input class="pf-c-form-control" required type="text" id="topic" name="topic" required v-bind:value="message.topic" readonly/>
                         </div>
 
                         <div class="pf-c-form__group">
@@ -35,32 +23,29 @@
                                 <span class="pf-c-form__label-text">Partition</span>
                                 <span class="pf-c-form__label-required" aria-hidden="true">&#42;</span>
                             </label>
-                            <input class="pf-c-form-control" required type="text" id="partition" name="partition" value="{kevent.partition}" readonly/>
+                            <input class="pf-c-form-control" required type="text" id="partition" name="partition" v-bind:value="message.partition" readonly/>
                         </div>
                         <div class="pf-c-form__group">
                             <label class="pf-c-form__label" for="offset">
                                 <span class="pf-c-form__label-text">Offset</span>
                                 <span class="pf-c-form__label-required" aria-hidden="true">&#42;</span>
                             </label>
-                            <input class="pf-c-form-control" required type="text" id="offset" name="offset" value="{kevent.offset}" readonly/>
+                            <input class="pf-c-form-control" required type="text" id="offset" name="offset" v-bind:value="message.offset" readonly/>
                         </div>
                         <div class="pf-c-form__group">
                             <label class="pf-c-form__label" for="timestamp">
                                 <span class="pf-c-form__label-text">Timestamp</span>
                                 <span class="pf-c-form__label-required" aria-hidden="true">&#42;</span>
                             </label>
-                            <input class="pf-c-form-control" required type="text" id="timestamp" name="timestamp" value="{kevent.timestamp}" readonly/>
+                            <input class="pf-c-form-control" required type="text" id="timestamp" name="timestamp" v-bind:value="message.timestamp" readonly/>
                         </div>
 
                         <div class="pf-c-form__group">
                             <label class="pf-c-form__label" for="key">
                                 <span class="pf-c-form__label-text">Key</span>
                             </label>
-                            {#if kevent.showKey == true}
-                            <input class="pf-c-form-control" required type="text" id="key" name="key" value="{kevent.key}" readonly />
-                            {#else}
-                            <textarea class="pf-c-form-control form-textarea-height" type="text" id="key" name="key">{kevent.key}</textarea>
-                            {/if}
+                            <input v-show="message !=null && JSON.stringify(message.key).length <= 100" class="pf-c-form-control" required type="text" id="key" name="key" v-bind:value="message.key" readonly />
+                            <textarea v-show="message !=null && JSON.stringify(message.key).length > 100" class="pf-c-form-control form-textarea-height" type="text" id="key" name="key">{{message.key}}</textarea>
                         </div>
 
                         <div class="pf-c-form__group">
@@ -68,7 +53,7 @@
                                 <span class="pf-c-form__label-text">Value</span>
                                 <span class="pf-c-form__label-required" aria-hidden="true">&#42;</span>
                             </label>
-                            <textarea class="pf-c-form-control form-textarea-height" type="text" id="value" name="value">{kevent.value}</textarea>
+                            <textarea class="pf-c-form-control form-textarea-height" type="text" id="value" name="value">{{message.value}}</textarea>
                         </div>
                     </form>
                 </div>
@@ -76,5 +61,3 @@
         </div>
     </div>
 </section>
-{/contents}
-{/include}

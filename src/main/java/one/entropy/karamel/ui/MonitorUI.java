@@ -5,7 +5,6 @@ import io.quarkus.qute.TemplateInstance;
 import one.entropy.karamel.api.KafkaAPI;
 import one.entropy.karamel.api.KaramelAPI;
 import one.entropy.karamel.data.TopicInfo;
-import org.apache.kafka.clients.admin.TopicDescription;
 
 import javax.inject.Inject;
 import javax.ws.rs.GET;
@@ -14,10 +13,9 @@ import javax.ws.rs.Produces;
 import javax.ws.rs.core.MediaType;
 import java.util.Collection;
 import java.util.List;
-import java.util.stream.Collectors;
 
 @Path("/")
-public class TopicUI {
+public class MonitorUI {
 
     @Inject
     KafkaAPI kafkaAPI;
@@ -26,32 +24,30 @@ public class TopicUI {
     KaramelAPI karamelAPI;
 
     @Inject
-    Template topics;
+    Template monitor;
 
-    @Inject
-    KaramelSession session;
 
     @GET
     @Produces(MediaType.TEXT_HTML)
-    @Path("topics")
+    @Path("monitor")
     public TemplateInstance operators() {
         Collection<String> brokerList = karamelAPI.getBrokers();
-        if (session.getBrokers() != null) {
-            Collection<TopicInfo> topicList = kafkaAPI.getTopics(session.getBrokers(), true);
-            return topics
-                    .data("topicList", topicList)
-                    .data("brokerListHeader", session.getBrokers())
-                    .data("brokerList", brokerList)
-                    .data("brokers", session.getBrokers())
-                    .data("page", "topics");
-        } else {
-            return topics
+//        if (session.getBrokers() != null) {
+//            Collection<TopicInfo> topicList = kafkaAPI.getTopics(session.getBrokers(), true);
+//            return monitor
+//                    .data("topicList", topicList)
+//                    .data("brokerListHeader", session.getBrokers())
+//                    .data("brokerList", brokerList)
+//                    .data("brokers", session.getBrokers())
+//                    .data("page", "monitor");
+//        } else {
+            return monitor
                     .data("topicList", List.of())
                     .data("brokerListHeader", "Brokers")
                     .data("brokers", "")
                     .data("brokerList", brokerList)
-                    .data("page", "topics");
-        }
+                    .data("page", "monitor");
+//        }
     }
 }
 

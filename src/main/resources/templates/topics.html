@@ -8,23 +8,26 @@
             </div>
         </div>
         <div class="pf-l-split__item pf-m-fill"></div>
+        <div class="pf-l-split__item pf-c-form pf-m-horizontal">
+            <div class="pf-c-form__group no-space" style="display: block;">
+                <div class="pf-c-form__group-label">
+                    <label class="pf-c-form__label">
+                        <span class="pf-c-form__label-text">Brokers:</span>
+                    </label>
+                </div>
+            </div>
+        </div>
         <div class="pf-l-split__item">
             <div class="pf-c-dropdown pf-m-expanded">
-                <button class="pf-c-dropdown__toggle" type="button" id="dropdown-expanded-button" aria-expanded="true"
-                        v-on:click="onDropDownBroker">
-                    <span class="pf-c-dropdown__toggle-text">{brokerListHeader}</span>
+                <button class="pf-c-dropdown__toggle" type="button" id="dropdown-broker" aria-expanded="true" v-on:click="onDropDownBroker">
+                    <span class="pf-c-dropdown__toggle-text">{{selectedBroker}}</span>
                     <i class="fas fa-caret-down pf-c-dropdown__toggle-icon" aria-hidden="true"></i>
                 </button>
-                <ul class="pf-c-dropdown__menu pf-m-align-right" aria-labelledby="dropdown-expanded-button"
-                    v-show="bootstrapShow">
-                    {#for broker in brokerList}
-                    <li>
-                        <button class="pf-c-dropdown__menu-item" type="submit" v-on:click="onSelectBroker('{broker}')">
-                            {broker}
-                        </button>
+                <ul class="pf-c-dropdown__menu pf-m-align-right" aria-labelledby="dropdown-expanded-button" v-show="bootstrapShow">
+                    <li v-for="broker in brokerList" :key="broker">
+                        <button class="pf-c-dropdown__menu-item" type="submit" v-on:click="onSelectBroker(broker)">{{broker}}</button>
                     </li>
                     </li>
-                    {/for}
                 </ul>
             </div>
         </div>
@@ -39,8 +42,7 @@
             <th>Internal</th>
         </tr>
         </thead>
-        {#if topicList.size == 0}
-        <tr class="pf-m-height-auto" role="row">
+        <tr v-show="topicList.length === 0"  class="pf-m-height-auto" role="row">
             <td role="cell" colspan="8">
                 <div class="pf-l-bullseye">
                     <div class="pf-c-empty-state pf-m-sm">
@@ -53,17 +55,15 @@
                 </div>
             </td>
         </tr>
-        {#else}
-        {#for topic in topicList}
-        <tr>
-            <td>{topic.name}</td>
-            <td>{topic.partitions}</td>
-            <td>{topic.internal}</td>
+        <tr v-show="topicList.length != 0" v-for="topic in topicList" :key="topic.name">
+            <td>{{topic.name}}</td>
+            <td>{{topic.partitions}}</td>
+            <td>{{topic.internal}}</td>
             </td>
         </tr>
-        {/for}
-        {/if}
     </table>
 </section>
 {/contents}
 {/include}
+<script src="/scripts/utils.js"></script>
+<script src="/scripts/topics.js"></script>

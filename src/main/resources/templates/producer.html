@@ -7,10 +7,10 @@
                         <span class="pf-c-form__label-text">Topic</span>
                         <span class="pf-c-form__label-required" aria-hidden="true">&#42;</span>
                     </label>
-                    <select class="pf-c-form-control" id="topic" name="topic" aria-label="select topic" v-model="topic" required>
-                        {#for topic in topics}
-                        <option value={topic}>{topic}</option>
-                        {/for}
+                    <select v-model="topic" class="pf-c-form-control" id="topic" name="topic" aria-label="select topic" required>
+                        <option v-for="t in topicList" v-bind:value="t.name">
+                            {{ t.name }}
+                        </option>
                     </select>
                 </div>
                 <div class="pf-c-form__group padding">

@@ -7,13 +7,17 @@
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
 
     <!-- PatternFly CSS -->
-    <link href="/patternfly.min.css" rel="stylesheet" type="text/css" media="all">
-    <link href="/karamel.css" rel="stylesheet" type="text/css" media="all">
-    <link href="/snackbar.css" rel="stylesheet" type="text/css" media="all">
+    <link href="/css/patternfly.min.css" rel="stylesheet" type="text/css" media="all">
+    <link href="/css/karamel.css" rel="stylesheet" type="text/css" media="all">
+    <link href="/css/snackbar.css" rel="stylesheet" type="text/css" media="all">
 
-    <script src="/jquery.min.js"></script>
-    <script src="/vue.js"></script>
-    <script src="/axios.min.js"></script>
+    <script src="/js/jquery.min.js"></script>
+    <script src="/js/vue.js"></script>
+    <script src="/js/axios.min.js"></script>
+
+    <!-- Charts -->
+    <script src="/js/moment.js"></script>
+    <script src="/js/chart.js"></script>
 </head>
 <body>
 <div class="pf-c-page" id="page-default-nav-example">
@@ -21,13 +25,13 @@
         content</a>
     <header role="banner" class="pf-c-page__header">
         <div class="pf-c-page__header-brand">
-            <img class="logo" src="/logo.svg" alt="" />
+            <img class="logo" src="/img/logo.svg" alt="" />
             <a class="pf-c-page__header-brand-link">
                 <h1 class="header">KARAMEL</h1>
             </a>
         </div>
         <div class="pf-c-page__header-tools">
-            <img class="pf-c-avatar" src="/img_avatar.svg" alt="Avatar image"/>
+            <img class="pf-c-avatar" src="/img/img_avatar.svg" alt="Avatar image"/>
         </div>
     </header>
     <div class="pf-c-page__sidebar pf-m-dark">
@@ -40,6 +44,9 @@
                     <li class="pf-c-nav__item">
                         <a href="/topics" class="pf-c-nav__link {#if page == 'topics'} pf-m-current {/if} ">Topics</a>
                     </li>
+<!--                    <li class="pf-c-nav__item">-->
+<!--                        <a href="/monitor" class="pf-c-nav__link {#if page == 'monitor'} pf-m-current {/if} ">Monitor</a>-->
+<!--                    </li>-->
                     <li class="pf-c-nav__item">
                         <a href="/client" class="pf-c-nav__link {#if page == 'client'} pf-m-current {/if} ">Client</a>
                     </li>
@@ -63,6 +70,5 @@
         {#insert contents}No contents!{/}
     </main>
 </div>
-<script src="/karamel.js"></script>
 </body>
 </html>

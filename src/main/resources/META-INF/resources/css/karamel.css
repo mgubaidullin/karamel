@@ -60,3 +60,7 @@
 .value {
     width: 20%;
 }
+
+.chartjs-render-monitor {
+    background-color: white;
+}

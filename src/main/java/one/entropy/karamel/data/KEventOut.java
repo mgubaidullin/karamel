@@ -7,6 +7,7 @@ import io.quarkus.runtime.annotations.RegisterForReflection;
 @RegisterForReflection
 public class KEventOut {
 
+    public String broker;
     public String topic;
     public String key;
     public String value;
@@ -14,10 +15,19 @@ public class KEventOut {
     public KEventOut() {
     }
 
-    public KEventOut(String topic, String key, String value) {
+    public KEventOut(String broker, String topic, String key, String value) {
+        this.broker = broker;
         this.topic = topic;
         this.key = key;
         this.value = value;
+    }
+
+    public String getBroker() {
+        return broker;
+    }
+
+    public void setBroker(String broker) {
+        this.broker = broker;
     }
 
     public String getTopic() {
