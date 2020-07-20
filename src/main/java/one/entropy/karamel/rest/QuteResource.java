@@ -29,6 +29,17 @@ public class QuteResource {
     @Produces(MediaType.TEXT_HTML)
     @Path("topics")
     public TemplateInstance topics() {
-        return client.data("page", "topics");
+        return topics.data("page", "topics");
+    }
+
+    @Inject
+    Template monitor;
+
+    @GET
+    @Consumes(MediaType.TEXT_HTML)
+    @Produces(MediaType.TEXT_HTML)
+    @Path("monitor")
+    public TemplateInstance monitor() {
+        return monitor.data("page", "monitor");
     }
 }

@@ -3,7 +3,9 @@ package one.entropy.karamel.rest;
 import io.smallrye.mutiny.Multi;
 import io.vertx.core.json.JsonObject;
 import io.vertx.mutiny.core.eventbus.EventBus;
+import one.entropy.karamel.api.KafkaAPI;
 import one.entropy.karamel.api.KaramelAPI;
+import one.entropy.karamel.data.NodeInfo;
 import one.entropy.karamel.data.SessionBrokers;
 import org.jboss.resteasy.annotations.providers.multipart.MultipartForm;
 import org.slf4j.Logger;
@@ -14,16 +16,20 @@ import javax.ws.rs.*;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 import java.util.Collection;
+import java.util.List;
 
 import static one.entropy.karamel.api.CamelAPI.BROKERS_ADDRESS;
 
 @Path("/api")
-public class BrokerResource {
+public class KafkaResource {
 
-    private static final Logger LOGGER = LoggerFactory.getLogger(BrokerResource.class.getCanonicalName());
+    private static final Logger LOGGER = LoggerFactory.getLogger(KafkaResource.class.getCanonicalName());
 
     @Inject
     KaramelAPI karamelAPI;
+
+    @Inject
+    KafkaAPI kafkaAPI;
 
     @Inject
     EventBus eventBus;
@@ -47,5 +53,14 @@ public class BrokerResource {
     public Multi<String> brokers() {
         Collection<String> brokerList = karamelAPI.getBrokers();
         return Multi.createFrom().iterable(brokerList);
+    }
+
+    @GET
+    @Path("/node")
+    @Produces(MediaType.APPLICATION_JSON)
+    public Multi<NodeInfo> nodes() {
+        List<String> brokerList = karamelAPI.getBrokers();
+        Collection<NodeInfo> nodeList = kafkaAPI.getNodes(brokerList.get(0));
+        return Multi.createFrom().iterable(nodeList);
     }
 }

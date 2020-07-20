@@ -14,7 +14,7 @@ import javax.ws.rs.QueryParam;
 import javax.ws.rs.core.MediaType;
 import java.util.Collection;
 
-@Path("/topic")
+@Path("/api")
 public class TopicResource {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(TopicResource.class.getCanonicalName());
@@ -23,6 +23,7 @@ public class TopicResource {
     KafkaAPI kafkaAPI;
 
     @GET
+    @Path("/topic")
     @Produces(MediaType.APPLICATION_JSON)
     public Multi<TopicInfo> getTopics(@QueryParam("brokers") String brokers) {
         Collection<TopicInfo> topicList = kafkaAPI.getTopics(brokers, true);
