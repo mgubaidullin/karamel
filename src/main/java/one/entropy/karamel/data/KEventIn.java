@@ -1,13 +1,11 @@
 package one.entropy.karamel.data;
 
-import io.quarkus.qute.TemplateData;
 import io.vavr.control.Try;
 
 import java.time.Instant;
 import java.time.ZoneId;
 import java.time.format.DateTimeFormatter;
 
-@TemplateData
 public class KEventIn {
 
     public String sessionId;

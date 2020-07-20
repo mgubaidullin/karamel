@@ -1,8 +1,5 @@
 package one.entropy.karamel.data;
 
-import io.quarkus.qute.TemplateData;
-
-@TemplateData
 public class TopicInfo {
 
     public String name;
