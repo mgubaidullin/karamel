@@ -1,0 +1,66 @@
+
+.header {
+    letter-spacing: 0.2em;
+}
+.table td.fit, .table th.fit {
+    white-space: nowrap;
+    width: 1%;
+}
+
+.completed {
+    text-decoration: line-through;
+}
+
+.form-text-width {
+    width: 800px;
+}
+
+.form-textarea-height {
+    height: 300px !important;
+}
+
+.logo {
+    height: 1.3em;
+    margin-right: 0.3em;
+}
+
+.pf-c-table  .filter {
+    padding: 0.5em;
+}
+
+.pf-c-alert.status {
+    --pf-c-alert--BoxShadow: var(--pf-global--BoxShadow--md);
+}
+
+.pf-c-page__main-section.dashboard-subtitle {
+    padding-top: 1em;
+    padding-bottom: 0;
+}
+
+.pf-l-gallery.dashboard {
+    --pf-l-gallery--GridTemplateColumns: repeat(auto-fill,minmax(300px,1fr));
+}
+
+.tabs {
+    background: white;
+}
+
+.pf-c-form__group.padding {
+    padding-bottom: 1em;
+}
+
+.pf-c-title.status {
+    height: 9em;
+}
+
+.pf-c-card__title {
+    height: 100%;
+}
+
+.value {
+    width: 20%;
+}
+
+.chartjs-render-monitor {
+    background-color: white;
+}
