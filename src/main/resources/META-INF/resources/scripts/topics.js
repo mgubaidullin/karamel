@@ -13,7 +13,7 @@ var client = new Vue({
     },
   methods: {
       onLoadPage: function (event) {
-        axios.get('/broker').then(response => (this.brokerList = response.data));
+        axios.get('/api/broker').then(response => (this.brokerList = response.data));
       },
       onDropDownBroker: function (event) {
         this.bootstrapShow = !this.bootstrapShow;
@@ -24,7 +24,7 @@ var client = new Vue({
         this.onDropDownBroker();
       },
       getTopics: function (event) {
-        axios.get('/topic?brokers=' + this.selectedBroker).then(response => (this.topicList = response.data));
+        axios.get('/api/topic?brokers=' + this.selectedBroker).then(response => (this.topicList = response.data));
       },
     },
 });

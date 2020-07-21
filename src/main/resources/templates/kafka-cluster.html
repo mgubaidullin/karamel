@@ -2,18 +2,17 @@
     <h1 class="pf-c-title pf-m-xl">Cluster</h1>
 </section>
 <section class="pf-c-page__main-section">
-    <div class="pf-l-gallery pf-m-gutter dashboard">
-        {#for node in nodes}
+    <div v-for="node in nodeList" :key="node.id" class="pf-l-gallery pf-m-gutter dashboard">
         <div class="pf-c-card pf-m-hoverable pf-m-compact">
             <div class="pf-c-card__title pf-m-md status">
-                <p>Node {node.id}</p>
+                <p>Node {{node.id}}</p>
                 <div class="pf-c-content">
-                    <small>{node.host}:{node.port}</small>
-                    <small>{node.rack}</small>
+                    <small>{{node.host}}:{{node.port}}</small>
+                    <small>{{node.rack}}</small>
                 </div>
             </div>
             <div class="pf-c-card__footer">
-                <div class="pf-c-alert status pf-m-success" aria-label="Success alert">
+                <div class="pf-c-alert pf-m-inline pf-m-success" aria-label="Success alert">
                     <div class="pf-c-alert__icon">
                         <i class="fas fa-check-circle" aria-hidden="true"></i>
                     </div>
@@ -21,6 +20,5 @@
                 </div>
             </div>
         </div>
-        {/for}
     </div>
 </section>

@@ -23,14 +23,14 @@ var client = new Vue({
     },
   methods: {
       onLoadPage: function (event) {
-        axios.get('/broker').then(response => (this.brokerList = response.data));
+        axios.get('/api/broker').then(response => (this.brokerList = response.data));
       },
       onDropDownBroker: function (event) {
         this.bootstrapShow = !this.bootstrapShow;
       },
       onSelectBroker: function (broker) {
         this.selectedBroker = broker;
-        axios.post('/broker', {brokers: this.selectedBroker, sessionId: getSessionId(true)});
+        axios.post('/api/broker', {brokers: this.selectedBroker, sessionId: getSessionId(true)});
         this.getTopics();
         this.onDropDownBroker();
         this.sourceEvents(true);
@@ -46,7 +46,7 @@ var client = new Vue({
           if (this.eventSource != null){
             this.eventSource.close();
           }
-          this.eventSource = new EventSource("/message/" + getSessionId(false));
+          this.eventSource = new EventSource("/api/message/" + getSessionId(false));
           this.eventSource.onmessage = function (event) {
                   json = JSON.parse(event.data);
                   json.url = '/message/' + json.topic + '/' + json.partition + '/' + json.offset;
@@ -79,10 +79,10 @@ var client = new Vue({
          this.tab = 'consumer';
       },
       getTopics: function (event) {
-        axios.get('/topic?brokers=' + this.selectedBroker).then(response => (this.topicList = response.data));
+        axios.get('/api/topic?brokers=' + this.selectedBroker).then(response => (this.topicList = response.data));
       },
       onPublish: function (event) {
-        axios.post('/message', { broker:this.selectedBroker, topic: this.topic, key: this.key, value: this.value })
+        axios.post('/api/message', { broker:this.selectedBroker, topic: this.topic, key: this.key, value: this.value })
             .then(function (response) {
               showSnackbar();
             });
