@@ -1,4 +1,4 @@
-package one.entropy.karamel.api;
+package one.entropy.karamel.service;
 
 import io.quarkus.vertx.ConsumeEvent;
 import io.vavr.control.Try;
@@ -20,11 +20,13 @@ import org.slf4j.LoggerFactory;
 import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
 import java.time.Instant;
+import java.time.ZoneId;
+import java.time.format.DateTimeFormatter;
 import java.util.Map;
 
 @ApplicationScoped
-public class CamelAPI {
-    private static final Logger LOGGER = LoggerFactory.getLogger(CamelAPI.class.getCanonicalName());
+public class CamelService {
+    private static final Logger LOGGER = LoggerFactory.getLogger(CamelService.class.getCanonicalName());
 
     public static final String BROKERS_ADDRESS = "BROKERS_ADDRESS";
     public static final String MESSAGE_ADDRESS = "MESSAGE_ADDRESS";
@@ -36,7 +38,7 @@ public class CamelAPI {
     @Inject
     ProducerTemplate producer;
 
-    @ConsumeEvent(value = BROKERS_ADDRESS)
+    @ConsumeEvent(value = BROKERS_ADDRESS, blocking = true)
     void setBrokers(SessionBrokers sessionBrokers) {
         LOGGER.info("Set brokers: {} for session :{}", sessionBrokers.getBrokers(), sessionBrokers.getSessionId());
         String sessionId = sessionBrokers.getSessionId();
@@ -44,12 +46,14 @@ public class CamelAPI {
 
         // Stop consumer routes
         Try.run(() -> {
+            LOGGER.info("Stoping route for session: {}", sessionId);
             ((FastCamelContext) context).stopRoute(sessionId);
             context.removeRoute(sessionId);
         }).onFailure(throwable -> LOGGER.error("", throwable));
 
         // Start routes
         Try.run(() -> {
+            LOGGER.info("Starting route for session: {}", sessionId);
             context.addRoutes(getConsumerRouteBuilder(sessionId, newBrokers));
 
             // Create producer route if do not exists for brokers
@@ -83,7 +87,9 @@ public class CamelAPI {
 
                 from(kafka)
                         .routeId(sessionId)
-                        .process(CamelAPI.this::process)
+                        .process(CamelService.this::process)
+                        .log("${headers}")
+                        .log("${body}")
                         .toD("vertx:" + sessionId);
             }
         };
@@ -110,7 +116,8 @@ public class CamelAPI {
                 .put("topic", message.getHeader(KafkaConstants.TOPIC, String.class))
                 .put("partition", message.getHeader(KafkaConstants.PARTITION, Long.class))
                 .put("offset", message.getHeader(KafkaConstants.OFFSET, Long.class))
-                .put("timestamp", Instant.ofEpochMilli(exchange.getIn().getHeader(KafkaConstants.TIMESTAMP, Long.class)))
+//                .put("timestamp", Instant.ofEpochMilli(exchange.getIn().getHeader(KafkaConstants.TIMESTAMP, Long.class)))
+                .put("timestamp", DateTimeFormatter.ISO_INSTANT.format(Instant.ofEpochMilli(exchange.getIn().getHeader(KafkaConstants.TIMESTAMP, Long.class)).atZone(ZoneId.systemDefault())))
                 .put("key", message.getHeader(KafkaConstants.KEY, String.class))
                 .put("value", message.getBody(String.class));
         exchange.getIn().setBody(json);

@@ -1,4 +1,4 @@
-package one.entropy.karamel.api;
+package one.entropy.karamel.service;
 
 import io.vavr.control.Try;
 import one.entropy.karamel.data.NodeInfo;
@@ -15,8 +15,8 @@ import java.util.stream.Collectors;
 
 @ApplicationScoped
 @Named("kafkaAPI")
-public class KafkaAPI {
-    private static final Logger LOGGER = LoggerFactory.getLogger(KafkaAPI.class.getCanonicalName());
+public class KafkaService {
+    private static final Logger LOGGER = LoggerFactory.getLogger(KafkaService.class.getCanonicalName());
 
     public Collection<TopicInfo> getTopics(String brokers, boolean listInternal) {
         return Try.of(() -> {

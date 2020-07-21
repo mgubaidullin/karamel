@@ -14,3 +14,14 @@ interface NodeInfo {
 }
 
 export { NodeInfo };
+
+interface KEventIn {
+     topic: string;
+     partition: number;
+     offset: number;
+     timestamp: string;
+     key: string;
+     value: string;
+}
+
+export {KEventIn};

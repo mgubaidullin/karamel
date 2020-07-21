@@ -3,7 +3,7 @@ package one.entropy.karamel.rest;
 import io.smallrye.mutiny.Multi;
 import io.vertx.core.json.JsonObject;
 import io.vertx.mutiny.core.eventbus.EventBus;
-import one.entropy.karamel.api.KaramelAPI;
+import one.entropy.karamel.service.KaramelService;
 import one.entropy.karamel.data.SessionBrokers;
 import org.jboss.resteasy.annotations.providers.multipart.MultipartForm;
 import org.slf4j.Logger;
@@ -15,7 +15,7 @@ import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 import java.util.Collection;
 
-import static one.entropy.karamel.api.CamelAPI.BROKERS_ADDRESS;
+import static one.entropy.karamel.service.CamelService.BROKERS_ADDRESS;
 
 @Path("/api")
 public class BrokerResource {
@@ -23,7 +23,7 @@ public class BrokerResource {
     private static final Logger LOGGER = LoggerFactory.getLogger(BrokerResource.class.getCanonicalName());
 
     @Inject
-    KaramelAPI karamelAPI;
+    KaramelService karamelService;
 
     @Inject
     EventBus eventBus;
@@ -45,7 +45,7 @@ public class BrokerResource {
     @Path("/broker")
     @Produces(MediaType.APPLICATION_JSON)
     public Multi<String> brokers() {
-        Collection<String> brokerList = karamelAPI.getBrokers();
+        Collection<String> brokerList = karamelService.getBrokers();
         return Multi.createFrom().iterable(brokerList);
     }
 }

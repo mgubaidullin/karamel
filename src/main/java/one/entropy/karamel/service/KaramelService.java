@@ -1,4 +1,4 @@
-package one.entropy.karamel.api;
+package one.entropy.karamel.service;
 
 import io.fabric8.kubernetes.api.model.Pod;
 import io.fabric8.kubernetes.api.model.Service;
@@ -22,8 +22,8 @@ import java.util.stream.Collectors;
 
 @ApplicationScoped
 @Named("karamelAPI")
-public class KaramelAPI {
-    private static final Logger LOGGER = LoggerFactory.getLogger(KaramelAPI.class.getCanonicalName());
+public class KaramelService {
+    private static final Logger LOGGER = LoggerFactory.getLogger(KaramelService.class.getCanonicalName());
     private static final String CLUSTER_LABEL = "strimzi.io/cluster";
     private static final String NAME_LABEL = "strimzi.io/name";
     private static final String KIND_LABEL = "strimzi.io/kind";
@@ -33,7 +33,7 @@ public class KaramelAPI {
 
     private final KubernetesClient kubernetesClient;
 
-    public KaramelAPI(KubernetesClient kubernetesClient) {
+    public KaramelService(KubernetesClient kubernetesClient) {
         this.kubernetesClient = kubernetesClient;
     }
 

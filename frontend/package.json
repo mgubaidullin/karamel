@@ -81,6 +81,7 @@
     "express": "^4.17.1",
     "react": "^16.13.1",
     "react-dom": "^16.13.1",
-    "react-router-last-location": "^2.0.1"
+    "react-router-last-location": "^2.0.1",
+    "react-use-event-source-ts": "^0.10.2"
   }
 }

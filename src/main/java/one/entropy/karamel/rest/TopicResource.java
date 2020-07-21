@@ -1,7 +1,7 @@
 package one.entropy.karamel.rest;
 
 import io.smallrye.mutiny.Multi;
-import one.entropy.karamel.api.KafkaAPI;
+import one.entropy.karamel.service.KafkaService;
 import one.entropy.karamel.data.TopicInfo;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -20,13 +20,13 @@ public class TopicResource {
     private static final Logger LOGGER = LoggerFactory.getLogger(TopicResource.class.getCanonicalName());
 
     @Inject
-    KafkaAPI kafkaAPI;
+    KafkaService kafkaService;
 
     @GET
     @Path("/topic")
     @Produces(MediaType.APPLICATION_JSON)
     public Multi<TopicInfo> getTopics(@QueryParam("brokers") String brokers) {
-        Collection<TopicInfo> topicList = kafkaAPI.getTopics(brokers, true);
+        Collection<TopicInfo> topicList = kafkaService.getTopics(brokers, true);
         return Multi.createFrom().iterable(topicList);
     }
 }

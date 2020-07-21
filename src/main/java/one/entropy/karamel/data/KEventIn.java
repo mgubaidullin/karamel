@@ -8,7 +8,6 @@ import java.time.format.DateTimeFormatter;
 
 public class KEventIn {
 
-    public String sessionId;
     public String topic;
     public Long partition;
     public Long offset;
@@ -19,8 +18,7 @@ public class KEventIn {
     public KEventIn() {
     }
 
-    public KEventIn(String sessionId, String topic, Long partition, Long offset, Instant timestamp, String key, String value) {
-        this.sessionId = sessionId;
+    public KEventIn(String topic, Long partition, Long offset, Instant timestamp, String key, String value) {
         this.topic = topic;
         this.partition = partition;
         this.offset = offset;
