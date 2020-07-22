@@ -6,7 +6,8 @@ var client = new Vue({
         brokerList: null,
         selectedBroker: 'Select',
         limits: [10, 25, 50, 100, 200],
-        topicList: []
+        topicList: [],
+        showSpinner: false
   },
   mounted:function(){
     this.onLoadPage();
@@ -20,11 +21,16 @@ var client = new Vue({
       },
       onSelectBroker: function (broker) {
         this.selectedBroker = broker;
+        this.topicList = [];
         this.getTopics();
         this.onDropDownBroker();
+        this.showSpinner = true;
       },
       getTopics: function (event) {
-        axios.get('/api/topic?brokers=' + this.selectedBroker).then(response => (this.topicList = response.data));
+        axios.get('/api/topic?brokers=' + this.selectedBroker).then(response => {
+            this.topicList = response.data;
+            this.showSpinner = false;
+        });
       },
     },
 });

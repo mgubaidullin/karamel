@@ -26,6 +26,7 @@ public class TopicResource {
     @Path("/topic")
     @Produces(MediaType.APPLICATION_JSON)
     public Multi<TopicInfo> getTopics(@QueryParam("brokers") String brokers) {
+        LOGGER.info("Get topics for brokers: {}", brokers);
         Collection<TopicInfo> topicList = kafkaService.getTopics(brokers, true);
         return Multi.createFrom().iterable(topicList);
     }

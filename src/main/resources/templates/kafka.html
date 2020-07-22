@@ -9,9 +9,9 @@
         </div>
     </div>
 </section>
-{#if isKubernetes}
+<div v-if="isKubernetes">
     {#include kafka-kubernetes.html /}
-{/}
+</div>
 {#include kafka-cluster.html /}
 {/contents}
 {/include}

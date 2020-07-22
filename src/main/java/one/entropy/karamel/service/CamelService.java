@@ -28,9 +28,9 @@ import java.util.Map;
 public class CamelService {
     private static final Logger LOGGER = LoggerFactory.getLogger(CamelService.class.getCanonicalName());
 
-    public static final String BROKERS_ADDRESS = "BROKERS_ADDRESS";
+    public static final String BROKERS_ADDRESS_START = "BROKERS_ADDRESS_START";
+    public static final String BROKERS_ADDRESS_STOP = "BROKERS_ADDRESS_STOP";
     public static final String MESSAGE_ADDRESS = "MESSAGE_ADDRESS";
-    public static final String ROUTE = "Route-";
 
     @Inject
     CamelContext context;
@@ -38,8 +38,8 @@ public class CamelService {
     @Inject
     ProducerTemplate producer;
 
-    @ConsumeEvent(value = BROKERS_ADDRESS, blocking = true)
-    void setBrokers(SessionBrokers sessionBrokers) {
+    @ConsumeEvent(value = BROKERS_ADDRESS_START, blocking = true)
+    void startRoutes(SessionBrokers sessionBrokers) {
         LOGGER.info("Set brokers: {} for session :{}", sessionBrokers.getBrokers(), sessionBrokers.getSessionId());
         String sessionId = sessionBrokers.getSessionId();
         String newBrokers = sessionBrokers.getBrokers();
@@ -60,6 +60,15 @@ public class CamelService {
             if (context.getRoute(getRouteName(newBrokers)) == null) {
                 context.addRoutes(getProducerRouteBuilder(newBrokers));
             }
+        }).onFailure(throwable -> LOGGER.error("", throwable));
+    }
+
+    @ConsumeEvent(value = BROKERS_ADDRESS_STOP, blocking = true)
+    void stopRoutes(String sessionId) {
+        Try.run(() -> {
+            LOGGER.info("Stopping route for session: {}", sessionId);
+            ((FastCamelContext) context).stopRoute(sessionId);
+            context.removeRoute(sessionId);
         }).onFailure(throwable -> LOGGER.error("", throwable));
     }
 

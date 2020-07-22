@@ -34,7 +34,7 @@
             <img class="pf-c-avatar" src="/img/img_avatar.svg" alt="Avatar image"/>
         </div>
     </header>
-    <div class="pf-c-page__sidebar pf-m-dark">
+    <div class="pf-c-page__sidebar pf-m-dark" id="sidebar">
         <div class="pf-c-page__sidebar-body">
             <nav class="pf-c-nav pf-m-dark" id="page-default-nav-example-primary-nav" aria-label="Global">
                 <ul class="pf-c-nav__list">
@@ -45,19 +45,17 @@
                         <a href="/topics" class="pf-c-nav__link {#if page == 'topics'} pf-m-current {/if} ">Topics</a>
                     </li>
                     <li class="pf-c-nav__item">
-                        <a href="/monitor" class="pf-c-nav__link {#if page == 'monitor'} pf-m-current {/if} ">Monitor</a>
-                    </li>
-                    <li class="pf-c-nav__item">
                         <a href="/client" class="pf-c-nav__link {#if page == 'client'} pf-m-current {/if} ">Client</a>
                     </li>
-                    {#if inject:karamelAPI.isKubernetes}
                     <li class="pf-c-nav__item">
+                        <a href="/monitor" class="pf-c-nav__link {#if page == 'monitor'} pf-m-current {/if} ">Monitor</a>
+                    </li>
+                    <li v-if="isKubernetes" class="pf-c-nav__item">
                         <a href="/operators" class="pf-c-nav__link {#if page == 'operators'} pf-m-current {/if} ">Operators</a>
                     </li>
-                    <li class="pf-c-nav__item">
+                    <li v-if="isKubernetes" class="pf-c-nav__item">
                         <a href="/zookeeper" class="pf-c-nav__link {#if page == 'zookeeper'} pf-m-current {/if} ">Zookeeper</a>
                     </li>
-                    {/if}
                 </ul>
             </nav>
         </div>
@@ -67,5 +65,6 @@
         {#insert contents}No contents!{/}
     </main>
 </div>
+<script src="/scripts/base.js"></script>
 </body>
 </html>

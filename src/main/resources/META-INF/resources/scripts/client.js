@@ -13,7 +13,7 @@ var client = new Vue({
         eventSource: null,
         topicList: [],
         tab: 'consumer',
-        waitingVis: false,
+        showSpinner: false,
         topic: '',
         key: '',
         value: ''
@@ -23,6 +23,7 @@ var client = new Vue({
     },
   methods: {
       onLoadPage: function (event) {
+        window.addEventListener('beforeunload', this.leaving);
         axios.get('/api/broker').then(response => (this.brokerList = response.data));
       },
       onDropDownBroker: function (event) {
@@ -30,11 +31,10 @@ var client = new Vue({
       },
       onSelectBroker: function (broker) {
         this.selectedBroker = broker;
-        axios.post('/api/broker', {brokers: this.selectedBroker, sessionId: getSessionId(true)});
         this.getTopics();
         this.onDropDownBroker();
-        this.sourceEvents(true);
-        this.waitingVis = true;
+        this.sourceEvents(false);
+        this.showSpinner = true;
       },
       sourceEvents: function (clear) {
           if (clear){
@@ -46,7 +46,7 @@ var client = new Vue({
           if (this.eventSource != null){
             this.eventSource.close();
           }
-          this.eventSource = new EventSource("/api/message/" + getSessionId(false));
+          this.eventSource = new EventSource("/api/message/" + getSessionId(false) + "/" + this.selectedBroker);
           this.eventSource.onmessage = function (event) {
                   json = JSON.parse(event.data);
                   json.url = '/message/' + json.topic + '/' + json.partition + '/' + json.offset;
@@ -87,5 +87,11 @@ var client = new Vue({
               showSnackbar();
             });
       },
+      leaving() {
+          var client = new XMLHttpRequest();
+          client.open("POST", '/api/message/stop/' + getSessionId(false), false);
+          client.setRequestHeader("Content-Type", "application/json;charset=UTF-8");
+          client.send({});
+      }
     },
 });

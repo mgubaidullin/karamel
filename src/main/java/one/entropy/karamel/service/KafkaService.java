@@ -9,12 +9,10 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import javax.enterprise.context.ApplicationScoped;
-import javax.inject.Named;
 import java.util.*;
 import java.util.stream.Collectors;
 
 @ApplicationScoped
-@Named("kafkaAPI")
 public class KafkaService {
     private static final Logger LOGGER = LoggerFactory.getLogger(KafkaService.class.getCanonicalName());
 
