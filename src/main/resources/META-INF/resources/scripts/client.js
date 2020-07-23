@@ -2,6 +2,7 @@
 var client = new Vue({
   el: '#app',
   data: {
+        filter: '.*',
         bootstrapShow: false,
         limitShow: false,
         brokerList: null,
@@ -26,6 +27,10 @@ var client = new Vue({
         window.addEventListener('beforeunload', this.leaving);
         axios.get('/api/broker').then(response => (this.brokerList = response.data));
       },
+      onReconnect: function (event) {
+        this.showSpinner = true;
+        this.sourceEvents(true);
+      },
       onDropDownBroker: function (event) {
         this.bootstrapShow = !this.bootstrapShow;
       },
@@ -46,7 +51,7 @@ var client = new Vue({
           if (this.eventSource != null){
             this.eventSource.close();
           }
-          this.eventSource = new EventSource("/api/message/" + getSessionId(false) + "/" + this.selectedBroker);
+          this.eventSource = new EventSource("/api/message/" + getSessionId(false) + "/" + this.selectedBroker + '/' + this.filter);
           this.eventSource.onmessage = function (event) {
                   json = JSON.parse(event.data);
                   json.url = '/message/' + json.topic + '/' + json.partition + '/' + json.offset;

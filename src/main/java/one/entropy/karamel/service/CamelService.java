@@ -3,8 +3,9 @@ package one.entropy.karamel.service;
 import io.quarkus.vertx.ConsumeEvent;
 import io.vavr.control.Try;
 import io.vertx.core.json.JsonObject;
+import io.vertx.mutiny.core.eventbus.EventBus;
 import one.entropy.karamel.data.KEventOut;
-import one.entropy.karamel.data.SessionBrokers;
+import one.entropy.karamel.data.StartEvent;
 import org.apache.camel.CamelContext;
 import org.apache.camel.Exchange;
 import org.apache.camel.Message;
@@ -38,11 +39,15 @@ public class CamelService {
     @Inject
     ProducerTemplate producer;
 
+    @Inject
+    EventBus eventBus;
+
     @ConsumeEvent(value = BROKERS_ADDRESS_START, blocking = true)
-    void startRoutes(SessionBrokers sessionBrokers) {
-        LOGGER.info("Set brokers: {} for session :{}", sessionBrokers.getBrokers(), sessionBrokers.getSessionId());
-        String sessionId = sessionBrokers.getSessionId();
-        String newBrokers = sessionBrokers.getBrokers();
+    void startRoutes(StartEvent startEvent) {
+        LOGGER.info("Set brokers: {} for session :{}", startEvent.getBrokers(), startEvent.getSessionId());
+        String sessionId = startEvent.getSessionId();
+        String newBrokers = startEvent.getBrokers();
+        String filter = startEvent.getFilter();
 
         // Stop consumer routes
         Try.run(() -> {
@@ -54,7 +59,7 @@ public class CamelService {
         // Start routes
         Try.run(() -> {
             LOGGER.info("Starting route for session: {}", sessionId);
-            context.addRoutes(getConsumerRouteBuilder(sessionId, newBrokers));
+            context.addRoutes(getConsumerRouteBuilder(sessionId, newBrokers, filter));
 
             // Create producer route if do not exists for brokers
             if (context.getRoute(getRouteName(newBrokers)) == null) {
@@ -84,11 +89,11 @@ public class CamelService {
                 ));
     }
 
-    private RouteBuilder getConsumerRouteBuilder(String sessionId, String brokers) {
+    private RouteBuilder getConsumerRouteBuilder(String sessionId, String brokers, String filter) {
         return new EndpointRouteBuilder() {
             @Override
             public void configure() throws Exception {
-                EndpointConsumerBuilder kafka = kafka(".*")
+                EndpointConsumerBuilder kafka = kafka(filter)
                         .groupId(sessionId)
                         .brokers(brokers)
                         .topicIsPattern(true)
@@ -99,7 +104,8 @@ public class CamelService {
                         .process(CamelService.this::process)
                         .log("${headers}")
                         .log("${body}")
-                        .toD("vertx:" + sessionId);
+//                        .toD("vertx:" + sessionId)
+                ;
             }
         };
     }
@@ -129,7 +135,8 @@ public class CamelService {
                 .put("timestamp", DateTimeFormatter.ISO_INSTANT.format(Instant.ofEpochMilli(exchange.getIn().getHeader(KafkaConstants.TIMESTAMP, Long.class)).atZone(ZoneId.systemDefault())))
                 .put("key", message.getHeader(KafkaConstants.KEY, String.class))
                 .put("value", message.getBody(String.class));
-        exchange.getIn().setBody(json);
+        eventBus.publish(exchange.getFromRouteId(), json);
+//        exchange.getIn().setBody(json);
     }
 
     private String getRouteName(String brokers){

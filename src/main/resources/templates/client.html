@@ -32,6 +32,16 @@
             </div>
         </div>
         <div class="pf-l-split__item pf-c-form pf-m-horizontal">
+            <div class="pf-c-form__group-label">
+                <label class="pf-c-form__label" for="filter">
+                    <span class="pf-c-form__label-text">Filter:</span>
+                </label>
+            </div>
+            <div class="pf-c-form__group-control">
+                <input v-model="filter" class="pf-c-form-control" type="text" id="filter" name="filter" required />
+            </div>
+        </div>
+        <div class="pf-l-split__item pf-c-form pf-m-horizontal">
             <div class="pf-c-form__group no-space" style="display: block;">
                 <div class="pf-c-form__group-label">
                     <label class="pf-c-form__label">
@@ -53,6 +63,14 @@
                     </li>
                 </ul>
             </div>
+        </div>
+        <div class="pf-l-split__item">
+            <button class="pf-c-button" type="submit" v-on:click="onReconnect">
+                <span class="pf-c-button__icon">
+                    <i class="fas fa-sync" aria-hidden="true"></i>
+                </span>
+                <span class="pf-c-button__text">Reconnect</span>
+            </button>
         </div>
     </div>
 </section>

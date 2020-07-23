@@ -2,11 +2,10 @@ package one.entropy.karamel.rest;
 
 import io.smallrye.mutiny.Multi;
 import io.vertx.core.json.JsonObject;
-import io.vertx.mutiny.core.Vertx;
 import io.vertx.mutiny.core.eventbus.EventBus;
 import one.entropy.karamel.data.JsonUtil;
 import one.entropy.karamel.data.KEventOut;
-import one.entropy.karamel.data.SessionBrokers;
+import one.entropy.karamel.data.StartEvent;
 import org.jboss.resteasy.annotations.providers.multipart.MultipartForm;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -26,15 +25,15 @@ public class MessageResource {
     @Inject
     EventBus eventBus;
 
-    @Inject
-    Vertx vertx;
-
     @GET
     @Produces(MediaType.SERVER_SENT_EVENTS)
-    @Path("/{sessionId}/{brokers}")
-    public Multi<JsonObject> eventSourcing(@PathParam("sessionId") String sessionId, @PathParam("brokers") String brokers) {
+    @Path("/{sessionId}/{brokers}/{filter}")
+    public Multi<JsonObject> eventSourcing(
+            @PathParam("sessionId") String sessionId,
+            @PathParam("brokers") String brokers,
+            @PathParam("filter") String filter) {
         LOGGER.info("Start sourcing for session: {} with brokers: {}", sessionId, brokers);
-        eventBus.publish(BROKERS_ADDRESS_START, new SessionBrokers(sessionId, brokers));
+        eventBus.publish(BROKERS_ADDRESS_START, new StartEvent(sessionId, brokers, filter));
         return eventBus.<JsonObject>consumer(sessionId).toMulti().map(event -> event.body());
     }
 

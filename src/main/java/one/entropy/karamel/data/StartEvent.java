@@ -1,12 +1,14 @@
 package one.entropy.karamel.data;
 
-public class SessionBrokers {
+public class StartEvent {
     private String sessionId;
     private String brokers;
+    private String filter;
 
-    public SessionBrokers(String sessionId, String brokers) {
+    public StartEvent(String sessionId, String brokers, String filter) {
         this.sessionId = sessionId;
         this.brokers = brokers;
+        this.filter = filter;
     }
 
     public String getSessionId() {
@@ -23,5 +25,13 @@ public class SessionBrokers {
 
     public void setBrokers(String brokers) {
         this.brokers = brokers;
+    }
+
+    public String getFilter() {
+        return filter;
+    }
+
+    public void setFilter(String filter) {
+        this.filter = filter;
     }
 }
