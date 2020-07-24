@@ -26,10 +26,11 @@ var client = new Vue({
       onLoadPage: function (event) {
         window.addEventListener('beforeunload', this.leaving);
         axios.get('/api/broker').then(response => (this.brokerList = response.data));
+        this.sourceEvents(true);
       },
       onReconnect: function (event) {
         this.showSpinner = true;
-        this.sourceEvents(true);
+        this.startConsumer();
       },
       onDropDownBroker: function (event) {
         this.bootstrapShow = !this.bootstrapShow;
@@ -38,8 +39,8 @@ var client = new Vue({
         this.selectedBroker = broker;
         this.getTopics();
         this.onDropDownBroker();
-        this.sourceEvents(false);
         this.showSpinner = true;
+        this.startConsumer();
       },
       sourceEvents: function (clear) {
           if (clear){
@@ -51,7 +52,7 @@ var client = new Vue({
           if (this.eventSource != null){
             this.eventSource.close();
           }
-          this.eventSource = new EventSource("/api/message/" + getSessionId(false) + "/" + this.selectedBroker + '/' + this.filter);
+          this.eventSource = new EventSource('/api/message/' + getSessionId(false));
           this.eventSource.onmessage = function (event) {
                   json = JSON.parse(event.data);
                   json.url = '/message/' + json.topic + '/' + json.partition + '/' + json.offset;
@@ -67,7 +68,6 @@ var client = new Vue({
       onSelectLimit: function (limit) {
         this.selectedLimit = limit;
         this.onDropDownLimit();
-        this.sourceEvents(false);
       },
       showConsumer: function (event) {
         this.tab = 'consumer';
@@ -90,6 +90,13 @@ var client = new Vue({
         axios.post('/api/message', { broker:this.selectedBroker, topic: this.topic, key: this.key, value: this.value })
             .then(function (response) {
               showSnackbar();
+            });
+      },
+      startConsumer() {
+            axios.post('/api/message/start', { sessionId : getSessionId(false), broker: this.selectedBroker, filter: this.filter })
+            .then(function (response) {
+              console.log("start");
+              this.showSpinner = false;
             });
       },
       leaving() {

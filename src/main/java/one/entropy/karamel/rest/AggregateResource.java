@@ -17,11 +17,11 @@ import javax.ws.rs.core.Response;
 
 import static one.entropy.karamel.service.CamelService.*;
 
-@Path("/api/message")
-public class MessageResource {
+@Path("/api/aggregate")
+public class AggregateResource {
 
-    private static final Logger LOGGER = LoggerFactory.getLogger(MessageResource.class.getCanonicalName());
-    private static final String PREFIX = "MESSAGE_";
+    private static final Logger LOGGER = LoggerFactory.getLogger(AggregateResource.class.getCanonicalName());
+    private static final String PREFIX = "AGGREGATE_";
 
     @Inject
     EventBus eventBus;
@@ -37,16 +37,6 @@ public class MessageResource {
     @POST
     @Consumes(MediaType.APPLICATION_JSON)
     @Produces(MediaType.APPLICATION_JSON)
-    public Response produce(@MultipartForm String json) {
-        LOGGER.info("Publishing: {}", json);
-        KEventOut kevent = JsonUtil.fromJson(json, KEventOut.class);
-        eventBus.publish(MESSAGE_ADDRESS, kevent);
-        return Response.ok().build(); // TODO: check result before response
-    }
-
-    @POST
-    @Consumes(MediaType.APPLICATION_JSON)
-    @Produces(MediaType.APPLICATION_JSON)
     @Path("/start")
     public Response start(@MultipartForm String request) {
         LOGGER.info("Start consuming: {}", request);
@@ -54,7 +44,7 @@ public class MessageResource {
         String sessionId = json.getString("sessionId");
         String broker = json.getString("broker");
         String filter = json.getString("filter");
-        eventBus.publish(BROKERS_ADDRESS_START, new StartEvent(PREFIX + sessionId, broker, filter));
+//        eventBus.publish(BROKERS_ADDRESS_START, new StartEvent(PREFIX + sessionId, broker, filter));
         return Response.ok().build(); // TODO: check result before response
     }
 
@@ -64,7 +54,7 @@ public class MessageResource {
     @Path("/stop/{sessionId}")
     public Response stop(@PathParam("sessionId") String sessionId) {
         LOGGER.info("Stopping messages for session: {}", sessionId);
-        eventBus.publish(BROKERS_ADDRESS_STOP, PREFIX + sessionId);
+//        eventBus.publish(BROKERS_ADDRESS_STOP, PREFIX + sessionId);
         return Response.ok().build(); // TODO: check result before response
     }
 }

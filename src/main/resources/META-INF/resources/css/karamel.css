@@ -45,8 +45,8 @@
     background: white;
 }
 
-.pf-c-form__group.padding {
-    padding-bottom: 1em;
+.centered.pf-c-form__group-label {
+    padding-bottom: 0;
 }
 
 .pf-c-title.status {
@@ -64,3 +64,5 @@
 .chartjs-render-monitor {
     background-color: white;
 }
+
+.pf-c-form__group-label

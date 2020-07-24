@@ -39,9 +39,6 @@ public class CamelService {
     @Inject
     ProducerTemplate producer;
 
-    @Inject
-    EventBus eventBus;
-
     @ConsumeEvent(value = BROKERS_ADDRESS_START, blocking = true)
     void startRoutes(StartEvent startEvent) {
         LOGGER.info("Set brokers: {} for session :{}", startEvent.getBrokers(), startEvent.getSessionId());
@@ -102,10 +99,7 @@ public class CamelService {
                 from(kafka)
                         .routeId(sessionId)
                         .process(CamelService.this::process)
-                        .log("${headers}")
-                        .log("${body}")
-//                        .toD("vertx:" + sessionId)
-                ;
+                        .toD("vertx:" + sessionId);
             }
         };
     }
@@ -135,8 +129,7 @@ public class CamelService {
                 .put("timestamp", DateTimeFormatter.ISO_INSTANT.format(Instant.ofEpochMilli(exchange.getIn().getHeader(KafkaConstants.TIMESTAMP, Long.class)).atZone(ZoneId.systemDefault())))
                 .put("key", message.getHeader(KafkaConstants.KEY, String.class))
                 .put("value", message.getBody(String.class));
-        eventBus.publish(exchange.getFromRouteId(), json);
-//        exchange.getIn().setBody(json);
+        exchange.getIn().setBody(json);
     }
 
     private String getRouteName(String brokers){

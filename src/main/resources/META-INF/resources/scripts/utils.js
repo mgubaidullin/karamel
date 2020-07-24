@@ -23,5 +23,3 @@ function generateSessionId(){
     });
     return uuid;
 }
-
-
