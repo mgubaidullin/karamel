@@ -98,6 +98,8 @@ public class CamelService {
 
                 from(kafka)
                         .routeId(sessionId)
+                        .log("${headers}")
+                        .log("${body}")
                         .process(CamelService.this::process)
                         .toD("vertx:" + sessionId);
             }
@@ -119,13 +121,13 @@ public class CamelService {
     private void process(Exchange exchange) {
         Message message = exchange.getIn();
         JsonObject json = new JsonObject()
+                .put("type", "message")
                 .put("id", message.getHeader(KafkaConstants.TOPIC, String.class)
                         + ":" + message.getHeader(KafkaConstants.PARTITION, Long.class)
                         + ":" + message.getHeader(KafkaConstants.OFFSET, Long.class))
                 .put("topic", message.getHeader(KafkaConstants.TOPIC, String.class))
                 .put("partition", message.getHeader(KafkaConstants.PARTITION, Long.class))
                 .put("offset", message.getHeader(KafkaConstants.OFFSET, Long.class))
-//                .put("timestamp", Instant.ofEpochMilli(exchange.getIn().getHeader(KafkaConstants.TIMESTAMP, Long.class)))
                 .put("timestamp", DateTimeFormatter.ISO_INSTANT.format(Instant.ofEpochMilli(exchange.getIn().getHeader(KafkaConstants.TIMESTAMP, Long.class)).atZone(ZoneId.systemDefault())))
                 .put("key", message.getHeader(KafkaConstants.KEY, String.class))
                 .put("value", message.getBody(String.class));
