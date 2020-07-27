@@ -2,6 +2,7 @@ import { ClientTemplate } from '../templates/client-template.js'
 import Vue from '/js/vue.esm.browser.min.js'
 import getEventHub from './event-hub.js'
 import { ConsumerTemplate } from "../templates/consumer-template.js";
+import { ProducerTemplate } from "../templates/producer-template.js";
 
 const Consumer = Vue.component('consumer', {
   data: function () {
@@ -37,6 +38,49 @@ const Consumer = Vue.component('consumer', {
   template: ConsumerTemplate
 });
 
+const Producer = Vue.component('producer', {
+  data: function () {
+    return {
+      topicList: [],
+      topic: '',
+      key: '',
+      value: '',
+      isDone: false
+    }
+  },
+  computed: {
+    selectedBroker() {
+      return this.$store.state.selectedBroker;
+    }
+  },
+  created: function () {
+    getEventHub().$on('brokerChanged', this.getTopics);
+  },
+  beforeDestroy: function () {
+    getEventHub().$off('brokerChanged', this.getTopics);
+  },
+  mounted: function () {
+    this.getTopics();
+  },
+  methods: {
+    getTopics: function (event) {
+      axios.get('/api/topic?brokers=' + this.selectedBroker).then(response => (this.topicList = response.data));
+    },
+    onPublish: function (event) {
+      axios.post('/api/message', { broker: this.selectedBroker, topic: this.topic, key: this.key, value: this.value })
+        .then(response => (this.showSnackbar()))
+        .catch(function (error) {
+          console.log(error);
+        });
+    },
+    showSnackbar: function () {
+      this.isDone = true;
+      setTimeout(function(scope) { scope.isDone = false; }, 2000, this);
+    },
+  },
+  template: ProducerTemplate
+});
+
 
 const Client = Vue.component('client', {
   data: function () {
@@ -49,11 +93,7 @@ const Client = Vue.component('client', {
       limits: [10, 25, 50, 100, 200],
       selectedLimit: 10,
       message: null,
-      topicList: [],
-      tab: 'consumer',
-      topic: '',
-      key: '',
-      value: ''
+      tab: 'consumer'
     }
   },
   components: {
@@ -72,7 +112,8 @@ const Client = Vue.component('client', {
     },
     onSelectBroker: function (broker) {
       this.selectedBroker = broker;
-      this.getTopics();
+      this.$store.commit('setBroker', this.selectedBroker);
+      getEventHub().$emit('brokerChanged', {});
       this.onDropDownBroker();
       this.showSpinner = true;
       this.startConsumer();
@@ -81,14 +122,13 @@ const Client = Vue.component('client', {
       this.limitShow = !this.limitShow;
     },
     onSelectLimit: function (limit) {
-      getEventHub().$emit('config', {type: "limit", limit: limit});
+      getEventHub().$emit('config', { type: "limit", limit: limit });
       this.onDropDownLimit();
     },
     showConsumer: function (event) {
       this.tab = 'consumer';
     },
     showProducer: function (event) {
-      this.getTopics();
       this.tab = 'producer';
     },
     showMessage: function (message) {
@@ -97,15 +137,6 @@ const Client = Vue.component('client', {
     },
     closeMessage: function () {
       this.tab = 'consumer';
-    },
-    getTopics: function (event) {
-      axios.get('/api/topic?brokers=' + this.selectedBroker).then(response => (this.topicList = response.data));
-    },
-    onPublish: function (event) {
-      axios.post('/api/message', { broker: this.selectedBroker, topic: this.topic, key: this.key, value: this.value })
-        .then(function (response) {
-          showSnackbar();
-        });
     },
     startConsumer() {
       axios.post('/api/message/start', { sessionId: getSessionId(false), broker: this.selectedBroker, filter: this.filter })

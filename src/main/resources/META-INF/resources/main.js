@@ -5,6 +5,20 @@ import { Topics } from './components/topics.js'
 import { Client } from './components/client.js'
 import getEventHub from './components/event-hub.js'
 
+// Store
+Vue.use(Vuex);
+const store = new Vuex.Store({
+  state: {
+    selectedBroker: null
+  },
+  mutations: {
+    setBroker (state, broker) {
+      state.selectedBroker = broker;
+    }
+  }
+})
+
+// Router
 Vue.use(VueRouter);
 const router = new VueRouter({
   routes: [
@@ -15,11 +29,13 @@ const router = new VueRouter({
   ]
 })
 
+// Application
 var client = new Vue({
+  el: '#app',
   data: {
     eventSource: null
   },
-  el: '#app',
+  store: store,
   components: {
   },
   router,

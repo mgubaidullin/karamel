@@ -94,11 +94,11 @@ const ClientTemplate = `
                 <i class="fas fa-angle-right" aria-hidden="true"></i>
             </button>
         </div>
-        <div v-if="tab === 'consumer'">
+        <div v-show="tab === 'consumer'">
             <consumer></consumer>
         </div>
-        <div v-if="tab === 'producer'">
-            {#include producer.html /}
+        <div v-show="tab === 'producer'">
+            <producer></producer>
         </div>
     </section>
 </div>
