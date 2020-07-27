@@ -30,6 +30,12 @@ const MainTemplate = `
                     <li class="pf-c-nav__item">
                         <router-link to="/monitor" v-bind:class="[$route.path === '/monitor' ? 'pf-m-current' : '', 'pf-c-nav__link']">Monitor</router-link>
                     </li>
+                    <li v-if="$store.state.isKubernetes" class="pf-c-nav__item">
+                        <router-link to="/operators" v-bind:class="[$route.path === '/operators' ? 'pf-m-current' : '', 'pf-c-nav__link']">Operators</router-link>
+                    </li>
+                    <li v-if="$store.state.isKubernetes" class="pf-c-nav__item">
+                        <router-link to="/zookeeper" v-bind:class="[$route.path === '/zookeeper' ? 'pf-m-current' : '', 'pf-c-nav__link']">Zookeeper</router-link>
+                    </li>
                 </ul>
             </nav>
         </div>

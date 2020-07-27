@@ -97,7 +97,7 @@ const ClientTemplate = `
         <div v-show="tab === 'consumer'">
             <consumer></consumer>
         </div>
-        <div v-show="tab === 'producer'">
+        <div v-if="tab === 'producer'">
             <producer></producer>
         </div>
     </section>

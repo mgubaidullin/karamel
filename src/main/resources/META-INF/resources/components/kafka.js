@@ -24,30 +24,25 @@ const KafkaKubernetes = Vue.component('kafka-kubernetes', {
       bootstrapServices: []
     }
   },
-  mounted: function () {
-    axios.get('/api/kubernetes').then(response => {
-      this.isKubernetes = response.data.isKubernetes
-      if (this.isKubernetes) {
-        this.loadKubernetesData();
-      }
-    });
-  },
-  methods: {
-    loadKubernetesData: function () {
-      axios.get('/api/pod?type=kafka').then(response => (this.podList = response.data));
-      axios.get('/api/statefulset?type=kafka').then(response => (this.statefulSetList = response.data));
-      axios.get('/api/service?type=broker').then(response => (this.brokerServices = response.data));
-      axios.get('/api/service?type=bootstrap').then(response => (this.bootstrapServices = response.data));
+  computed: {
+    isKubernetes() {
+      return this.$store.state.isKubernetes;
     }
+  },
+  mounted: function () {
+    axios.get('/api/pod?type=kafka').then(response => (this.podList = response.data));
+    axios.get('/api/statefulset?type=kafka').then(response => (this.statefulSetList = response.data));
+    axios.get('/api/service?type=broker').then(response => (this.brokerServices = response.data));
+    axios.get('/api/service?type=bootstrap').then(response => (this.bootstrapServices = response.data));
   },
   template: KafkaKubernetesTemplate
 });
 
 
 const Kafka = Vue.component('kafka', {
-  data: function () {
-    return {
-      isKubernetes: false
+  computed: {
+    isKubernetes() {
+      return this.$store.state.isKubernetes;
     }
   },
   components: {

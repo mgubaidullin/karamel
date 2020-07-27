@@ -3,17 +3,22 @@ import { MainTemplate } from './templates/main-template.js'
 import { Kafka } from './components/kafka.js'
 import { Topics } from './components/topics.js'
 import { Client } from './components/client.js'
+import { Operators } from './components/operators.js'
 import getEventHub from './components/event-hub.js'
 
 // Store
 Vue.use(Vuex);
 const store = new Vuex.Store({
   state: {
-    selectedBroker: null
+    selectedBroker: null,
+    isKubernetes: false
   },
   mutations: {
-    setBroker (state, broker) {
+    setBroker(state, broker) {
       state.selectedBroker = broker;
+    },
+    setKubernetes(state, status) {
+      state.isKubernetes = status;
     }
   }
 })
@@ -26,6 +31,7 @@ const router = new VueRouter({
     { path: '/kafka', component: Kafka, name: "Kafka" },
     { path: '/topics', component: Topics, name: "Topics" },
     { path: '/client', component: Client, name: "Client" },
+    { path: '/operators', component: Operators, name: "Operators" }
   ]
 })
 
@@ -42,6 +48,9 @@ var client = new Vue({
   template: MainTemplate,
   mounted: function () {
     try {
+      axios.get('/api/kubernetes').then(response => {
+        this.$store.commit('setKubernetes', response.data.isKubernetes);
+      });
       if (this.eventSource != null) {
         this.eventSource.close();
       }
