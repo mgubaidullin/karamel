@@ -1,30 +1,37 @@
-// Vue app
-var client = new Vue({
-  el: '#app',
-  data: {
-    bootstrapShow: false,
-    brokerList: null,
-    selectedBroker: 'Select',
-    limits: [10, 25, 50, 100, 200],
-    topicList: [],
-    selectedTopic: null,
-    selectedTopics: new Array(),
-    eventSource: null,
-    chart: null,
-    steps: 50,
-    colors: ['#06c', '#f4c145', '#4cb140']
+import { MonitorTemplate } from '../templates/monitor-template.js'
+import Vue from '/js/vue.esm.browser.min.js'
+import getEventHub from './event-hub.js'
+
+const Monitor = Vue.component('monitor', {
+  data: function () {
+    return {
+      bootstrapShow: false,
+      brokerList: null,
+      selectedBroker: 'Select',
+      limits: [10, 25, 50, 100, 200],
+      topicList: [],
+      selectedTopic: null,
+      selectedTopics: new Array(),
+      eventSource: null,
+      chart: null,
+      steps: 50,
+      colors: ['#06c', '#f4c145', '#4cb140']
+    }
   },
   mounted: function () {
     this.onLoadPage();
   },
   methods: {
     onLoadPage: function (event) {
-      var ctx = document.getElementById('monitorChart').getContext('2d');
+      var ctx = this.$refs.monitorChart.getContext('2d');
       this.chart = new Chart(ctx, this.chartConfig());
-      console.log(this.chart);
       window.addEventListener('beforeunload', this.leaving);
       axios.get('/api/broker').then(response => (this.brokerList = response.data));
       this.sourceEvents(true);
+    },
+    onStart: function (event) {
+//          this.showSpinner = true;
+//          this.startConsumer();
     },
     onDropDownBroker: function (event) {
       this.bootstrapShow = !this.bootstrapShow;
@@ -57,26 +64,26 @@ var client = new Vue({
         this.eventSource.close();
       }
       this.eventSource = new EventSource('/api/aggregate/' + getSessionId(false));
-      this.eventSource.addEventListener('message', function(e) {
+      this.eventSource.addEventListener('message', function (e) {
         console.log(e.data);
       }, false);
 
-      this.eventSource.addEventListener('open', function(e) {
+      this.eventSource.addEventListener('open', function (e) {
         console.log('open: ' + e);
       }, false);
 
-      this.eventSource.addEventListener('error', function(e) {
+      this.eventSource.addEventListener('error', function (e) {
         if (e.readyState == EventSource.CLOSED) {
           console.log('close: ' + e);
         }
       }, false);
-//      this.eventSource.onmessage = function (event) {
-//        json = JSON.parse(event.data);
-//        messages.unshift(json);
-//        while (messages.length > selectedLimit) {
-//          messages.pop();
-//        }
-//      };
+      //      this.eventSource.onmessage = function (event) {
+      //        json = JSON.parse(event.data);
+      //        messages.unshift(json);
+      //        while (messages.length > selectedLimit) {
+      //          messages.pop();
+      //        }
+      //      };
     },
     getTopics: function (event) {
       axios.get('/api/topic?brokers=' + this.selectedBroker).then(response => (this.topicList = response.data));
@@ -95,8 +102,10 @@ var client = new Vue({
       client.send({});
     },
     createDataset(name) {
-        return {label: name, fill: false, borderWidth: 2, pointRadius: 1, pointHoverRadius: 2,
-        backgroundColor: '#06c', borderColor: '#06c', data: [0]};
+      return {
+        label: name, fill: false, borderWidth: 2, pointRadius: 1, pointHoverRadius: 2,
+        backgroundColor: '#06c', borderColor: '#06c', data: [0]
+      };
     },
     chartConfig() {
       var config = {
@@ -121,30 +130,7 @@ var client = new Vue({
       return config;
     }
   },
-});
+  template: MonitorTemplate
+})
 
-
-function getRandomInt() {
-  var min = Math.ceil(0);
-  var max = Math.floor(200);
-  return Math.floor(Math.random() * (max - min)) + min; //The maximum is exclusive and the minimum is inclusive
-}
-
-function showMonitor() {
-  var ctx = document.getElementById('monitorChart').getContext('2d');
-  var chart = new Chart(ctx, chartConfig());
-
-  for (let i = 1; i < 1000; i++) {
-    setTimeout(function timer() {
-      if (chart.data.labels.length >= steps) {
-        chart.data.labels.shift();
-      }
-      chart.data.labels.push('');
-      chart.data.datasets.forEach(function (dataset) {
-        if (dataset.data.length >= steps) { dataset.data.shift(); }
-        dataset.data.push(getRandomInt());
-      });
-      chart.update();
-    }, i * 1000);
-  }
-};
+export { Monitor }
