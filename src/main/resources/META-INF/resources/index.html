@@ -1,47 +1,30 @@
 <!doctype html>
 <html lang="en">
-<head>
-    <title>Karamel</title>
-    <meta http-equiv="Refresh" content="0; url=/kafka"/>
-    <meta charset="utf-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
-    <link href="/css/patternfly.min.css" rel="stylesheet" type="text/css" media="all">
-    <link href="/css/karamel.css" rel="stylesheet" type="text/css" media="all">
-</head>
-<body>
-<div class="pf-c-page" id="page-default-nav-example">
-    <a class="pf-c-skip-to-content pf-c-button pf-m-primary" href="#main-content-page-default-nav-example">Skip to
-        content</a>
-    <header role="banner" class="pf-c-page__header">
-        <div class="pf-c-page__header-brand">
-            <img class="logo" src="/img/logo.svg" alt="" />
-            <a class="pf-c-page__header-brand-link">
-                <h1 class="header">KARAMEL</h1>
-            </a>
-        </div>
-        <div class="pf-c-page__header-tools">
-            <img class="pf-c-avatar" src="/img/img_avatar.svg" alt="Avatar image"/>
-        </div>
-    </header>
+    <head>
+        <title>Karamel</title>
+        <!-- Required meta tags -->
+        <meta charset="utf-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
 
-    <main role="main" class="pf-c-page__main" tabindex="-1" id="app">
-        <div class="pf-l-bullseye">
-            <div class="pf-c-empty-state pf-m-sm">
-                <div class="pf-c-empty-state__content">
-                    <div class="pf-c-empty-state__icon">
-                        <span class="pf-c-spinner" role="progressbar" aria-valuetext="Loading...">
-                          <span class="pf-c-spinner__clipper"></span>
-                          <span class="pf-c-spinner__lead-ball"></span>
-                          <span class="pf-c-spinner__tail-ball"></span>
-                        </span>
-                    </div>
-                    <p class="pf-m-link">Please follow
-                        <a href="/kafka">this link</a>
-                    </p>
-                </div>
-            </div>
-        </div>
-    </main>
-</div>
-</body>
+        <!-- PatternFly CSS -->
+        <link href="/css/patternfly.min.css" rel="stylesheet" type="text/css" media="all">
+        <link href="/css/karamel.css" rel="stylesheet" type="text/css" media="all">
+        <link href="/css/snackbar.css" rel="stylesheet" type="text/css" media="all">
+
+        <script src="/js/jquery.min.js"></script>
+        <script src="/js/vue-router.js"></script>
+        <script src="/js/axios.min.js"></script>
+
+        <!-- Charts -->
+        <script src="/js/moment.js"></script>
+        <script src="/js/chart.js"></script>
+        <!-- Utils -->
+        <script src="/scripts/utils.js"></script>
+    </head>
+
+    <body>
+        <div id="app"></div>
+        <script type="module" src="main.js"></script>
+    </body>
+
 </html>
