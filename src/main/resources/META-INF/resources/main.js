@@ -4,6 +4,7 @@ import { Kafka } from './components/kafka.js'
 import { Topics } from './components/topics.js'
 import { Client } from './components/client.js'
 import { Operators } from './components/operators.js'
+import { Zookeeper } from './components/zookeeper.js'
 import getEventHub from './components/event-hub.js'
 
 // Store
@@ -31,7 +32,8 @@ const router = new VueRouter({
     { path: '/kafka', component: Kafka, name: "Kafka" },
     { path: '/topics', component: Topics, name: "Topics" },
     { path: '/client', component: Client, name: "Client" },
-    { path: '/operators', component: Operators, name: "Operators" }
+    { path: '/operators', component: Operators, name: "Operators" },
+    { path: '/zookeeper', component: Zookeeper, name: "Zookeeper" }
   ]
 })
 
