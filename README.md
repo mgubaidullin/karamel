@@ -1,5 +1,11 @@
 # Karamel
 
+![Java](https://img.shields.io/badge/Build_with-Java-orange.svg?style=for-the-badge)
+![Quarkus](https://img.shields.io/badge/-Quarkus-orange.svg?style=for-the-badge)
+![Camel](https://img.shields.io/badge/-Camel-orange.svg?style=for-the-badge)
+![Vue](https://img.shields.io/badge/-Vue.JS-orange.svg?style=for-the-badge)
+![License](https://img.shields.io/badge/License-Apache-green.svg?style=for-the-badge)
+
 Simple Kafka Browser that supports standalone Kafka and Strimzi operator.
 
 - Kafka cluster status
