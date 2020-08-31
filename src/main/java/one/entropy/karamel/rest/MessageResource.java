@@ -1,9 +1,7 @@
 package one.entropy.karamel.rest;
 
-import io.quarkus.runtime.StartupEvent;
 import io.smallrye.mutiny.Multi;
 import io.vertx.core.json.JsonObject;
-import io.vertx.mutiny.core.Vertx;
 import io.vertx.mutiny.core.eventbus.EventBus;
 import one.entropy.karamel.data.JsonUtil;
 import one.entropy.karamel.data.KEventOut;
@@ -12,7 +10,6 @@ import org.jboss.resteasy.annotations.providers.multipart.MultipartForm;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import javax.enterprise.event.Observes;
 import javax.inject.Inject;
 import javax.ws.rs.*;
 import javax.ws.rs.core.MediaType;

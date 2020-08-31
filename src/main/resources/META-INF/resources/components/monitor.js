@@ -27,7 +27,6 @@ const Monitor = Vue.component('monitor', {
       this.chart = new Chart(ctx, this.chartConfig());
       window.addEventListener('beforeunload', this.leaving);
       axios.get('/api/broker').then(response => (this.brokerList = response.data));
-      this.sourceEvents(true);
     },
     onStart: function (event) {
 //          this.showSpinner = true;
@@ -53,53 +52,15 @@ const Monitor = Vue.component('monitor', {
       var index = this.selectedTopics.indexOf(topic);
       this.selectedTopics.splice(index, 1);
     },
-    sourceEvents: function (clear) {
-      if (clear) {
-        this.messages = new Array();
-      }
-      var messages = this.messages;
-      var selectedLimit = this.selectedLimit;
-
-      if (this.eventSource != null) {
-        this.eventSource.close();
-      }
-      this.eventSource = new EventSource('/api/aggregate/' + getSessionId(false));
-      this.eventSource.addEventListener('message', function (e) {
-        console.log(e.data);
-      }, false);
-
-      this.eventSource.addEventListener('open', function (e) {
-        console.log('open: ' + e);
-      }, false);
-
-      this.eventSource.addEventListener('error', function (e) {
-        if (e.readyState == EventSource.CLOSED) {
-          console.log('close: ' + e);
-        }
-      }, false);
-      //      this.eventSource.onmessage = function (event) {
-      //        json = JSON.parse(event.data);
-      //        messages.unshift(json);
-      //        while (messages.length > selectedLimit) {
-      //          messages.pop();
-      //        }
-      //      };
-    },
     getTopics: function (event) {
       axios.get('/api/topic?brokers=' + this.selectedBroker).then(response => (this.topicList = response.data));
     },
     startConsumer() {
-      axios.post('/api/aggregate/start', { sessionId: getSessionId(false), broker: this.selectedBroker, filter: this.filter })
-        .then(function (response) {
-          console.log("start consumer");
-          this.showSpinner = false;
-        });
-    },
-    leaving() {
-      var client = new XMLHttpRequest();
-      client.open("POST", '/api/aggregate/stop/' + getSessionId(false), false);
-      client.setRequestHeader("Content-Type", "application/json;charset=UTF-8");
-      client.send({});
+//      axios.post('/api/aggregate/start', { sessionId: getSessionId(false), broker: this.selectedBroker, filter: this.filter })
+//        .then(function (response) {
+//          console.log("start consumer");
+//          this.showSpinner = false;
+//        });
     },
     createDataset(name) {
       return {
