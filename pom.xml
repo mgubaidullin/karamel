@@ -17,6 +17,7 @@
         <quarkus.version>1.11.0.Final</quarkus.version>
         <camel.version>1.6.0</camel.version>
         <surefire-plugin.version>2.22.1</surefire-plugin.version>
+        <jkube.version>1.0.2</jkube.version>
     </properties>
     <dependencyManagement>
         <dependencies>
@@ -134,34 +135,16 @@
                 </configuration>
             </plugin>
             <plugin>
-                <groupId>io.fabric8</groupId>
-                <artifactId>fabric8-maven-plugin</artifactId>
-                <version>4.4.0</version>
+                <groupId>org.eclipse.jkube</groupId>
+                <artifactId>kubernetes-maven-plugin</artifactId>
+                <version>${jkube.version}</version>
                 <configuration>
-                    <buildStrategy>docker</buildStrategy>
-                    <verbose>true</verbose>
-                    <enricher>
-                        <config>
-                            <f8-service>
-                                <name>${project.artifactId}</name>
-                            </f8-service>
-                        </config>
-                    </enricher>
                     <images>
                         <image>
                             <name>entropy1/${project.artifactId}</name>
                             <build>
-                                <tags>
-                                    <tag>latest</tag>
-                                    <tag>${project.version}</tag>
-                                </tags>
-                                <dockerFile>${project.basedir}/Dockerfile</dockerFile>
-                                <assembly>
-                                    <descriptorRef>artifact</descriptorRef>
-                                </assembly>
-                                <args>
-                                    <FINAL_NAME>${project.build.finalName}.${project.packaging}</FINAL_NAME>
-                                </args>
+                                <dockerFile>${project.basedir}/Dockerfile.jkube</dockerFile>
+                                <filter>@</filter>
                             </build>
                         </image>
                     </images>
