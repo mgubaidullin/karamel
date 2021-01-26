@@ -47,7 +47,8 @@ docker build -f Dockerfile.native -t entropy1/karamel-native .
 Prequisites: Java 11
 ```
 cd compose
-docker-compose up 
+docker-compose up -d
+docker-compose exec kafka kafka-topics --create --bootstrap-server localhost:9092 -replication-factor 1 --partitions 1 --topic users
 ```
 
 ## Development
