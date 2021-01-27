@@ -183,6 +183,26 @@
                             </execution>
                         </executions>
                     </plugin>
+                    <plugin>
+                        <groupId>org.eclipse.jkube</groupId>
+                        <artifactId>kubernetes-maven-plugin</artifactId>
+                        <version>${jkube.version}</version>
+                        <configuration>
+                            <images>
+                                <image>
+                                    <name>entropy1/${project.artifactId}-native</name>
+                                    <build>
+                                        <dockerFile>${project.basedir}/Dockerfile.native</dockerFile>
+                                        <filter>@</filter>
+                                        <tags>
+                                            <tag>latest</tag>
+                                            <tag>${revision}</tag>
+                                        </tags>
+                                    </build>
+                                </image>
+                            </images>
+                        </configuration>
+                    </plugin>
                 </plugins>
             </build>
             <properties>
