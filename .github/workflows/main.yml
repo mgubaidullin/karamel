@@ -17,10 +17,11 @@ jobs:
       with:
         java-version: 11
 
-    - name: Build Docker image with Maven
-      run: mvn -B package k8s:build --file pom.xml
+    - name: Build application with Maven
+      run: mvn -B package --file pom.xml
 
-#     - name: Publish to GitHub Packages Apache Maven
-#       run: mvn deploy -s $GITHUB_WORKSPACE/settings.xml
-#       env:
-#         GITHUB_TOKEN: ${{ github.token }}
+    - name: Build Docker image with Maven
+      run: mvn -B k8s:build --file pom.xml
+
+    - name: Publish image to DockerHub
+      run: mvn k8s:push -Djkube.docker.username=${{ secrets.DOCKERHUB_USERNAME }} -Djkube.docker.password=${{ secrets.DOCKERHUB_PASSWORD }}
