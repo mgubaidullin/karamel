@@ -17,8 +17,8 @@ jobs:
       with:
         java-version: 11
 
-    - name: Build with Maven
-      run: mvn -B package --file pom.xml
+    - name: Build Docker image with Maven
+      run: mvn -B package k8s:build --file pom.xml
 
 #     - name: Publish to GitHub Packages Apache Maven
 #       run: mvn deploy -s $GITHUB_WORKSPACE/settings.xml
