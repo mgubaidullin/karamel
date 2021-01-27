@@ -145,6 +145,10 @@
                             <build>
                                 <dockerFile>${project.basedir}/Dockerfile.jkube</dockerFile>
                                 <filter>@</filter>
+                                <tags>
+                                    <tag>latest</tag>
+                                    <tag>${revision}</tag>
+                                </tags>
                             </build>
                         </image>
                     </images>
