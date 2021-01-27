@@ -25,3 +25,6 @@ jobs:
 
     - name: Publish image to DockerHub
       run: mvn k8s:push -Djkube.docker.username=${{ secrets.DOCKERHUB_USERNAME }} -Djkube.docker.password=${{ secrets.DOCKERHUB_PASSWORD }}
+
+    - name: Build Native application Docker image with Maven
+      run: mvn -B k8s:build --file pom.xml -Pnative
